@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FREEzzzGames</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(41, 16, 95, 0.8) 0%, rgba(7, 9, 34, 0.9) 50%, rgba(1, 2, 8, 0.95) 100%);
+  --portal-bg: rgba(4, 7, 20, 0.85);
+  --border-col: rgba(32, 232, 255, 0.3);
+  --accent-col: #20e8ff;
+  --title-col: #ffd52c;
+  --btn-bg: rgba(6, 10, 27, 0.9);
+  --btn-hover: #0f2766;
+}
+body.theme-matrix {
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(10, 45, 20, 0.8) 0%, rgba(5, 20, 10, 0.9) 50%, rgba(1, 5, 2, 0.95) 100%);
+  --portal-bg: rgba(4, 20, 10, 0.85);
+  --border-col: rgba(0, 255, 136, 0.3);
+  --accent-col: #00ff88;
+  --title-col: #00ff88;
+  --btn-bg: rgba(6, 25, 12, 0.9);
+  --btn-hover: #134a2e;
+}
+body.theme-fire {
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(65, 15, 10, 0.8) 0%, rgba(25, 7, 5, 0.9) 50%, rgba(8, 2, 1, 0.95) 100%);
+  --portal-bg: rgba(20, 6, 4, 0.85);
+  --border-col: rgba(255, 100, 30, 0.3);
+  --accent-col: #ff6b30;
+  --title-col: #ffd52c;
+  --btn-bg: rgba(25, 8, 6, 0.9);
+  --btn-hover: #7b1717;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;width:100%;height:100%;background:#02030b;color:#fff;font-family:monospace;overflow:hidden;}
+body{
+  padding:6px;display:flex;justify-content:center;align-items:center;
+  background: var(--bg-grad); position: relative;
+}
+.portal{
+  width:min(460px,100%);height:100%;max-height:820px;text-align:center;display:flex;flex-direction:column;gap:6px;
+  overflow-y:auto;padding:8px;z-index:10;
+  background: var(--portal-bg); border: 2px solid var(--border-col);
+  border-radius: 16px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+.hidden { display: none !important; }
+
+/* ШАПКА */
+.header-top { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 4px; }
+.profile-box { font-size: 9px; color: var(--accent-col); text-align: left; display: flex; align-items: center; gap: 4px; background: var(--btn-bg); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-col); }
+.header-btns { display: flex; gap: 4px; }
+.top-btn { background: var(--btn-bg); border: 1px solid var(--border-col); color: var(--title-col); padding: 4px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+
+h1{ color: var(--title-col); font-size: 20px; margin: 2px 0 0; text-shadow: 2px 2px #e52225; letter-spacing: 2px; }
+.subtitle { color: var(--accent-col); font-size: 8px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; }
+
+/* КНОПКИ МЕНЮ */
+.actions-row { display: flex; gap: 4px; justify-content: center; margin-bottom: 2px; flex-wrap: wrap; }
+.action-btn { background: var(--btn-bg); border: 2px solid var(--border-col); color: #83a4c9; padding: 4px 7px; border-radius: 6px; font: bold 8px monospace; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 3px; }
+.action-btn.active { background: var(--btn-hover); border-color: var(--accent-col); color: var(--title-col); }
+.action-btn.special { border-color: #ffd42a55; color: #ffd42a; }
+
+/* СЕТКА ИКОНОК */
+.grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 2px; }
+.panel-view { display: flex; flex-direction: column; gap: 5px; max-height: 550px; overflow-y: auto; padding: 2px; }
+.icon-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1; border: 2px solid var(--accent-col); border-radius: 10px; background: var(--btn-bg); color: #fff; text-decoration: none; cursor: pointer; box-shadow: 0 0 8px rgba(0,0,0,0.3); transition: .15s; padding: 4px; gap: 2px; }
+.icon-btn:active { transform: scale(.94); background: var(--btn-hover); }
+.icon-emoji { font-size: 22px; }
+.icon-title { font-size: 8px; font-weight: bold; color: var(--title-col); text-align: center; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+/* ЭЛЕМЕНТЫ ПАНЕЛЕЙ */
+.row-card { display: flex; justify-content: space-between; align-items: center; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 6px 10px; font-size: 10px; text-align: left; }
+.row-name { color: var(--accent-col); font-weight: bold; }
+.row-val { color: var(--title-col); font-weight: bold; }
+.achievement { opacity: 0.4; border-color: #444; }
+.achievement.unlocked { opacity: 1; border-color: var(--accent-col); background: rgba(32,232,255,0.08); }
+.ach-desc { font-size: 8px; color: #83a4c9; }
+
+.guest-form { display: flex; gap: 4px; }
+.guest-input { flex-grow: 1; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 6px; color: #fff; padding: 4px 8px; font-size: 10px; font-family: monospace; }
+.guest-send { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 4px 10px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold; }
+.guest-list { display: flex; flex-direction: column; gap: 4px; }
+.guest-msg { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 6px; padding: 6px 8px; font-size: 9px; text-align: left; }
+.guest-author { color: var(--accent-col); font-weight: bold; margin-bottom: 2px; }
+
+/* КОНТЕЙНЕР ДЛЯ ИГР */
+#gameContainer { flex-grow: 1; position: relative; background: #03050c; border: 2px solid var(--accent-col); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.game-ui-header { position: absolute; top: 4px; left: 4px; right: 4px; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: rgba(4,7,20,0.9); border: 1px solid var(--border-col); border-radius: 8px; }
+.back-btn { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
+canvas { background: #010206; width: 100%; height: 100%; object-fit: contain; }
+
+.footer-info{color:#83a4c9;font-size:8px;letter-spacing:1px;margin-top:2px;}
+</style>
+</head>
+<body id="bodyRoot">
+<div class="portal" id="mainPortal">
+  <!-- ШАПКА -->
+  <div class="header-top">
+    <div class="profile-box" id="userProfile">👤 Игрок</div>
+    <div class="header-btns">
+      <button class="top-btn" onclick="toggleTheme()">🎨</button>
+      <button class="top-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
+    </div>
+  </div>
+
+  <div>
+    <h1>FREEzzzGames</h1>
+    <div class="subtitle">ARCADE PORTAL 🕹️</div>
+  </div>
+
+  <!-- ВКЛАДКИ -->
+  <div class="actions-row">
+    <button class="action-btn active" id="tabGames" onclick="switchTab('games')">🎮 ИГРЫ</button>
+    <button class="action-btn" id="tabTop" onclick="switchTab('top')">🏆 ТОП</button>
+    <button class="action-btn" id="tabAch" onclick="switchTab('ach')">🎖️ АЧИВКИ</button>
+    <button class="action-btn" id="tabGuest" onclick="switchTab('guest')">💬 ЧАТ</button>
+    <button class="action-btn special" onclick="playRandomGame()">🎲 РАНДОМ</button>
+    <button class="action-btn" onclick="sharePortal()">📤 ДРУЗЬЯМ</button>
+  </div>
+  
+  <!-- 1. Сетка игр -->
+  <div class="grid-menu panel-view" id="gamesGrid">
+    <div class="icon-btn" onclick="launchGame('duck')"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
+    <div class="icon-btn" onclick="launchGame('race')"><div class="icon-emoji">🏎️</div><div class="icon-title">RETRO RACER</div></div>
+    <div class="icon-btn" onclick="launchGame('tetris')"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
+    <div class="icon-btn" onclick="launchGame('snake')"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
+    <div class="icon-btn" onclick="launchGame('mario')"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
+    <div class="icon-btn" onclick="launchGame('pong')"><div class="icon-emoji">🏓</div><div class="icon-title">PONG</div></div>
+    <div class="icon-btn" onclick="launchGame('arkanoid')"><div class="icon-emoji">🧱</div><div class="icon-title">ARKANOID</div></div>
+    <div class="icon-btn" onclick="launchGame('invaders')"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
+    <div class="icon-btn" onclick="launchGame('doodle')"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
+    <div class="icon-btn" onclick="launchGame('minesweeper')"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
+  </div>
+
+  <!-- 2. Топ -->
+  <div class="panel-view hidden" id="leaderboardView">
+    <div class="row-card"><span class="row-name">🦆 Duck Mudack</span><span class="row-val" id="scoreDuck">0</span></div>
+    <div class="row-card"><span class="row-name">🏎️ Retro Racer</span><span class="row-val" id="scoreRace">--.--</span></div>
+    <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
+    <div class="row-card"><span class="row-name">🐍 Classic Snake</span><span class="row-val" id="scoreSnake">0</span></div>
+    <div class="row-card"><span class="row-name">🍄 Super Platformer</span><span class="row-val" id="scorePlatformer">0</span></div>
+    <div class="row-card"><span class="row-name">🦘 Retro Jumper</span><span class="row-val" id="scoreJumper">0</span></div>
+  </div>
+
+  <!-- 3. Ачивки -->
+  <div class="panel-view hidden" id="achievementsView">
+    <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
+    <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
+    <div class="row-card achievement" id="achMario"><div><span class="row-name">🍄 Герой Платформера</span><div class="ach-desc">Пройди Platformer</div></div><span class="row-val" id="statMario">🔒</span></div>
+    <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Шумахер</span><div class="ach-desc">Сыграй в Retro Racer</div></div><span class="row-val" id="statRacer">🔒</span></div>
+  </div>
+
+  <!-- 4. Чат -->
+  <div class="panel-view hidden" id="guestView">
+    <div class="guest-form">
+      <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение..." maxlength="50">
+      <button class="guest-send" onclick="sendMsg()">ОТПРАВИТЬ</button>
+    </div>
+    <div class="guest-list" id="guestList"></div>
+  </div>
+
+  <div class="footer-info">FREEzzzGames ARCADE HUB</div>
+</div>
+
+<!-- ОКНО ИГРЫ -->
+<div class="portal hidden" id="gamePortal">
+  <div class="game-ui-header">
+    <button class="back-btn" onclick="exitGame()">⬅ МЕНЮ</button>
+    <div id="activeGameTitle" style="color:var(--title-col); font-size:11px; font-weight:bold;">GAME</div>
+    <button class="top-btn" onclick="toggleSound()">🔊</button>
+  </div>
+  <div id="gameContainer"></div>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
+let userName = "Игрок";
+if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
+  userName = tg.initDataUnsafe.user.first_name;
+  document.getElementById('userProfile').innerHTML = `👤 ${userName}`;
+}
+
+// Темы
+const themes = ["", "theme-matrix", "theme-fire"];
+let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
+applyTheme();
+function toggleTheme() {
+  currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+  localStorage.setItem("freezzzTheme", currentThemeIdx);
+  applyTheme();
+}
+function applyTheme() {
+  document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
+}
+
+// Звук
+let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
+updateSoundBtn();
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem("freezzzSound", soundEnabled);
+  updateSoundBtn();
+}
+function updateSoundBtn() {
+  document.getElementById('soundToggle').textContent = soundEnabled ? "🔊" : "🔇";
+}
+
+// Вкладки
+function switchTab(tab) {
+  ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => document.getElementById(id).classList.remove('active'));
+
+  if (tab === 'games') {
+    document.getElementById('gamesGrid').classList.remove('hidden');
+    document.getElementById('tabGames').classList.add('active');
+  } else if (tab === 'top') {
+    document.getElementById('leaderboardView').classList.remove('hidden');
+    document.getElementById('tabTop').classList.add('active');
+    loadScores();
+  } else if (tab === 'ach') {
+    document.getElementById('achievementsView').classList.remove('hidden');
+    document.getElementById('tabAch').classList.add('active');
+    checkAchievements();
+  } else if (tab === 'guest') {
+    document.getElementById('guestView').classList.remove('hidden');
+    document.getElementById('tabGuest').classList.add('active');
+    loadMessages();
+  }
+}
+
+function loadScores() {
+  document.getElementById('scoreDuck').textContent = localStorage.getItem("duckMudackHighScore") || "0";
+  let bestLap = localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap");
+  document.getElementById('scoreRace').textContent = bestLap ? Number(bestLap).toFixed(2) + "s" : "--.--";
+  document.getElementById('scoreTetris').textContent = localStorage.getItem("tetrisHighScore") || "0";
+  document.getElementById('scoreSnake').textContent = localStorage.getItem("snakeHighScore") || "0";
+  document.getElementById('scorePlatformer').textContent = localStorage.getItem("platformerBest") || "0";
+  document.getElementById('scoreJumper').textContent = localStorage.getItem("doodleBest") || "0";
+}
+
+function checkAchievements() {
+  if (Number(localStorage.getItem("snakeHighScore") || 0) >= 100) { document.getElementById('achSnake').classList.add('unlocked'); document.getElementById('statSnake').textContent = "✅"; }
+  if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) { document.getElementById('achTetris').classList.add('unlocked'); document.getElementById('statTetris').textContent = "✅"; }
+  if (Number(localStorage.getItem("platformerBest") || 0) > 0) { document.getElementById('achMario').classList.add('unlocked'); document.getElementById('statMario').textContent = "✅"; }
+  if (localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap")) { document.getElementById('achRacer').classList.add('unlocked'); document.getElementById('statRacer').textContent = "✅"; }
+}
+
+function loadMessages() {
+  const list = document.getElementById('guestList');
+  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[{"name":"System","text":"Добро пожаловать в FREEzzzGames! 🚀"}]');
+  list.innerHTML = msgs.map(m => `<div class="guest-msg"><div class="guest-author">${m.name}</div><div>${m.text}</div></div>`).join('');
+}
+
+function sendMsg() {
+  const input = document.getElementById('guestInput');
+  const text = input.value.trim();
+  if (!text) return;
+  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[]');
+  msgs.unshift({name: userName, text: text});
+  if (msgs.length > 15) msgs.pop();
+  localStorage.setItem("freezzzGuestbook", JSON.stringify(msgs));
+  input.value = '';
+  loadMessages();
+}
+
+const gamesKeys = ["duck", "race", "tetris", "snake", "mario", "pong", "arkanoid", "invaders", "doodle", "minesweeper"];
+function playRandomGame() {
+  launchGame(gamesKeys[Math.floor(Math.random() * gamesKeys.length)]);
+}
+
+function sharePortal() {
+  const botUrl = "https://t.me/" + (tg.initDataUnsafe && tg.initDataUnsafe.bot ? tg.initDataUnsafe.bot.username : "your_bot_username");
+  const shareText = "🕹️ Лучший аркадный портал FREEzzzGames! 10 ретро-игр:";
+  if (tg.openTelegramLink) tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
+  else window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
+}
+
+// УПРАВЛЕНИЕ ЗАПУСКОМ ИГР ВНУТРИ ПОРТАЛА
+let currentGameIntervals = [];
+function clearGameLoop() {
+  currentGameIntervals.forEach(id => clearInterval(id));
+  currentGameIntervals = [];
+  window.onkeydown = null; window.onkeyup = null;
+}
+
+function exitGame() {
+  clearGameLoop();
+  document.getElementById('gamePortal').classList.add('hidden');
+  document.getElementById('mainPortal').classList.remove('hidden');
+}
+
+function launchGame(key) {
+  clearGameLoop();
+  document.getElementById('mainPortal').classList.add('hidden');
+  document.getElementById('gamePortal').classList.remove('hidden');
+  const container = document.getElementById('gameContainer');
+  container.innerHTML = '';
+  
+  if (key === 'snake') {
+    document.getElementById('activeGameTitle').textContent = "CLASSIC SNAKE";
+    container.innerHTML = `
+      <canvas id="gCanvas" width="400" height="400" style="max-height:70%"></canvas>
+      <div style="display:flex;gap:10px;margin-top:10px;">
+        <button class="top-btn" id="sUp">▲</button>
+        <button class="top-btn" id="sDown">▼</button>
+        <button class="top-btn" id="sLeft">◄</button>
+        <button class="top-btn" id="sRight">►</button>
+      </div>`;
+    const canvas = document.getElementById('gCanvas'), ctx = canvas.getContext('2d');
+    const gs = 20, tc = 20;
+    let s = [{x:10,y:10},{x:9,y:10}], f = {x:5,y:5}, dx=1, dy=0, score=0;
+    function spF() { f.x = Math.floor(Math.random()*tc); f.y = Math.floor(Math.random()*tc); }
+    spF();
+    function loop() {
+      let h = {x: s[0].x + dx, y: s[0].y + dy};
+      if (h.x < 0) h.x = tc-1; else if (h.x >= tc) h.x = 0;
+      if (h.y < 0) h.y = tc-1; else if (h.y >= tc) h.y = 0;
+      for(let p of s) if (h.x === p.x && h.y === p.y) { alert("Game Over! Счёт: "+score); exitGame(); return; }
+      s.unshift(h);
+      if (h.x === f.x && h.y === f.y) { score += 10; spF(); if(score > Number(localStorage.getItem("snakeHighScore")||0)) localStorage.setItem("snakeHighScore", score); }
+      else s.pop();
+      
+      ctx.fillStyle = '#03050c'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#ff3366'; ctx.fillRect(f.x*gs+1, f.y*gs+1, gs-2, gs-2);
+      s.forEach((p,i) => { ctx.fillStyle = i===0?'#20e8ff':'#00bfff'; ctx.fillRect(p.x*gs+1, p.y*gs+1, gs-2, gs-2); });
+    }
+    currentGameIntervals.push(setInterval(loop, 130));
+    document.getElementById('sUp').onclick = () => { if(dy===0){dx=0;dy=-1;} };
+    document.getElementById('sDown').onclick = () => { if(dy===0){dx=0;dy=1;} };
+    document.getElementById('sLeft').onclick = () => { if(dx===0){dx=-1;dy=0;} };
+    document.getElementById('sRight').onclick = () => { if(dx===0){dx=1;dy=0;} };
+  } 
+  else if (key === 'tetris') {
+    document.getElementById('activeGameTitle').textContent = "TETRIS CLASSIC";
+    container.innerHTML = `<canvas id="gCanvas" width="200" height="400" style="max-height:75%"></canvas><div style="font-size:10px;margin-top:5px;color:#ffd52c;">Управление стрелками клавиатуры</div>`;
+    const canvas = document.getElementById('gCanvas'), ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#010206'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#ffd52c'; ctx.font = '12px monospace'; ctx.fillText("Классический Тетрис", 20, 200);
+  }
+  else if (key === 'pong') {
+    document.getElementById('activeGameTitle').textContent = "RETRO PONG";
+    container.innerHTML = `<canvas id="gCanvas" width="300" height="400" style="max-height:75%"></canvas><div style="display:flex;gap:10px;margin-top:10px;"
