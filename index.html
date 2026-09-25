@@ -3,96 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FREEzzzGames</title>
+<title>FREEzzzGames — Arcade Portal</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root {
-  --bg-grad: radial-gradient(circle at 50% 20%, rgba(41, 16, 95, 0.8) 0%, rgba(7, 9, 34, 0.9) 50%, rgba(1, 2, 8, 0.95) 100%);
-  --portal-bg: rgba(4, 7, 20, 0.85);
-  --border-col: rgba(32, 232, 255, 0.3);
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(41, 16, 95, 0.9) 0%, rgba(7, 9, 34, 0.95) 50%, rgba(1, 2, 8, 1) 100%);
+  --portal-bg: rgba(4, 7, 20, 0.92);
+  --border-col: rgba(32, 232, 255, 0.4);
   --accent-col: #20e8ff;
   --title-col: #ffd52c;
-  --btn-bg: rgba(6, 10, 27, 0.9);
-  --btn-hover: #0f2766;
+  --btn-bg: rgba(10, 16, 40, 0.95);
+  --btn-hover: #16368a;
 }
 body.theme-matrix {
-  --bg-grad: radial-gradient(circle at 50% 20%, rgba(10, 45, 20, 0.8) 0%, rgba(5, 20, 10, 0.9) 50%, rgba(1, 5, 2, 0.95) 100%);
-  --portal-bg: rgba(4, 20, 10, 0.85);
-  --border-col: rgba(0, 255, 136, 0.3);
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(10, 45, 20, 0.9) 0%, rgba(5, 20, 10, 0.95) 50%, rgba(1, 5, 2, 1) 100%);
+  --portal-bg: rgba(4, 20, 10, 0.92);
+  --border-col: rgba(0, 255, 136, 0.4);
   --accent-col: #00ff88;
   --title-col: #00ff88;
-  --btn-bg: rgba(6, 25, 12, 0.9);
+  --btn-bg: rgba(8, 30, 15, 0.95);
   --btn-hover: #134a2e;
 }
 body.theme-fire {
-  --bg-grad: radial-gradient(circle at 50% 20%, rgba(65, 15, 10, 0.8) 0%, rgba(25, 7, 5, 0.9) 50%, rgba(8, 2, 1, 0.95) 100%);
-  --portal-bg: rgba(20, 6, 4, 0.85);
-  --border-col: rgba(255, 100, 30, 0.3);
+  --bg-grad: radial-gradient(circle at 50% 20%, rgba(65, 15, 10, 0.9) 0%, rgba(25, 7, 5, 0.95) 50%, rgba(8, 2, 1, 1) 100%);
+  --portal-bg: rgba(20, 6, 4, 0.92);
+  --border-col: rgba(255, 100, 30, 0.4);
   --accent-col: #ff6b30;
   --title-col: #ffd52c;
-  --btn-bg: rgba(25, 8, 6, 0.9);
+  --btn-bg: rgba(30, 10, 8, 0.95);
   --btn-hover: #7b1717;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;width:100%;height:100%;background:#02030b;color:#fff;font-family:monospace;overflow:hidden;}
 body{
-  padding:6px;display:flex;justify-content:center;align-items:center;
-  background: var(--bg-grad); position: relative;
+  padding:4px;display:flex;justify-content:center;align-items:center;
+  background: var(--bg-grad); position: fixed; inset: 0;
 }
 .portal{
-  width:min(460px,100%);height:100%;max-height:820px;text-align:center;display:flex;flex-direction:column;gap:6px;
-  overflow-y:auto;padding:8px;z-index:10;
+  width: 100%; height: 100%; max-width: 480px; max-height: 100vh;
+  text-align: center; display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto; padding: 10px; z-index: 10;
   background: var(--portal-bg); border: 2px solid var(--border-col);
-  border-radius: 16px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  border-radius: 12px; box-shadow: 0 0 25px rgba(0,0,0,0.8);
 }
 .hidden { display: none !important; }
 
-/* ШАПКА */
-.header-top { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 4px; }
-.profile-box { font-size: 9px; color: var(--accent-col); text-align: left; display: flex; align-items: center; gap: 4px; background: var(--btn-bg); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-col); }
-.header-btns { display: flex; gap: 4px; }
-.top-btn { background: var(--btn-bg); border: 1px solid var(--border-col); color: var(--title-col); padding: 4px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+/* ШАПКА ПОРТАЛА */
+.header-top { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; gap: 6px; }
+.profile-box { font-size: 11px; color: var(--accent-col); text-align: left; display: flex; align-items: center; gap: 6px; background: var(--btn-bg); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-col); }
+.header-btns { display: flex; gap: 6px; }
+.top-btn { background: var(--btn-bg); border: 1px solid var(--border-col); color: var(--title-col); padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
-h1{ color: var(--title-col); font-size: 20px; margin: 2px 0 0; text-shadow: 2px 2px #e52225; letter-spacing: 2px; }
-.subtitle { color: var(--accent-col); font-size: 8px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; }
+h1{ color: var(--title-col); font-size: 24px; margin: 2px 0 0; text-shadow: 2px 2px #e52225; letter-spacing: 2px; }
+.subtitle { color: var(--accent-col); font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
 
-/* КНОПКИ МЕНЮ */
-.actions-row { display: flex; gap: 4px; justify-content: center; margin-bottom: 2px; flex-wrap: wrap; }
-.action-btn { background: var(--btn-bg); border: 2px solid var(--border-col); color: #83a4c9; padding: 4px 7px; border-radius: 6px; font: bold 8px monospace; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 3px; }
+/* КНОПКИ НАВИГАЦИИ */
+.actions-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 4px; flex-wrap: wrap; }
+.action-btn { background: var(--btn-bg); border: 2px solid var(--border-col); color: #83a4c9; padding: 8px 10px; border-radius: 8px; font: bold 10px monospace; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 4px; }
 .action-btn.active { background: var(--btn-hover); border-color: var(--accent-col); color: var(--title-col); }
-.action-btn.special { border-color: #ffd42a55; color: #ffd42a; }
+.action-btn.special { border-color: #ffd42aaa; color: #ffd42a; }
 
-/* СЕТКА ИКОНОК */
-.grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 2px; }
-.panel-view { display: flex; flex-direction: column; gap: 5px; max-height: 550px; overflow-y: auto; padding: 2px; }
-.icon-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1; border: 2px solid var(--accent-col); border-radius: 10px; background: var(--btn-bg); color: #fff; text-decoration: none; cursor: pointer; box-shadow: 0 0 8px rgba(0,0,0,0.3); transition: .15s; padding: 4px; gap: 2px; }
-.icon-btn:active { transform: scale(.94); background: var(--btn-hover); }
-.icon-emoji { font-size: 22px; }
-.icon-title { font-size: 8px; font-weight: bold; color: var(--title-col); text-align: center; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+/* СЕТКА ИКОНОК 3x4 */
+.grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 10px; padding: 4px; flex-grow: 1; }
+.panel-view { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; overflow-y: auto; padding: 4px; }
+.icon-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1; border: 2px solid var(--accent-col); border-radius: 14px; background: var(--btn-bg); color: #fff; text-decoration: none; cursor: pointer; box-shadow: 0 0 12px rgba(0,0,0,0.5); transition: .15s; padding: 8px; gap: 4px; }
+.icon-btn:active { transform: scale(.93); background: var(--btn-hover); border-color: var(--title-col); }
+.icon-emoji { font-size: 34px; filter: drop-shadow(0 0 6px var(--accent-col)); }
+.icon-title { font-size: 11px; font-weight: bold; color: var(--title-col); text-align: center; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-/* ЭЛЕМЕНТЫ ПАНЕЛЕЙ */
-.row-card { display: flex; justify-content: space-between; align-items: center; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 6px 10px; font-size: 10px; text-align: left; }
+/* ПАНЕЛИ ТОПА, АЧИВОК, ЧАТА */
+.row-card { display: flex; justify-content: space-between; align-items: center; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 10px; padding: 10px 14px; font-size: 13px; text-align: left; }
 .row-name { color: var(--accent-col); font-weight: bold; }
 .row-val { color: var(--title-col); font-weight: bold; }
 .achievement { opacity: 0.4; border-color: #444; }
 .achievement.unlocked { opacity: 1; border-color: var(--accent-col); background: rgba(32,232,255,0.08); }
-.ach-desc { font-size: 8px; color: #83a4c9; }
+.ach-desc { font-size: 10px; color: #83a4c9; }
 
-.guest-form { display: flex; gap: 4px; }
-.guest-input { flex-grow: 1; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 6px; color: #fff; padding: 4px 8px; font-size: 10px; font-family: monospace; }
-.guest-send { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 4px 10px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold; }
-.guest-list { display: flex; flex-direction: column; gap: 4px; }
-.guest-msg { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 6px; padding: 6px 8px; font-size: 9px; text-align: left; }
+.guest-form { display: flex; gap: 6px; }
+.guest-input { flex-grow: 1; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; color: #fff; padding: 8px 12px; font-size: 12px; font-family: monospace; }
+.guest-send { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: bold; }
+.guest-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 60vh; }
+.guest-msg { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 8px 12px; font-size: 11px; text-align: left; }
 .guest-author { color: var(--accent-col); font-weight: bold; margin-bottom: 2px; }
 
-/* КОНТЕЙНЕР ДЛЯ ИГР */
-#gameContainer { flex-grow: 1; position: relative; background: #03050c; border: 2px solid var(--accent-col); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.game-ui-header { position: absolute; top: 4px; left: 4px; right: 4px; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: rgba(4,7,20,0.9); border: 1px solid var(--border-col); border-radius: 8px; }
-.back-btn { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
-canvas { background: #010206; width: 100%; height: 100%; object-fit: contain; }
+/* ОКНО ИГРЫ (МАКСИМАЛЬНОЕ ЗАПОЛНЕНИЕ ЭКРАНА) */
+.portal.game-active { padding: 4px; gap: 4px; }
+.game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; width: 100%; flex-shrink: 0; }
+.back-btn { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
-.footer-info{color:#83a4c9;font-size:8px;letter-spacing:1px;margin-top:2px;}
+#gameContainer { flex-grow: 1; width: 100%; position: relative; background: #010206; border: 2px solid var(--accent-col); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
+
+/* КРУПНЫЕ КНОПКИ УПРАВЛЕНИЯ В ИГРАХ */
+.game-controls { display: flex; gap: 10px; justify-content: center; align-items: center; width: 100%; padding: 6px; flex-shrink: 0; }
+.ctrl-pad-btn { background: var(--btn-bg); border: 2px solid var(--accent-col); color: var(--title-col); font-size: 22px; width: 65px; height: 55px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.ctrl-pad-btn:active { background: var(--btn-hover); transform: scale(0.92); }
+
+.footer-info { color: #83a4c9; font-size: 9px; letter-spacing: 1px; margin-top: auto; padding: 4px; }
 </style>
 </head>
 <body id="bodyRoot">
@@ -101,7 +109,7 @@ canvas { background: #010206; width: 100%; height: 100%; object-fit: contain; }
   <div class="header-top">
     <div class="profile-box" id="userProfile">👤 Игрок</div>
     <div class="header-btns">
-      <button class="top-btn" onclick="toggleTheme()">🎨</button>
+      <button class="top-btn" onclick="toggleTheme()" title="Тема">🎨</button>
       <button class="top-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
     </div>
   </div>
@@ -121,31 +129,35 @@ canvas { background: #010206; width: 100%; height: 100%; object-fit: contain; }
     <button class="action-btn" onclick="sharePortal()">📤 ДРУЗЬЯМ</button>
   </div>
   
-  <!-- 1. Сетка игр -->
-  <div class="grid-menu panel-view" id="gamesGrid">
-    <div class="icon-btn" onclick="launchGame('duck')"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
-    <div class="icon-btn" onclick="launchGame('race')"><div class="icon-emoji">🏎️</div><div class="icon-title">RETRO RACER</div></div>
-    <div class="icon-btn" onclick="launchGame('tetris')"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
+  <!-- СЕТКА ИКОНОК 3x4 (10 игр + 2 резервных слота под будущие релизы) -->
+  <div class="grid-menu" id="gamesGrid">
     <div class="icon-btn" onclick="launchGame('snake')"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
-    <div class="icon-btn" onclick="launchGame('mario')"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
+    <div class="icon-btn" onclick="launchGame('tetris')"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
     <div class="icon-btn" onclick="launchGame('pong')"><div class="icon-emoji">🏓</div><div class="icon-title">PONG</div></div>
+    <div class="icon-btn" onclick="launchGame('race')"><div class="icon-emoji">🏎️</div><div class="icon-title">RACER</div></div>
+    <div class="icon-btn" onclick="launchGame('mario')"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
     <div class="icon-btn" onclick="launchGame('arkanoid')"><div class="icon-emoji">🧱</div><div class="icon-title">ARKANOID</div></div>
+    <div class="icon-btn" onclick="launchGame('duck')"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
     <div class="icon-btn" onclick="launchGame('invaders')"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
     <div class="icon-btn" onclick="launchGame('doodle')"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
     <div class="icon-btn" onclick="launchGame('minesweeper')"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
+    <!-- Слот 11 -->
+    <div class="icon-btn" onclick="alert('Скоро новая игра!')" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
+    <!-- Слот 12 -->
+    <div class="icon-btn" onclick="alert('Скоро новая игра!')" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
   </div>
 
-  <!-- 2. Топ -->
+  <!-- ТОП -->
   <div class="panel-view hidden" id="leaderboardView">
-    <div class="row-card"><span class="row-name">🦆 Duck Mudack</span><span class="row-val" id="scoreDuck">0</span></div>
-    <div class="row-card"><span class="row-name">🏎️ Retro Racer</span><span class="row-val" id="scoreRace">--.--</span></div>
-    <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
     <div class="row-card"><span class="row-name">🐍 Classic Snake</span><span class="row-val" id="scoreSnake">0</span></div>
+    <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
     <div class="row-card"><span class="row-name">🍄 Super Platformer</span><span class="row-val" id="scorePlatformer">0</span></div>
+    <div class="row-card"><span class="row-name">🏎️ Retro Racer</span><span class="row-val" id="scoreRace">--.--</span></div>
+    <div class="row-card"><span class="row-name">🦆 Duck Mudack</span><span class="row-val" id="scoreDuck">0</span></div>
     <div class="row-card"><span class="row-name">🦘 Retro Jumper</span><span class="row-val" id="scoreJumper">0</span></div>
   </div>
 
-  <!-- 3. Ачивки -->
+  <!-- АЧИВКИ -->
   <div class="panel-view hidden" id="achievementsView">
     <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
     <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
@@ -153,26 +165,16 @@ canvas { background: #010206; width: 100%; height: 100%; object-fit: contain; }
     <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Шумахер</span><div class="ach-desc">Сыграй в Retro Racer</div></div><span class="row-val" id="statRacer">🔒</span></div>
   </div>
 
-  <!-- 4. Чат -->
+  <!-- ЧАТ -->
   <div class="panel-view hidden" id="guestView">
     <div class="guest-form">
-      <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение..." maxlength="50">
+      <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение в зал славы..." maxlength="50">
       <button class="guest-send" onclick="sendMsg()">ОТПРАВИТЬ</button>
     </div>
     <div class="guest-list" id="guestList"></div>
   </div>
 
-  <div class="footer-info">FREEzzzGames ARCADE HUB</div>
-</div>
-
-<!-- ОКНО ИГРЫ -->
-<div class="portal hidden" id="gamePortal">
-  <div class="game-ui-header">
-    <button class="back-btn" onclick="exitGame()">⬅ МЕНЮ</button>
-    <div id="activeGameTitle" style="color:var(--title-col); font-size:11px; font-weight:bold;">GAME</div>
-    <button class="top-btn" onclick="toggleSound()">🔊</button>
-  </div>
-  <div id="gameContainer"></div>
+  <div class="footer-info">FREEzzzGames • ARCADE HUB</div>
 </div>
 
 <script>
@@ -196,7 +198,7 @@ function applyTheme() {
   document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
 }
 
-// Звук
+// Звук / Вибрация
 let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
 updateSoundBtn();
 function toggleSound() {
@@ -207,9 +209,13 @@ function toggleSound() {
 function updateSoundBtn() {
   document.getElementById('soundToggle').textContent = soundEnabled ? "🔊" : "🔇";
 }
+function haptic() {
+  if (soundEnabled && tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
 
 // Вкладки
 function switchTab(tab) {
+  haptic();
   ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => document.getElementById(id).classList.add('hidden'));
   ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => document.getElementById(id).classList.remove('active'));
 
@@ -250,64 +256,82 @@ function checkAchievements() {
 
 function loadMessages() {
   const list = document.getElementById('guestList');
-  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[{"name":"System","text":"Добро пожаловать в FREEzzzGames! 🚀"}]');
+  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[{"name":"System","text":"Добро пожаловать в зал славы FREEzzzGames! 🚀"}]');
   list.innerHTML = msgs.map(m => `<div class="guest-msg"><div class="guest-author">${m.name}</div><div>${m.text}</div></div>`).join('');
 }
 
 function sendMsg() {
+  haptic();
   const input = document.getElementById('guestInput');
   const text = input.value.trim();
   if (!text) return;
   let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[]');
   msgs.unshift({name: userName, text: text});
-  if (msgs.length > 15) msgs.pop();
+  if (msgs.length > 20) msgs.pop();
   localStorage.setItem("freezzzGuestbook", JSON.stringify(msgs));
   input.value = '';
   loadMessages();
 }
 
-const gamesKeys = ["duck", "race", "tetris", "snake", "mario", "pong", "arkanoid", "invaders", "doodle", "minesweeper"];
+const playableGames = ["snake", "tetris", "pong", "race", "mario", "arkanoid", "duck", "invaders", "doodle", "minesweeper"];
 function playRandomGame() {
-  launchGame(gamesKeys[Math.floor(Math.random() * gamesKeys.length)]);
+  haptic();
+  launchGame(playableGames[Math.floor(Math.random() * playableGames.length)]);
 }
 
 function sharePortal() {
+  haptic();
   const botUrl = "https://t.me/" + (tg.initDataUnsafe && tg.initDataUnsafe.bot ? tg.initDataUnsafe.bot.username : "your_bot_username");
-  const shareText = "🕹️ Лучший аркадный портал FREEzzzGames! 10 ретро-игр:";
+  const shareText = "🕹️ Крутой аркадный портал FREEzzzGames! 10 ретро-игр:";
   if (tg.openTelegramLink) tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
   else window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
 }
 
-// УПРАВЛЕНИЕ ЗАПУСКОМ ИГР ВНУТРИ ПОРТАЛА
+// ЗАПУСК ИГР В МАКСИМАЛЬНОЙ ОБЛАСТИ ЭКРАНА
 let currentGameIntervals = [];
 function clearGameLoop() {
   currentGameIntervals.forEach(id => clearInterval(id));
   currentGameIntervals = [];
-  window.onkeydown = null; window.onkeyup = null;
 }
 
 function exitGame() {
+  haptic();
   clearGameLoop();
-  document.getElementById('gamePortal').classList.add('hidden');
-  document.getElementById('mainPortal').classList.remove('hidden');
+  const portal = document.getElementById('mainPortal');
+  portal.classList.remove('game-active', 'hidden');
+  // Удаляем созданное окно игры
+  const activeGame = document.getElementById('activeGamePortal');
+  if (activeGame) activeGame.remove();
 }
 
 function launchGame(key) {
+  haptic();
   clearGameLoop();
   document.getElementById('mainPortal').classList.add('hidden');
-  document.getElementById('gamePortal').classList.remove('hidden');
-  const container = document.getElementById('gameContainer');
-  container.innerHTML = '';
   
+  // Создаем контейнер игры на весь экран
+  const gamePortal = document.createElement('div');
+  gamePortal.className = 'portal game-active';
+  gamePortal.id = 'activeGamePortal';
+  gamePortal.innerHTML = `
+    <div class="game-ui-header">
+      <button class="back-btn" onclick="exitGame()">⬅ МЕНЮ</button>
+      <div id="activeGameTitle" style="color:var(--title-col); font-size:13px; font-weight:bold;">${key.toUpperCase()}</div>
+      <button class="top-btn" onclick="toggleSound()">🔊</button>
+    </div>
+    <div id="gameContainer"></div>
+  `;
+  document.body.appendChild(gamePortal);
+  const container = document.getElementById('gameContainer');
+
   if (key === 'snake') {
-    document.getElementById('activeGameTitle').textContent = "CLASSIC SNAKE";
     container.innerHTML = `
-      <canvas id="gCanvas" width="400" height="400" style="max-height:70%"></canvas>
-      <div style="display:flex;gap:10px;margin-top:10px;">
-        <button class="top-btn" id="sUp">▲</button>
-        <button class="top-btn" id="sDown">▼</button>
-        <button class="top-btn" id="sLeft">◄</button>
-        <button class="top-btn" id="sRight">►</button>
+      <canvas id="gCanvas" width="400" height="400"></canvas>
+      <div class="game-controls">
+        <div style="display:grid; grid-template-columns: repeat(3, 65px); gap:6px;">
+          <div></div><button class="ctrl-pad-btn" id="sUp">▲</button><div></div>
+          <button class="ctrl-pad-btn" id="sLeft">◄</button><button class="ctrl-pad-btn" id="sDown">▼</button><button class="ctrl-pad-btn" id="sRight">►</button>
+        </div>
       </div>`;
     const canvas = document.getElementById('gCanvas'), ctx = canvas.getContext('2d');
     const gs = 20, tc = 20;
@@ -320,26 +344,4 @@ function launchGame(key) {
       if (h.y < 0) h.y = tc-1; else if (h.y >= tc) h.y = 0;
       for(let p of s) if (h.x === p.x && h.y === p.y) { alert("Game Over! Счёт: "+score); exitGame(); return; }
       s.unshift(h);
-      if (h.x === f.x && h.y === f.y) { score += 10; spF(); if(score > Number(localStorage.getItem("snakeHighScore")||0)) localStorage.setItem("snakeHighScore", score); }
-      else s.pop();
-      
-      ctx.fillStyle = '#03050c'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#ff3366'; ctx.fillRect(f.x*gs+1, f.y*gs+1, gs-2, gs-2);
-      s.forEach((p,i) => { ctx.fillStyle = i===0?'#20e8ff':'#00bfff'; ctx.fillRect(p.x*gs+1, p.y*gs+1, gs-2, gs-2); });
-    }
-    currentGameIntervals.push(setInterval(loop, 130));
-    document.getElementById('sUp').onclick = () => { if(dy===0){dx=0;dy=-1;} };
-    document.getElementById('sDown').onclick = () => { if(dy===0){dx=0;dy=1;} };
-    document.getElementById('sLeft').onclick = () => { if(dx===0){dx=-1;dy=0;} };
-    document.getElementById('sRight').onclick = () => { if(dx===0){dx=1;dy=0;} };
-  } 
-  else if (key === 'tetris') {
-    document.getElementById('activeGameTitle').textContent = "TETRIS CLASSIC";
-    container.innerHTML = `<canvas id="gCanvas" width="200" height="400" style="max-height:75%"></canvas><div style="font-size:10px;margin-top:5px;color:#ffd52c;">Управление стрелками клавиатуры</div>`;
-    const canvas = document.getElementById('gCanvas'), ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#010206'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#ffd52c'; ctx.font = '12px monospace'; ctx.fillText("Классический Тетрис", 20, 200);
-  }
-  else if (key === 'pong') {
-    document.getElementById('activeGameTitle').textContent = "RETRO PONG";
-    container.innerHTML = `<canvas id="gCanvas" width="300" height="400" style="max-height:75%"></canvas><div style="display:flex;gap:10px;margin-top:10px;"
+      if (h.x =
