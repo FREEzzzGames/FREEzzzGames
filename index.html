@@ -117,13 +117,13 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 <body id="bodyRoot">
 <div class="portal" id="mainPortal">
   <div class="header-top">
-    <div class="profile-box" id="userProfileBox" onclick="openAvatarModal()">
+    <div class="profile-box" id="userProfileBox">
       <div class="user-avatar" id="currentAvatarEmoji">👾</div>
       <div id="userNameTxt">Игрок</div>
     </div>
     <div class="header-btns">
-      <button class="top-btn" onclick="toggleTheme()" title="Тема">🎨</button>
-      <button class="top-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
+      <button class="top-btn" id="themeToggleBtn" title="Тема">🎨</button>
+      <button class="top-btn" id="soundToggle">🔊</button>
     </div>
   </div>
 
@@ -133,26 +133,26 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   </div>
 
   <div class="actions-row">
-    <button class="action-btn active" id="tabGames" onclick="switchTab('games')">🎮 ИГРЫ</button>
-    <button class="action-btn" id="tabTop" onclick="switchTab('top')">🏆 ТОП</button>
-    <button class="action-btn" id="tabAch" onclick="switchTab('ach')">🎖️ АЧИВКИ</button>
-    <button class="action-btn" id="tabGuest" onclick="switchTab('guest')">💬 ЧАТ</button>
-    <button class="action-btn special" onclick="playRandomGame()">🎲 РАНДОМ</button>
-    <button class="action-btn" onclick="sharePortal()">📤 ДРУЗЬЯМ</button>
+    <button class="action-btn active" id="tabGames">🎮 ИГРЫ</button>
+    <button class="action-btn" id="tabTop">🏆 ТОП</button>
+    <button class="action-btn" id="tabAch">🎖️ АЧИВКИ</button>
+    <button class="action-btn" id="tabGuest">💬 ЧАТ</button>
+    <button class="action-btn special" id="randomGameBtn">🎲 РАНДОМ</button>
+    <button class="action-btn" id="shareBtn">📤 ДРУЗЬЯМ</button>
   </div>
   
-  <!-- Сетка 3x4 (10 игр + 2 резервных слота) -->
+  <!-- Сетка 3x4 (10 игр через дата-атрибуты для надежности) -->
   <div class="grid-menu" id="gamesGrid">
-    <div class="icon-btn" onclick="launchGame('snake')"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
-    <div class="icon-btn" onclick="launchGame('tetris')"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
-    <div class="icon-btn" onclick="launchGame('pong')"><div class="icon-emoji">🏓</div><div class="icon-title">PONG</div></div>
-    <div class="icon-btn" onclick="launchGame('race')"><div class="icon-emoji">🏎️</div><div class="icon-title">RACER</div></div>
-    <div class="icon-btn" onclick="launchGame('mario')"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
-    <div class="icon-btn" onclick="launchGame('arkanoid')"><div class="icon-emoji">🧱</div><div class="icon-title">ARKANOID</div></div>
-    <div class="icon-btn" onclick="launchGame('duck')"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
-    <div class="icon-btn" onclick="launchGame('invaders')"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
-    <div class="icon-btn" onclick="launchGame('doodle')"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
-    <div class="icon-btn" onclick="launchGame('minesweeper')"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
+    <div class="icon-btn" data-game="snake"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
+    <div class="icon-btn" data-game="tetris"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
+    <div class="icon-btn" data-game="pong"><div class="icon-emoji">🏓</div><div class="icon-title">PONG</div></div>
+    <div class="icon-btn" data-game="race"><div class="icon-emoji">🏎️</div><div class="icon-title">RACER</div></div>
+    <div class="icon-btn" data-game="mario"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
+    <div class="icon-btn" data-game="arkanoid"><div class="icon-emoji">🧱</div><div class="icon-title">ARKANOID</div></div>
+    <div class="icon-btn" data-game="duck"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
+    <div class="icon-btn" data-game="invaders"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
+    <div class="icon-btn" data-game="doodle"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
+    <div class="icon-btn" data-game="minesweeper"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
     <div class="icon-btn" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
     <div class="icon-btn" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
   </div>
@@ -176,7 +176,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   <div class="panel-view hidden" id="guestView">
     <div class="guest-form">
       <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение в зал славы..." maxlength="50">
-      <button class="guest-send" onclick="sendMsg()">ОТПРАВИТЬ</button>
+      <button class="guest-send" id="sendMsgBtn">ОТПРАВИТЬ</button>
     </div>
     <div class="guest-list" id="guestList"></div>
   </div>
@@ -190,139 +190,155 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <h3 style="color:var(--title-col); margin:0; font-size:14px;">КОЛЛЕКЦИЯ АВАТАРОВ</h3>
     <p style="font-size:9px; color:#83a4c9; margin:0;">Выбирай собранную аватарку или заходи ежедневно за новой!</p>
     <div class="avatar-grid" id="avatarGrid"></div>
-    <button class="action-btn" style="width:100%; justify-content:center; padding:8px; margin-top:2px;" onclick="closeAvatarModal()">ЗАКРЫТЬ</button>
+    <button class="action-btn" style="width:100%; justify-content:center; padding:8px; margin-top:2px;" id="closeModalBtn">ЗАКРЫТЬ</button>
   </div>
 </div>
 
 <script>
-const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
-let userName = "Игрок";
-if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
-  userName = tg.initDataUnsafe.user.first_name;
-}
-document.getElementById('userNameTxt').textContent = userName;
+window.addEventListener('DOMContentLoaded', () => {
+  const tg = window.Telegram.WebApp;
+  if (tg && tg.ready) { tg.ready(); tg.expand(); }
 
-// АВАТАРЫ
-const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
-let userAvatars = JSON.parse(localStorage.getItem("freezzzAvatars") || '["👾"]');
-let currentAvatar = localStorage.getItem("freezzzCurrentAvatar") || userAvatars[0];
-
-const todayStr = new Date().toDateString();
-if (localStorage.getItem("freezzzLastAvatarDate") !== todayStr) {
-  const randomNew = possibleAvatars[Math.floor(Math.random() * possibleAvatars.length)];
-  if (!userAvatars.includes(randomNew)) {
-    userAvatars.push(randomNew);
-    localStorage.setItem("freezzzAvatars", JSON.stringify(userAvatars));
+  let userName = "Игрок";
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
+    userName = tg.initDataUnsafe.user.first_name;
   }
-  localStorage.setItem("freezzzLastAvatarDate", todayStr);
-}
-document.getElementById('currentAvatarEmoji').textContent = currentAvatar;
+  const nameTxt = document.getElementById('userNameTxt');
+  if (nameTxt) nameTxt.textContent = userName;
 
-function openAvatarModal() {
-  haptic();
-  const grid = document.getElementById('avatarGrid');
-  grid.innerHTML = userAvatars.map(av => `
-    <div class="avatar-item ${av === currentAvatar ? 'active' : ''}" onclick="selectAvatar('${av}')">${av}</div>
-  `).join('');
-  document.getElementById('avatarModal').classList.remove('hidden');
-}
+  // АВАТАРЫ
+  const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
+  let userAvatars = JSON.parse(localStorage.getItem("freezzzAvatars") || '["👾"]');
+  let currentAvatar = localStorage.getItem("freezzzCurrentAvatar") || userAvatars[0];
 
-function closeAvatarModal() {
-  haptic();
-  document.getElementById('avatarModal').classList.add('hidden');
-}
+  const todayStr = new Date().toDateString();
+  if (localStorage.getItem("freezzzLastAvatarDate") !== todayStr) {
+    const randomNew = possibleAvatars[Math.floor(Math.random() * possibleAvatars.length)];
+    if (!userAvatars.includes(randomNew)) {
+      userAvatars.push(randomNew);
+      localStorage.setItem("freezzzAvatars", JSON.stringify(userAvatars));
+    }
+    localStorage.setItem("freezzzLastAvatarDate", todayStr);
+  }
+  const avatarEmojiEl = document.getElementById('currentAvatarEmoji');
+  if (avatarEmojiEl) avatarEmojiEl.textContent = currentAvatar;
 
-function selectAvatar(av) {
-  haptic();
-  currentAvatar = av;
-  localStorage.setItem("freezzzCurrentAvatar", av);
-  document.getElementById('currentAvatarEmoji').textContent = av;
-  closeAvatarModal();
-}
+  function openAvatarModal() {
+    haptic();
+    const grid = document.getElementById('avatarGrid');
+    if (grid) {
+      grid.innerHTML = userAvatars.map(av => `
+        <div class="avatar-item ${av === currentAvatar ? 'active' : ''}" data-avatar="${av}">${av}</div>
+      `).join('');
+      // Навешиваем клики на аватары в модалке
+      grid.querySelectorAll('.avatar-item').forEach(item => {
+        item.addEventListener('click', () => {
+          selectAvatar(item.getAttribute('data-avatar'));
+        });
+      });
+    }
+    document.getElementById('avatarModal').classList.remove('hidden');
+  }
 
-// Темы
-const themes = ["", "theme-matrix", "theme-fire"];
-let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
-applyTheme();
-function toggleTheme() {
-  currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-  localStorage.setItem("freezzzTheme", currentThemeIdx);
+  function closeAvatarModal() {
+    haptic();
+    document.getElementById('avatarModal').classList.add('hidden');
+  }
+
+  function selectAvatar(av) {
+    haptic();
+    currentAvatar = av;
+    localStorage.setItem("freezzzCurrentAvatar", av);
+    if (avatarEmojiEl) avatarEmojiEl.textContent = av;
+    closeAvatarModal();
+  }
+
+  document.getElementById('userProfileBox').addEventListener('click', openAvatarModal);
+  document.getElementById('closeModalBtn').addEventListener('click', closeAvatarModal);
+
+  // Темы
+  const themes = ["", "theme-matrix", "theme-fire"];
+  let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
   applyTheme();
-}
-function applyTheme() {
-  document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
-}
 
-// Звук / Вибрация
-let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
-updateSoundBtn();
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  localStorage.setItem("freezzzSound", soundEnabled);
-  updateSoundBtn();
-}
-function updateSoundBtn() {
-  document.getElementById('soundToggle').textContent = soundEnabled ? "🔊" : "🔇";
-}
-function haptic() {
-  if (soundEnabled && tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-}
-
-// Вкладки
-function switchTab(tab) {
-  haptic();
-  ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => document.getElementById(id).classList.remove('active'));
-
-  if (tab === 'games') {
-    document.getElementById('gamesGrid').classList.remove('hidden');
-    document.getElementById('tabGames').classList.add('active');
-  } else if (tab === 'top') {
-    document.getElementById('leaderboardView').classList.remove('hidden');
-    document.getElementById('tabTop').classList.add('active');
-    loadScores();
-  } else if (tab === 'ach') {
-    document.getElementById('achievementsView').classList.remove('hidden');
-    document.getElementById('tabAch').classList.add('active');
-    checkAchievements();
-  } else if (tab === 'guest') {
-    document.getElementById('guestView').classList.remove('hidden');
-    document.getElementById('tabGuest').classList.add('active');
-    loadMessages();
+  function toggleTheme() {
+    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+    localStorage.setItem("freezzzTheme", currentThemeIdx);
+    applyTheme();
   }
-}
+  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 
-function loadScores() {
-  document.getElementById('scoreDuck').textContent = localStorage.getItem("duckMudackHighScore") || "0";
-  let bestLap = localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap");
-  document.getElementById('scoreRace').textContent = bestLap ? Number(bestLap).toFixed(2) + "s" : "--.--";
-  document.getElementById('scoreTetris').textContent = localStorage.getItem("tetrisHighScore") || "0";
-  document.getElementById('scoreSnake').textContent = localStorage.getItem("snakeHighScore") || "0";
-  document.getElementById('scorePlatformer').textContent = localStorage.getItem("platformerBest") || "0";
-  document.getElementById('scoreJumper').textContent = localStorage.getItem("doodleBest") || "0";
-}
+  function applyTheme() {
+    document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
+  }
 
-function checkAchievements() {
-  if (Number(localStorage.getItem("snakeHighScore") || 0) >= 100) { document.getElementById('achSnake').classList.add('unlocked'); document.getElementById('statSnake').textContent = "✅"; }
-  if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) { document.getElementById('achTetris').classList.add('unlocked'); document.getElementById('statTetris').textContent = "✅"; }
-  if (Number(localStorage.getItem("platformerBest") || 0) > 0) { document.getElementById('achMario').classList.add('unlocked'); document.getElementById('statMario').textContent = "✅"; }
-  if (localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap")) { document.getElementById('achRacer').classList.add('unlocked'); document.getElementById('statRacer').textContent = "✅"; }
-}
+  // Звук / Вибрация
+  let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
+  updateSoundBtn();
 
-function loadMessages() {
-  const list = document.getElementById('guestList');
-  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[{"name":"System","text":"Добро пожаловать в FREEzzzGames! 🚀"}]');
-  list.innerHTML = msgs.map(m => `<div class="guest-msg"><div class="guest-author">${m.name}</div><div>${m.text}</div></div>`).join('');
-}
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("freezzzSound", soundEnabled);
+    updateSoundBtn();
+  }
+  document.getElementById('soundToggle').addEventListener('click', toggleSound);
 
-function sendMsg() {
-  haptic();
-  const input = document.getElementById('guestInput');
-  const text = input.value.trim();
-  if (!text) return;
-  let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[]');
-  msgs.unshift({name: userName, text: text});
-  if (msgs.length > 20) msgs.pop();
-  localStorage.setItem("freezzzGuestbook", JSON.stringify(msgs));
-  input.value = '';
-  loadMe
+  function updateSoundBtn() {
+    const btn = document.getElementById('soundToggle');
+    if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
+  }
+
+  function haptic() {
+    if (soundEnabled && tg && tg.HapticFeedback) {
+      try { tg.HapticFeedback.impactOccurred('light'); } catch(e){}
+    }
+  }
+
+  // Вкладки
+  function switchTab(tab) {
+    haptic();
+    ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+    ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    });
+
+    if (tab === 'games') {
+      document.getElementById('gamesGrid').classList.remove('hidden');
+      document.getElementById('tabGames').classList.add('active');
+    } else if (tab === 'top') {
+      document.getElementById('leaderboardView').classList.remove('hidden');
+      document.getElementById('tabTop').classList.add('active');
+      loadScores();
+    } else if (tab === 'ach') {
+      document.getElementById('achievementsView').classList.remove('hidden');
+      document.getElementById('tabAch').classList.add('active');
+      checkAchievements();
+    } else if (tab === 'guest') {
+      document.getElementById('guestView').classList.remove('hidden');
+      document.getElementById('tabGuest').classList.add('active');
+      loadMessages();
+    }
+  }
+
+  document.getElementById('tabGames').addEventListener('click', () => switchTab('games'));
+  document.getElementById('tabTop').addEventListener('click', () => switchTab('top'));
+  document.getElementById('tabAch').addEventListener('click', () => switchTab('ach'));
+  document.getElementById('tabGuest').addEventListener('click', () => switchTab('guest'));
+
+  function loadScores() {
+    document.getElementById('scoreDuck').textContent = localStorage.getItem("duckMudackHighScore") || "0";
+    let bestLap = localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap");
+    document.getElementById('scoreRace').textContent = bestLap ? Number(bestLap).toFixed(2) + "s" : "--.--";
+    document.getElementById('scoreTetris').textContent = localStorage.getItem("tetrisHighScore") || "0";
+    document.getElementById('scoreSnake').textContent = localStorage.getItem("snakeHighScore") || "0";
+    document.getElementById('scorePlatformer').textContent = localStorage.getItem("platformerBest") || "0";
+    document.getElementById('scoreJumper').textContent = localStorage.getItem("doodleBest") || "0";
+  }
+
+  function checkAchievements() {
+    if (Number(localStorage.getItem("snakeHighScore") || 0) >= 100) { document.getElementById('achSnake').classList.add('unlocked'); document.getElementById('statSnake').textContent = "✅"; }
+    if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) { document.getElementById('achTetris').classList.add('unlocked'); document.getElementById('statTetris')
