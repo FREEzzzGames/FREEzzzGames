@@ -46,12 +46,16 @@ body{
   overflow-y: auto; padding: 10px; z-index: 10;
   background: var(--portal-bg); border: 2px solid var(--border-col);
   border-radius: 12px; box-shadow: 0 0 25px rgba(0,0,0,0.8);
+  position: relative;
 }
 .hidden { display: none !important; }
 
 /* ШАПКА ПОРТАЛА */
 .header-top { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; gap: 6px; }
-.profile-box { font-size: 11px; color: var(--accent-col); text-align: left; display: flex; align-items: center; gap: 6px; background: var(--btn-bg); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-col); }
+.profile-box { font-size: 11px; color: var(--accent-col); text-align: left; display: flex; align-items: center; gap: 6px; background: var(--btn-bg); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-col); cursor: pointer; }
+.profile-box:active { background: var(--btn-hover); }
+.user-avatar { width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 16px; border: 1px solid var(--accent-col); flex-shrink: 0; }
+
 .header-btns { display: flex; gap: 6px; }
 .top-btn { background: var(--btn-bg); border: 1px solid var(--border-col); color: var(--title-col); padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
@@ -87,6 +91,13 @@ h1{ color: var(--title-col); font-size: 24px; margin: 2px 0 0; text-shadow: 2px 
 .guest-msg { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 8px 12px; font-size: 11px; text-align: left; }
 .guest-author { color: var(--accent-col); font-weight: bold; margin-bottom: 2px; }
 
+/* МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ */
+.modal-overlay { position: absolute; inset: 0; background: rgba(2,3,11,0.85); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.modal-card { background: var(--portal-bg); border: 2px solid var(--accent-col); border-radius: 14px; width: 100%; max-width: 360px; padding: 16px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.9); display: flex; flex-direction: column; gap: 10px; }
+.avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px; }
+.avatar-item { aspect-ratio: 1/1; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; }
+.avatar-item.active { border-color: var(--title-col); box-shadow: 0 0 8px var(--title-col); }
+
 /* ОКНО ИГРЫ */
 .portal.game-active { padding: 4px; gap: 4px; }
 .game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; width: 100%; flex-shrink: 0; }
@@ -96,7 +107,6 @@ h1{ color: var(--title-col); font-size: 24px; margin: 2px 0 0; text-shadow: 2px 
 #gameContainer { flex-grow: 1; width: 100%; position: relative; background: #010206; border: 2px solid var(--accent-col); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 
-/* КНОПКИ УПРАВЛЕНИЯ В ИГРАХ */
 .game-controls { display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%; padding: 4px; flex-shrink: 0; flex-wrap: wrap; }
 .ctrl-pad-btn { background: var(--btn-bg); border: 2px solid var(--accent-col); color: var(--title-col); font-size: 22px; width: 65px; height: 55px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .ctrl-pad-btn:active { background: var(--btn-hover); transform: scale(0.92); }
@@ -107,7 +117,10 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 <body id="bodyRoot">
 <div class="portal" id="mainPortal">
   <div class="header-top">
-    <div class="profile-box" id="userProfile">👤 Игрок</div>
+    <div class="profile-box" id="userProfileBox" onclick="openAvatarModal()">
+      <div class="user-avatar" id="currentAvatarEmoji">👾</div>
+      <div id="userNameTxt">Игрок</div>
+    </div>
     <div class="header-btns">
       <button class="top-btn" onclick="toggleTheme()" title="Тема">🎨</button>
       <button class="top-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
@@ -170,14 +183,67 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   <div class="footer-info">FREEzzzGames • ARCADE HUB</div>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ -->
+<div class="modal-overlay hidden" id="avatarModal">
+  <div class="modal-card">
+    <h3 style="color:var(--title-col); margin:0;">КОЛЛЕКЦИЯ АВАТАРОВ</h3>
+    <p style="font-size:10px; color:#83a4c9; margin:0;">Выбирай собранную аватарку или жди новую раз в день!</p>
+    <div class="avatar-grid" id="avatarGrid"></div>
+    <button class="action-btn" style="width:100%; justify-content:center; padding:10px; margin-top:5px;" onclick="closeAvatarModal()">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
 <script>
 const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
 let userName = "Игрок";
 if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
   userName = tg.initDataUnsafe.user.first_name;
-  document.getElementById('userProfile').innerHTML = `👤 ${userName}`;
+}
+document.getElementById('userNameTxt').textContent = userName;
+
+// СИСТЕМА ЕЖЕДНЕВНЫХ АВАТАРОВ (1 раз в сутки)
+const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
+let userAvatars = JSON.parse(localStorage.getItem("freezzzAvatars") || '["👾"]');
+let currentAvatar = localStorage.getItem("freezzzCurrentAvatar") || userAvatars[0];
+
+// Проверяем ежедневный бонус (выдача 1 случайного аватара в день)
+const todayStr = new Date().toDateString();
+const lastClaimDate = localStorage.getItem("freezzzLastAvatarDate");
+if (lastClaimDate !== todayStr) {
+  // Выдаем новый аватар
+  const randomNew = possibleAvatars[Math.floor(Math.random() * possibleAvatars.length)];
+  if (!userAvatars.includes(randomNew)) {
+    userAvatars.push(randomNew);
+    localStorage.setItem("freezzzAvatars", JSON.stringify(userAvatars));
+  }
+  localStorage.setItem("freezzzLastAvatarDate", todayStr);
 }
 
+document.getElementById('currentAvatarEmoji').textContent = currentAvatar;
+
+function openAvatarModal() {
+  haptic();
+  const grid = document.getElementById('avatarGrid');
+  grid.innerHTML = userAvatars.map(av => `
+    <div class="avatar-item ${av === currentAvatar ? 'active' : ''}" onclick="selectAvatar('${av}')">${av}</div>
+  `).join('');
+  document.getElementById('avatarModal').classList.remove('hidden');
+}
+
+function closeAvatarModal() {
+  haptic();
+  document.getElementById('avatarModal').classList.add('hidden');
+}
+
+function selectAvatar(av) {
+  haptic();
+  currentAvatar = av;
+  localStorage.setItem("freezzzCurrentAvatar", av);
+  document.getElementById('currentAvatarEmoji').textContent = av;
+  closeAvatarModal();
+}
+
+// Темы
 const themes = ["", "theme-matrix", "theme-fire"];
 let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
 applyTheme();
@@ -258,80 +324,4 @@ function sendMsg() {
   let msgs = JSON.parse(localStorage.getItem("freezzzGuestbook") || '[]');
   msgs.unshift({name: userName, text: text});
   if (msgs.length > 20) msgs.pop();
-  localStorage.setItem("freezzzGuestbook", JSON.stringify(msgs));
-  input.value = '';
-  loadMessages();
-}
-
-const playableGames = ["snake", "tetris", "pong", "race", "mario", "arkanoid", "duck", "invaders", "doodle", "minesweeper"];
-function playRandomGame() {
-  haptic();
-  launchGame(playableGames[Math.floor(Math.random() * playableGames.length)]);
-}
-
-function sharePortal() {
-  haptic();
-  const botUrl = "https://t.me/" + (tg.initDataUnsafe && tg.initDataUnsafe.bot ? tg.initDataUnsafe.bot.username : "your_bot_username");
-  const shareText = "🕹️ Крутой аркадный портал FREEzzzGames! 10 ретро-игр:";
-  if (tg.openTelegramLink) tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
-  else window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
-}
-
-let currentGameIntervals = [];
-function clearGameLoop() {
-  currentGameIntervals.forEach(id => clearInterval(id));
-  currentGameIntervals = [];
-}
-
-function exitGame() {
-  haptic();
-  clearGameLoop();
-  const portal = document.getElementById('mainPortal');
-  portal.classList.remove('game-active', 'hidden');
-  const activeGame = document.getElementById('activeGamePortal');
-  if (activeGame) activeGame.remove();
-}
-
-function launchGame(key) {
-  haptic();
-  clearGameLoop();
-  document.getElementById('mainPortal').classList.add('hidden');
-  
-  const gamePortal = document.createElement('div');
-  gamePortal.className = 'portal game-active';
-  gamePortal.id = 'activeGamePortal';
-  gamePortal.innerHTML = `
-    <div class="game-ui-header">
-      <button class="back-btn" onclick="exitGame()">⬅ МЕНЮ</button>
-      <div id="activeGameTitle" style="color:var(--title-col); font-size:13px; font-weight:bold;">${key.toUpperCase()}</div>
-      <button class="top-btn" onclick="toggleSound()">🔊</button>
-    </div>
-    <div id="gameContainer"></div>
-    <div class="game-controls" style="padding-top:2px;">
-      <button class="action-btn" style="width:100%; justify-content:center; padding:10px; font-size:11px; background:#8c0505; border-color:#ff6b55; color:#fff;" onclick="exitGame()">🏠 ВЫХОД В ГЛАВНОЕ МЕНЮ</button>
-    </div>
-  `;
-  document.body.appendChild(gamePortal);
-  const container = document.getElementById('gameContainer');
-
-  if (key === 'snake') {
-    container.innerHTML = `
-      <canvas id="gCanvas" width="400" height="400"></canvas>
-      <div class="game-controls">
-        <div style="display:grid; grid-template-columns: repeat(3, 65px); gap:6px;">
-          <div></div><button class="ctrl-pad-btn" id="sUp">▲</button><div></div>
-          <button class="ctrl-pad-btn" id="sLeft">◄</button><button class="ctrl-pad-btn" id="sDown">▼</button><button class="ctrl-pad-btn" id="sRight">►</button>
-        </div>
-      </div>`;
-    const canvas = document.getElementById('gCanvas'), ctx = canvas.getContext('2d');
-    const gs = 20, tc = 20;
-    let s = [{x:10,y:10},{x:9,y:10}], f = {x:5,y:5}, dx=1, dy=0, score=0;
-    function spF() { f.x = Math.floor(Math.random()*tc); f.y = Math.floor(Math.random()*tc); }
-    spF();
-    function loop() {
-      let h = {x: s[0].x + dx, y: s[0].y + dy};
-      if (h.x < 0) h.x = tc-1; else if (h.x >= tc) h.x = 0;
-      if (h.y < 0) h.y = tc-1; else if (h.y >= tc) h.y = 0;
-      for(let p of s) if (h.x === p.x && h.y === p.y) { alert("Game Over! Счёт: "+score); exitGame(); return; }
-      s.unshift(h);
-      if (h.x === f.x && h.y === f.y) { sc
+  localStorage.setItem("freezzzGuestbo
