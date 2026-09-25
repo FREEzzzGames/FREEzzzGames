@@ -87,16 +87,17 @@ h1{ color: var(--title-col); font-size: 24px; margin: 2px 0 0; text-shadow: 2px 
 .guest-msg { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 8px 12px; font-size: 11px; text-align: left; }
 .guest-author { color: var(--accent-col); font-weight: bold; margin-bottom: 2px; }
 
-/* ОКНО ИГРЫ (МАКСИМАЛЬНОЕ ЗАПОЛНЕНИЕ ЭКРАНА) */
+/* ОКНО ИГРЫ */
 .portal.game-active { padding: 4px; gap: 4px; }
 .game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; width: 100%; flex-shrink: 0; }
-.back-btn { background: var(--btn-hover); border: 1px solid var(--accent-col); color: var(--title-col); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
+.back-btn { background: #8c0505; border: 1px solid #ff6b55; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 0 8px rgba(255,0,0,0.4); }
+.back-btn:active { background: #b30707; transform: scale(0.95); }
 
 #gameContainer { flex-grow: 1; width: 100%; position: relative; background: #010206; border: 2px solid var(--accent-col); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 
-/* КРУПНЫЕ КНОПКИ УПРАВЛЕНИЯ В ИГРАХ */
-.game-controls { display: flex; gap: 10px; justify-content: center; align-items: center; width: 100%; padding: 6px; flex-shrink: 0; }
+/* КНОПКИ УПРАВЛЕНИЯ В ИГРАХ */
+.game-controls { display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%; padding: 4px; flex-shrink: 0; flex-wrap: wrap; }
 .ctrl-pad-btn { background: var(--btn-bg); border: 2px solid var(--accent-col); color: var(--title-col); font-size: 22px; width: 65px; height: 55px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .ctrl-pad-btn:active { background: var(--btn-hover); transform: scale(0.92); }
 
@@ -105,7 +106,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 </head>
 <body id="bodyRoot">
 <div class="portal" id="mainPortal">
-  <!-- ШАПКА -->
   <div class="header-top">
     <div class="profile-box" id="userProfile">👤 Игрок</div>
     <div class="header-btns">
@@ -119,7 +119,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="subtitle">ARCADE PORTAL 🕹️</div>
   </div>
 
-  <!-- ВКЛАДКИ -->
   <div class="actions-row">
     <button class="action-btn active" id="tabGames" onclick="switchTab('games')">🎮 ИГРЫ</button>
     <button class="action-btn" id="tabTop" onclick="switchTab('top')">🏆 ТОП</button>
@@ -129,7 +128,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <button class="action-btn" onclick="sharePortal()">📤 ДРУЗЬЯМ</button>
   </div>
   
-  <!-- СЕТКА ИКОНОК 3x4 (10 игр + 2 резервных слота под будущие релизы) -->
   <div class="grid-menu" id="gamesGrid">
     <div class="icon-btn" onclick="launchGame('snake')"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
     <div class="icon-btn" onclick="launchGame('tetris')"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
@@ -141,13 +139,10 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="icon-btn" onclick="launchGame('invaders')"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
     <div class="icon-btn" onclick="launchGame('doodle')"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
     <div class="icon-btn" onclick="launchGame('minesweeper')"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
-    <!-- Слот 11 -->
     <div class="icon-btn" onclick="alert('Скоро новая игра!')" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
-    <!-- Слот 12 -->
     <div class="icon-btn" onclick="alert('Скоро новая игра!')" style="opacity:0.6;"><div class="icon-emoji">⏳</div><div class="icon-title">SOON...</div></div>
   </div>
 
-  <!-- ТОП -->
   <div class="panel-view hidden" id="leaderboardView">
     <div class="row-card"><span class="row-name">🐍 Classic Snake</span><span class="row-val" id="scoreSnake">0</span></div>
     <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
@@ -157,7 +152,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="row-card"><span class="row-name">🦘 Retro Jumper</span><span class="row-val" id="scoreJumper">0</span></div>
   </div>
 
-  <!-- АЧИВКИ -->
   <div class="panel-view hidden" id="achievementsView">
     <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
     <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
@@ -165,7 +159,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Шумахер</span><div class="ach-desc">Сыграй в Retro Racer</div></div><span class="row-val" id="statRacer">🔒</span></div>
   </div>
 
-  <!-- ЧАТ -->
   <div class="panel-view hidden" id="guestView">
     <div class="guest-form">
       <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение в зал славы..." maxlength="50">
@@ -185,7 +178,6 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_
   document.getElementById('userProfile').innerHTML = `👤 ${userName}`;
 }
 
-// Темы
 const themes = ["", "theme-matrix", "theme-fire"];
 let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
 applyTheme();
@@ -198,7 +190,6 @@ function applyTheme() {
   document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
 }
 
-// Звук / Вибрация
 let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
 updateSoundBtn();
 function toggleSound() {
@@ -213,7 +204,6 @@ function haptic() {
   if (soundEnabled && tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 }
 
-// Вкладки
 function switchTab(tab) {
   haptic();
   ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -287,7 +277,6 @@ function sharePortal() {
   else window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent(shareText)}`);
 }
 
-// ЗАПУСК ИГР В МАКСИМАЛЬНОЙ ОБЛАСТИ ЭКРАНА
 let currentGameIntervals = [];
 function clearGameLoop() {
   currentGameIntervals.forEach(id => clearInterval(id));
@@ -299,7 +288,6 @@ function exitGame() {
   clearGameLoop();
   const portal = document.getElementById('mainPortal');
   portal.classList.remove('game-active', 'hidden');
-  // Удаляем созданное окно игры
   const activeGame = document.getElementById('activeGamePortal');
   if (activeGame) activeGame.remove();
 }
@@ -309,7 +297,6 @@ function launchGame(key) {
   clearGameLoop();
   document.getElementById('mainPortal').classList.add('hidden');
   
-  // Создаем контейнер игры на весь экран
   const gamePortal = document.createElement('div');
   gamePortal.className = 'portal game-active';
   gamePortal.id = 'activeGamePortal';
@@ -320,6 +307,9 @@ function launchGame(key) {
       <button class="top-btn" onclick="toggleSound()">🔊</button>
     </div>
     <div id="gameContainer"></div>
+    <div class="game-controls" style="padding-top:2px;">
+      <button class="action-btn" style="width:100%; justify-content:center; padding:10px; font-size:11px; background:#8c0505; border-color:#ff6b55; color:#fff;" onclick="exitGame()">🏠 ВЫХОД В ГЛАВНОЕ МЕНЮ</button>
+    </div>
   `;
   document.body.appendChild(gamePortal);
   const container = document.getElementById('gameContainer');
@@ -344,4 +334,4 @@ function launchGame(key) {
       if (h.y < 0) h.y = tc-1; else if (h.y >= tc) h.y = 0;
       for(let p of s) if (h.x === p.x && h.y === p.y) { alert("Game Over! Счёт: "+score); exitGame(); return; }
       s.unshift(h);
-      if (h.x =
+      if (h.x === f.x && h.y === f.y) { sc
