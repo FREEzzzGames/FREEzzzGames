@@ -403,10 +403,6 @@ window.addEventListener('DOMContentLoaded', () => {
   })();
 
   let userName = "Игрок";
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const u=tg.initDataUnsafe.user;
-    userName = u.username ? "@"+u.username : ([u.first_name||"",u.last_name||""].join(" ").trim() || "Игрок");
-  }
   const nameTxt = document.getElementById('userNameTxt');
   if (nameTxt) nameTxt.textContent = userName;
 
