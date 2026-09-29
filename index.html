@@ -68,13 +68,24 @@ h1{color:var(--title-col);font-size:30px; margin: 2px 0 0; text-shadow: 2px 2px 
 .action-btn.active { background: var(--btn-hover); border-color: var(--accent-col); color: var(--title-col); }
 .action-btn.special { border-color: #ffd42aaa; color: #ffd42a; }
 
-/* СЕТКА ИКОНОК 3x4 */
-.grid-menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:116px;gap:7px;padding:2px;flex:0 0 auto;align-content:start}
-.panel-view { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; overflow-y: auto; padding: 2px; }
-.icon-btn{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center; border: 2px solid var(--accent-col); border-radius: 12px; background: var(--btn-bg); color: #fff; text-decoration: none; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5); transition: .15s; padding: 6px; gap: 2px; }
-.icon-btn:active { transform: scale(.93); background: var(--btn-hover); border-color: var(--title-col); }
-.icon-emoji{font-size:25px; filter: drop-shadow(0 0 5px var(--accent-col)); }
-.icon-title { font-size: 9px; font-weight: bold; color: var(--title-col); text-align: center; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+/* КАРУСЕЛЬ ИГР */
+.games-carousel{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px 0;touch-action:pan-y;user-select:none}
+.games-track{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.game-card{position:absolute;width:min(92%,430px);height:min(68vh,470px);min-height:330px;border:2px solid var(--accent-col);border-radius:18px;background:linear-gradient(145deg,rgba(16,24,58,.98),rgba(4,7,20,.98));box-shadow:0 0 28px rgba(32,232,255,.14),inset 0 0 35px rgba(32,232,255,.04);display:flex;flex-direction:column;overflow:hidden;transition:transform .34s ease,opacity .34s ease,filter .34s ease;cursor:pointer}
+.game-card.is-active{transform:translateX(0) scale(1);opacity:1;z-index:3;filter:none}
+.game-card.is-prev{transform:translateX(-108%) scale(.82);opacity:.18;z-index:2;pointer-events:none}
+.game-card.is-next{transform:translateX(108%) scale(.82);opacity:.18;z-index:2;pointer-events:none}
+.game-card.is-hidden{transform:scale(.72);opacity:0;z-index:1;pointer-events:none}
+.game-card-art{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;font-size:96px;background:radial-gradient(circle at 50% 42%,rgba(32,232,255,.13),transparent 55%);text-shadow:0 0 25px var(--accent-col)}
+.game-card-body{padding:14px 16px 12px;text-align:left;background:rgba(2,4,14,.82);border-top:1px solid var(--border-col)}
+.game-card-title{font-size:20px;font-weight:900;color:var(--title-col);letter-spacing:1px;margin-bottom:6px}
+.game-card-desc{font-size:11px;line-height:1.45;color:#b8c9df;min-height:48px}
+.game-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--accent-col);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.game-card-play{display:inline-flex;padding:5px 9px;border:1px solid var(--accent-col);border-radius:7px;color:var(--title-col);background:var(--btn-bg);font-weight:bold}
+.carousel-dots{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:10}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:#52617b;transition:.2s}
+.carousel-dot.active{width:18px;border-radius:4px;background:var(--accent-col);box-shadow:0 0 7px var(--accent-col)}
+.carousel-hint{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:8px;color:#71839e;letter-spacing:1px;z-index:10;opacity:.8}
 
 /* ПАНЕЛИ ТОПА, АЧИВОК, ЧАТА */
 .row-card { display: flex; justify-content: space-between; align-items: center; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 8px 12px; font-size: 11px; text-align: left; }
@@ -141,27 +152,17 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <button class="action-btn" id="shareBtn">📤 ДРУЗЬЯМ</button>
   </div>
   
-  <!-- Сетка 3x4 (10 игр через дата-атрибуты для надежности) -->
-  <div class="grid-menu" id="gamesGrid">
-    <div class="icon-btn" data-game="snake"><div class="icon-emoji">🐍</div><div class="icon-title">SNAKE</div></div>
-    <div class="icon-btn" data-game="tetris"><div class="icon-emoji">🧱</div><div class="icon-title">TETRIS</div></div>
-    <div class="icon-btn" data-game="pong"><div class="icon-emoji">🏓</div><div class="icon-title">PONG</div></div>
-    <div class="icon-btn" data-game="slowroads"><div class="icon-emoji">🏎️</div><div class="icon-title">SLOW ROADS</div></div>
-    <div class="icon-btn" data-game="mario"><div class="icon-emoji">🍄</div><div class="icon-title">PLATFORMER</div></div>
-    <div class="icon-btn" data-game="arkanoid"><div class="icon-emoji">🧱</div><div class="icon-title">ARKANOID</div></div>
-    <div class="icon-btn" data-game="duck"><div class="icon-emoji">🦆</div><div class="icon-title">DUCK MUDACK</div></div>
-    <div class="icon-btn" data-game="invaders"><div class="icon-emoji">👾</div><div class="icon-title">INVADERS</div></div>
-    <div class="icon-btn" data-game="doodle"><div class="icon-emoji">🦘</div><div class="icon-title">JUMPER</div></div>
-    <div class="icon-btn" data-game="minesweeper"><div class="icon-emoji">💣</div><div class="icon-title">MINESWEEPER</div></div>
-    <div class="icon-btn" data-game="quickdraw"><div class="icon-emoji">🎨</div><div class="icon-title">QUICK, DRAW!</div></div>
-    <div class="icon-btn" data-game="ligmar"><div class="icon-emoji">⚔️</div><div class="icon-title">LIGMAR</div></div>
+  <div class="games-carousel" id="gamesCarousel">
+    <div class="carousel-hint">← СВАЙП →</div>
+    <div class="games-track" id="gamesTrack"></div>
+    <div class="carousel-dots" id="carouselDots"></div>
   </div>
 
   <div class="panel-view hidden" id="leaderboardView">
     <div class="row-card"><span class="row-name">🐍 Classic Snake</span><span class="row-val" id="scoreSnake">0</span></div>
     <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
     <div class="row-card"><span class="row-name">🍄 Super Platformer</span><span class="row-val" id="scorePlatformer">0</span></div>
-    <div class="row-card"><span class="row-name">🏎️ Retro Racer</span><span class="row-val" id="scoreRace">--.--</span></div>
+    <div class="row-card"><span class="row-name">🏎️ Slow Roads</span><span class="row-val" id="scoreRace">--.--</span></div>
     <div class="row-card"><span class="row-name">🦆 Duck Mudack</span><span class="row-val" id="scoreDuck">0</span></div>
     <div class="row-card"><span class="row-name">🦘 Retro Jumper</span><span class="row-val" id="scoreJumper">0</span></div>
   </div>
@@ -170,7 +171,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
     <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
     <div class="row-card achievement" id="achMario"><div><span class="row-name">🍄 Герой Платформера</span><div class="ach-desc">Пройди Platformer</div></div><span class="row-val" id="statMario">🔒</span></div>
-    <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Шумахер</span><div class="ach-desc">Сыграй в Retro Racer</div></div><span class="row-val" id="statRacer">🔒</span></div>
+    <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Путешественник</span><div class="ach-desc">Открой Slow Roads</div></div><span class="row-val" id="statRacer">🔒</span></div>
   </div>
 
   <div class="panel-view hidden" id="guestView">
@@ -383,6 +384,66 @@ window.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
   });
 
+  const GAME_CARDS = [
+    {id:'snake',title:'SNAKE',emoji:'🐍',genre:'ARCADE',desc:'Классическая змейка: собирай еду, расти и устанавливай новый рекорд.'},
+    {id:'tetris',title:'TETRIS',emoji:'🧱',genre:'PUZZLE',desc:'Собирай падающие блоки в линии и не дай игровому полю заполниться.'},
+    {id:'pong',title:'PONG',emoji:'🏓',genre:'ARCADE',desc:'Минималистичная классика: отбивай мяч и переиграй соперника.'},
+    {id:'slowroads',title:'SLOW ROADS',emoji:'🏎️',genre:'DRIVING',desc:'Бесконечная расслабляющая поездка по процедурно создаваемым дорогам.'},
+    {id:'mario',title:'PLATFORMER',emoji:'🍄',genre:'PLATFORM',desc:'Прыгай, исследуй уровни и проходи препятствия в классическом платформенном стиле.'},
+    {id:'arkanoid',title:'ARKANOID',emoji:'🔶',genre:'ARCADE',desc:'Разбивай блоки мячом, управляй платформой и очищай экран.'},
+    {id:'duck',title:'DUCK MUDACK',emoji:'🦆',genre:'ARCADE',desc:'Наш собственный космический тир в ретро-аркадном стиле.'},
+    {id:'invaders',title:'INVADERS',emoji:'👾',genre:'SHOOTER',desc:'Аркадная космическая битва против волн инопланетных противников.'},
+    {id:'doodle',title:'JUMPER',emoji:'🦘',genre:'ARCADE',desc:'Прыгай всё выше, удерживайся на платформах и набирай высоту.'},
+    {id:'minesweeper',title:'MINESWEEPER',emoji:'💣',genre:'PUZZLE',desc:'Логическая классика: открывай клетки и вычисляй безопасные поля.'},
+    {id:'quickdraw',title:'QUICK, DRAW!',emoji:'🎨',genre:'EXPERIMENTAL',desc:'Рисуй заданный объект, а нейросеть Google попробует угадать, что получилось.'},
+    {id:'ligmar',title:'LIGMAR',emoji:'⚔️',genre:'ONLINE RPG',desc:'Большой браузерный мир с персонажем, развитием, заданиями и онлайн-активностями.'}
+  ];
+
+  let currentGameIndex=0;
+  let swipeStartX=0;
+  let swipeStartY=0;
+
+  function renderGameCarousel(){
+    const track=document.getElementById('gamesTrack');
+    const dots=document.getElementById('carouselDots');
+    if(!track||!dots)return;
+    track.innerHTML=GAME_CARDS.map((g,i)=>{
+      const d=(i-currentGameIndex+GAME_CARDS.length)%GAME_CARDS.length;
+      let cls='game-card is-hidden';
+      if(d===0)cls='game-card is-active';
+      else if(d===1)cls='game-card is-next';
+      else if(d===GAME_CARDS.length-1)cls='game-card is-prev';
+      return '<div class="'+cls+'" data-carousel-game="'+g.id+'">'+
+        '<div class="game-card-art">'+g.emoji+'</div>'+
+        '<div class="game-card-body">'+
+          '<div class="game-card-title">'+g.title+'</div>'+
+          '<div class="game-card-desc">'+g.desc+'</div>'+
+          '<div class="game-card-meta"><span>'+g.genre+'</span><span class="game-card-play">ИГРАТЬ →</span></div>'+
+        '</div></div>';
+    }).join('');
+    dots.innerHTML=GAME_CARDS.map((g,i)=>'<span class="carousel-dot '+(i===currentGameIndex?'active':'')+'"></span>').join('');
+    track.querySelectorAll('.game-card.is-active').forEach(card=>card.addEventListener('click',()=>openExternal(GAME_LINKS[card.dataset.carouselGame])));
+  }
+
+  function moveGame(delta){
+    currentGameIndex=(currentGameIndex+delta+GAME_CARDS.length)%GAME_CARDS.length;
+    haptic();
+    renderGameCarousel();
+  }
+
+  const carousel=document.getElementById('gamesCarousel');
+  carousel.addEventListener('touchstart',e=>{
+    if(!e.touches[0])return;
+    swipeStartX=e.touches[0].clientX; swipeStartY=e.touches[0].clientY;
+  },{passive:true});
+  carousel.addEventListener('touchend',e=>{
+    if(!e.changedTouches[0])return;
+    const dx=e.changedTouches[0].clientX-swipeStartX;
+    const dy=e.changedTouches[0].clientY-swipeStartY;
+    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.2) moveGame(dx<0?1:-1);
+  },{passive:true});
+  carousel.addEventListener('wheel',e=>{ if(Math.abs(e.deltaX)>20)moveGame(e.deltaX>0?1:-1); });
+
   const GAME_LINKS = {
     snake:'https://www.snake.at/game/1.3/index.html',
     tetris:'https://poki.com/en/g/tetra-blocks',
@@ -409,26 +470,14 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  document.querySelectorAll('#gamesGrid .icon-btn[data-game]').forEach(card => {
-    const game = card.dataset.game;
-    const url = GAME_LINKS[game];
-    if (!url) return;
-    card.setAttribute('role','button');
-    card.setAttribute('tabindex','0');
-    card.addEventListener('click', () => openExternal(url));
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openExternal(url);
-      }
-    });
-  });
+
+
+  renderGameCarousel();
 
   document.getElementById('randomGameBtn').addEventListener('click', () => {
-    const cards=[...document.querySelectorAll('#gamesGrid .icon-btn[data-game]')];
-    if (!cards.length) return;
-    const card=cards[Math.floor(Math.random()*cards.length)];
-    openExternal(GAME_LINKS[card.dataset.game]);
+    currentGameIndex=Math.floor(Math.random()*GAME_CARDS.length);
+    renderGameCarousel();
+    haptic();
   });
 
   document.getElementById('shareBtn').addEventListener('click', () => {
