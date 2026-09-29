@@ -1068,7 +1068,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   },{passive:true});
 
-  applyLanguage();
+  // Language initialization is performed after GAME_CARDS/CATEGORIES/GAME_LINKS are initialized.
 
   function returnToMainMenu(){
     const cv=document.getElementById('categoryView');
@@ -1130,7 +1130,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  renderCategories();
+  // Start the portal only after all data/constants/functions are initialized.
+  applyLanguage();
   showCategoryList(false);
   window.addEventListener("beforeunload",()=>{try{navigator.sendBeacon?.(CHAT_API_BASE+"/auth/heartbeat","");}catch(e){}});
 
