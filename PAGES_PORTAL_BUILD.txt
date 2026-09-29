@@ -1,0 +1,4 @@
+FREEzzzGames portal Pages build marker
+Build: 2026-09-29-portal-redeploy-01
+Root entry: index.html
+Browser test: browser-test.html
