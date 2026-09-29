@@ -68,8 +68,41 @@ h1{color:var(--title-col);font-size:30px; margin: 2px 0 0; text-shadow: 2px 2px 
 .action-btn.active { background: var(--btn-hover); border-color: var(--accent-col); color: var(--title-col); }
 .action-btn.special { border-color: #ffd42aaa; color: #ffd42a; }
 
-/* КАРУСЕЛЬ ИГР */
-.games-carousel{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px 0;touch-action:pan-y;user-select:none}
+/* КАТЕГОРИИ И КАРУСЕЛЬ ИГР */
+.games-browser{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:4px 0;touch-action:manipulation;user-select:none}
+.category-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:4px 2px 8px;scrollbar-width:none}
+.category-list::-webkit-scrollbar{display:none}
+.category-item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;border:1px solid var(--border-col);border-radius:12px;background:linear-gradient(135deg,rgba(12,20,48,.98),rgba(4,7,20,.98));color:#fff;box-shadow:inset 0 0 18px rgba(32,232,255,.025);transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.category-item:active{transform:scale(.985);border-color:var(--accent-col);background:var(--btn-hover)}
+.category-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:0 0 42px;border:1px solid var(--border-col);border-radius:10px;background:rgba(0,0,0,.2);font-size:22px}
+.category-copy{min-width:0;flex:1}
+.category-name{font-size:13px;font-weight:900;color:var(--title-col);letter-spacing:.7px}
+.category-count{font-size:9px;color:#7f94b2;margin-top:3px}
+.category-arrow{color:var(--accent-col);font-size:20px}
+.category-view{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.category-head{display:flex;align-items:center;gap:8px;padding:4px 2px 8px;flex-shrink:0}
+.category-back{width:38px;height:34px;border:1px solid var(--border-col);border-radius:9px;background:var(--btn-bg);color:var(--accent-col);font-size:18px}
+.category-head-copy{text-align:left;min-width:0}
+.category-head-title{font-size:14px;font-weight:900;color:var(--title-col)}
+.category-head-sub{font-size:8px;color:#71839e;margin-top:2px}
+.games-carousel{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px 0 12px;touch-action:none;user-select:none;overscroll-behavior:contain}
+.games-track{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;will-change:transform}
+.game-card{position:absolute;width:min(88%,420px);height:min(64vh,455px);min-height:300px;border:2px solid var(--accent-col);border-radius:18px;background:linear-gradient(145deg,rgba(16,24,58,.98),rgba(4,7,20,.98));box-shadow:0 0 28px rgba(32,232,255,.14),inset 0 0 35px rgba(32,232,255,.04);display:flex;flex-direction:column;overflow:hidden;transition:transform .38s cubic-bezier(.22,.8,.22,1),opacity .38s ease,filter .38s ease;cursor:pointer;will-change:transform,opacity}
+.game-card.is-active{transform:translate3d(0,0,0) scale(1);opacity:1;z-index:3;filter:none}
+.game-card.is-prev{transform:translate3d(-96%,0,0) scale(.86);opacity:.22;z-index:2;pointer-events:none}
+.game-card.is-next{transform:translate3d(96%,0,0) scale(.86);opacity:.22;z-index:2;pointer-events:none}
+.game-card.is-hidden{transform:translate3d(0,10px,0) scale(.78);opacity:0;z-index:1;pointer-events:none}
+.game-card-art{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;font-size:88px;background:radial-gradient(circle at 50% 42%,rgba(32,232,255,.13),transparent 55%);text-shadow:0 0 25px var(--accent-col)}
+.game-card-body{padding:14px 16px 12px;text-align:left;background:rgba(2,4,14,.82);border-top:1px solid var(--border-col)}
+.game-card-title{font-size:20px;font-weight:900;color:var(--title-col);letter-spacing:1px;margin-bottom:6px}
+.game-card-desc{font-size:11px;line-height:1.45;color:#b8c9df;min-height:48px}
+.game-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--accent-col);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.game-card-play{display:inline-flex;padding:5px 9px;border:1px solid var(--accent-col);border-radius:7px;color:var(--title-col);background:var(--btn-bg);font-weight:bold}
+.carousel-dots{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:10;max-width:90%;overflow:hidden}
+.carousel-dot{width:6px;height:6px;flex:0 0 auto;border-radius:50%;background:#52617b;transition:.2s}
+.carousel-dot.active{width:18px;border-radius:4px;background:var(--accent-col);box-shadow:0 0 7px var(--accent-col)}
+.carousel-hint{position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:8px;color:#71839e;letter-spacing:1px;z-index:10;opacity:.8}
+
 .games-track{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
 .game-card{position:absolute;width:min(92%,430px);height:min(68vh,470px);min-height:330px;border:2px solid var(--accent-col);border-radius:18px;background:linear-gradient(145deg,rgba(16,24,58,.98),rgba(4,7,20,.98));box-shadow:0 0 28px rgba(32,232,255,.14),inset 0 0 35px rgba(32,232,255,.04);display:flex;flex-direction:column;overflow:hidden;transition:transform .34s ease,opacity .34s ease,filter .34s ease;cursor:pointer}
 .game-card.is-active{transform:translateX(0) scale(1);opacity:1;z-index:3;filter:none}
@@ -152,10 +185,22 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <button class="action-btn" id="shareBtn">📤 ДРУЗЬЯМ</button>
   </div>
   
-  <div class="games-carousel" id="gamesCarousel">
-    <div class="carousel-hint">← СВАЙП →</div>
-    <div class="games-track" id="gamesTrack"></div>
-    <div class="carousel-dots" id="carouselDots"></div>
+  <div class="games-browser" id="gamesBrowser">
+    <div class="category-list" id="categoryList"></div>
+    <div class="category-view hidden" id="categoryView">
+      <div class="category-head">
+        <button class="category-back" id="categoryBack" aria-label="Назад">‹</button>
+        <div class="category-head-copy">
+          <div class="category-head-title" id="categoryHeadTitle"></div>
+          <div class="category-head-sub">СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ</div>
+        </div>
+      </div>
+      <div class="games-carousel" id="gamesCarousel">
+        <div class="carousel-hint">← СВАЙП →</div>
+        <div class="games-track" id="gamesTrack"></div>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
   </div>
 
   <div class="panel-view hidden" id="leaderboardView">
@@ -298,28 +343,25 @@ window.addEventListener('DOMContentLoaded', () => {
   // Вкладки
   function switchTab(tab) {
     haptic();
-    ['gamesGrid', 'leaderboardView', 'achievementsView', 'guestView'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
-    });
+    document.getElementById('gamesBrowser').classList.toggle('hidden', tab !== 'games');
+    document.getElementById('leaderboardView').classList.toggle('hidden', tab !== 'top');
+    document.getElementById('achievementsView').classList.toggle('hidden', tab !== 'ach');
+    document.getElementById('guestView').classList.toggle('hidden', tab !== 'guest');
     ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.remove('active');
     });
 
     if (tab === 'games') {
-      document.getElementById('gamesGrid').classList.remove('hidden');
       document.getElementById('tabGames').classList.add('active');
+      showCategoryList(false);
     } else if (tab === 'top') {
-      document.getElementById('leaderboardView').classList.remove('hidden');
       document.getElementById('tabTop').classList.add('active');
       loadScores();
     } else if (tab === 'ach') {
-      document.getElementById('achievementsView').classList.remove('hidden');
       document.getElementById('tabAch').classList.add('active');
       checkAchievements();
     } else if (tab === 'guest') {
-      document.getElementById('guestView').classList.remove('hidden');
       document.getElementById('tabGuest').classList.add('active');
       loadMessages();
     }
@@ -417,20 +459,76 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:'resistance',title:'THE RESISTANCE',emoji:'🔋',genre:'PLATFORMER',desc:'Короткий платформер с необычной механикой времени и физики.'}
   ];
 
-  let currentGameIndex=0;
-  let swipeStartX=0;
-  let swipeStartY=0;
+  const CATEGORIES = [
+    {id:'arcade',name:'АРКАДА',icon:'🕹️',ids:['snake','tanuki','nointernet2']},
+    {id:'racing',name:'ГОНКИ',icon:'🏁',ids:['slowroads','polytrack']},
+    {id:'puzzle',name:'ГОЛОВОЛОМКИ',icon:'🧩',ids:['sixcats','dragonsweeper','maketen','sokoban','snakesbrakes','cellmachine','loopa','minelayer']},
+    {id:'adventure',name:'ПРИКЛЮЧЕНИЯ',icon:'🌍',ids:['ducklings','petalquest','resistance']},
+    {id:'simulation',name:'СИМУЛЯЦИИ',icon:'⚙️',ids:['sortcourt','peggys','lif3d','fillhole']},
+    {id:'logic',name:'ЛОГИКА И СТРАТЕГИЯ',icon:'🧠',ids:['sudoku','waterworks']},
+    {id:'sandbox',name:'ПЕСОЧНИЦА И ЭКСПЕРИМЕНТЫ',icon:'🧪',ids:['bigbubbles','dustsim','greybox','quickdraw']},
+    {id:'space',name:'КОСМОС И РИТМ',icon:'🪐',ids:['planets','cosmobeat']},
+    {id:'online',name:'ОНЛАЙН',icon:'🌐',ids:['ligmar']},
+    {id:'special',name:'СПЕЦИАЛЬНОЕ',icon:'🎮',ids:['mossmoss']}
+  ];
 
-  function renderGameCarousel(){
+  const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
+  let currentCategory = null;
+  let categoryGameIndex = 0;
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeStartTime = 0;
+
+  function showCategoryList(animate=true){
+    currentCategory=null;
+    document.getElementById('categoryList').classList.remove('hidden');
+    document.getElementById('categoryView').classList.add('hidden');
+    if(animate){
+      const list=document.getElementById('categoryList');
+      list.animate([{opacity:.35,transform:'translateX(-14px)'},{opacity:1,transform:'translateX(0)'}],{duration:220,easing:'cubic-bezier(.22,.8,.22,1)'});
+    }
+  }
+
+  function openCategory(categoryId){
+    const category=CATEGORIES.find(c=>c.id===categoryId);
+    if(!category)return;
+    currentCategory=category;
+    categoryGameIndex=0;
+    document.getElementById('categoryList').classList.add('hidden');
+    document.getElementById('categoryView').classList.remove('hidden');
+    document.getElementById('categoryHeadTitle').textContent=category.name;
+    renderCategoryCarousel();
+    haptic();
+  }
+
+  function renderCategories(){
+    const list=document.getElementById('categoryList');
+    list.innerHTML=CATEGORIES.map(c=>{
+      const count=c.ids.length;
+      return '<button class="category-item" data-category="'+c.id+'">'+
+        '<span class="category-icon">'+c.icon+'</span>'+
+        '<span class="category-copy"><span class="category-name">'+c.name+'</span><span class="category-count">'+count+' '+(count===1?'ИГРА':'ИГРЫ')+'</span></span>'+
+        '<span class="category-arrow">›</span>'+
+      '</button>';
+    }).join('');
+    list.querySelectorAll('.category-item').forEach(btn=>{
+      btn.addEventListener('click',()=>openCategory(btn.dataset.category));
+    });
+  }
+
+  function renderCategoryCarousel(){
+    if(!currentCategory)return;
+    const ids=currentCategory.ids;
     const track=document.getElementById('gamesTrack');
     const dots=document.getElementById('carouselDots');
     if(!track||!dots)return;
-    track.innerHTML=GAME_CARDS.map((g,i)=>{
-      const d=(i-currentGameIndex+GAME_CARDS.length)%GAME_CARDS.length;
+    track.innerHTML=ids.map((id,i)=>{
+      const g=GAME_BY_ID[id];
+      const offset=i-categoryGameIndex;
       let cls='game-card is-hidden';
-      if(d===0)cls='game-card is-active';
-      else if(d===1)cls='game-card is-next';
-      else if(d===GAME_CARDS.length-1)cls='game-card is-prev';
+      if(offset===0)cls='game-card is-active';
+      else if(offset===-1)cls='game-card is-prev';
+      else if(offset===1)cls='game-card is-next';
       return '<div class="'+cls+'" data-carousel-game="'+g.id+'">'+
         '<div class="game-card-art">'+g.emoji+'</div>'+
         '<div class="game-card-body">'+
@@ -439,28 +537,39 @@ window.addEventListener('DOMContentLoaded', () => {
           '<div class="game-card-meta"><span>'+g.genre+'</span><span class="game-card-play">ИГРАТЬ →</span></div>'+
         '</div></div>';
     }).join('');
-    dots.innerHTML=GAME_CARDS.map((g,i)=>'<span class="carousel-dot '+(i===currentGameIndex?'active':'')+'"></span>').join('');
-    track.querySelectorAll('.game-card.is-active').forEach(card=>card.addEventListener('click',()=>openExternal(GAME_LINKS[card.dataset.carouselGame])));
+    dots.innerHTML=ids.map((id,i)=>'<span class="carousel-dot '+(i===categoryGameIndex?'active':'')+'"></span>').join('');
+    const active=track.querySelector('.game-card.is-active');
+    if(active) active.addEventListener('click',()=>openExternal(GAME_LINKS[active.dataset.carouselGame]));
   }
 
-  function moveGame(delta){
-    currentGameIndex=(currentGameIndex+delta+GAME_CARDS.length)%GAME_CARDS.length;
+  function moveCategoryGame(delta){
+    if(!currentCategory)return;
+    const len=currentCategory.ids.length;
+    if(len<2)return;
+    const next=Math.max(0,Math.min(len-1,categoryGameIndex+delta));
+    if(next===categoryGameIndex)return;
+    categoryGameIndex=next;
     haptic();
-    renderGameCarousel();
+    renderCategoryCarousel();
   }
 
   const carousel=document.getElementById('gamesCarousel');
   carousel.addEventListener('touchstart',e=>{
-    if(!e.touches[0])return;
-    swipeStartX=e.touches[0].clientX; swipeStartY=e.touches[0].clientY;
+    const t=e.touches[0]; if(!t)return;
+    swipeStartX=t.clientX; swipeStartY=t.clientY; swipeStartTime=Date.now();
   },{passive:true});
   carousel.addEventListener('touchend',e=>{
-    if(!e.changedTouches[0])return;
-    const dx=e.changedTouches[0].clientX-swipeStartX;
-    const dy=e.changedTouches[0].clientY-swipeStartY;
-    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.2) moveGame(dx<0?1:-1);
+    const t=e.changedTouches[0]; if(!t)return;
+    const dx=t.clientX-swipeStartX;
+    const dy=t.clientY-swipeStartY;
+    const dt=Math.max(1,Date.now()-swipeStartTime);
+    const velocity=Math.abs(dx)/dt;
+    if(Math.abs(dx)>38 && Math.abs(dx)>Math.abs(dy)*1.15 && (Math.abs(dx)>55 || velocity>.35)){
+      moveCategoryGame(dx<0?1:-1);
+    }
   },{passive:true});
-  carousel.addEventListener('wheel',e=>{ if(Math.abs(e.deltaX)>20)moveGame(e.deltaX>0?1:-1); });
+
+  document.getElementById('categoryBack').addEventListener('click',()=>showCategoryList(true));
 
   const GAME_LINKS = {
     snake:'https://www.snake.at/game/1.3/index.html',
@@ -508,20 +617,3 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-  renderGameCarousel();
-
-  document.getElementById('randomGameBtn').addEventListener('click', () => {
-    currentGameIndex=Math.floor(Math.random()*GAME_CARDS.length);
-    renderGameCarousel();
-    haptic();
-  });
-
-  document.getElementById('shareBtn').addEventListener('click', () => {
-    const shareUrl='https://freezzzgames.github.io/FREEzzzGames/';
-    const share='https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent('🎮 FREEzzzGames — аркадный портал');
-    openExternal(share);
-  });
-});
-</script>
-</body>
-</html>
