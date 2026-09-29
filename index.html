@@ -278,15 +278,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     </div>
   </div>
 
-  <div class="panel-view hidden" id="leaderboardView">
-    <div class="row-card"><span class="row-name">🐍 Classic Snake</span><span class="row-val" id="scoreSnake">0</span></div>
-    <div class="row-card"><span class="row-name">🧱 Tetris Classic</span><span class="row-val" id="scoreTetris">0</span></div>
-    <div class="row-card"><span class="row-name">🍄 Super Platformer</span><span class="row-val" id="scorePlatformer">0</span></div>
-    <div class="row-card"><span class="row-name">🏎️ Slow Roads</span><span class="row-val" id="scoreRace">--.--</span></div>
-    <div class="row-card"><span class="row-name">🦆 Duck Mudack</span><span class="row-val" id="scoreDuck">0</span></div>
-    <div class="row-card"><span class="row-name">🦘 Retro Jumper</span><span class="row-val" id="scoreJumper">0</span></div>
-  </div>
-
   <div class="panel-view hidden" id="achievementsView">
     <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
     <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
@@ -509,12 +500,6 @@ window.addEventListener('DOMContentLoaded', () => {
   function applyLanguage(){
     const L=LANG[currentLang];
     const staticText={
-      scoreSnake:{ru:"🐍 Классическая Змейка",de:"🐍 Klassisches Snake",en:"🐍 Classic Snake"},
-      scoreTetris:{ru:"🧱 Классический Тетрис",de:"🧱 Klassisches Tetris",en:"🧱 Classic Tetris"},
-      scorePlatformer:{ru:"🍄 Платформер",de:"🍄 Plattformspiel",en:"🍄 Platformer"},
-      scoreRace:{ru:"🏎️ Slow Roads",de:"🏎️ Slow Roads",en:"🏎️ Slow Roads"},
-      scoreDuck:{ru:"🦆 Duck Mudack",de:"🦆 Duck Mudack",en:"🦆 Duck Mudack"},
-      scoreJumper:{ru:"🦘 Retro Jumper",de:"🦘 Retro Jumper",en:"🦘 Retro Jumper"},
       achSnake:{ru:"🐍 Мастер Змейки|Счёт от 100 в Snake",de:"🐍 Snake-Meister|Mindestens 100 Punkte in Snake",en:"🐍 Snake Master|Score 100+ in Snake"},
       achTetris:{ru:"🧱 Архитектор Тетриса|Счёт от 500 в Tetris",de:"🧱 Tetris-Architekt|Mindestens 500 Punkte in Tetris",en:"🧱 Tetris Architect|Score 500+ in Tetris"},
       achMario:{ru:"🍄 Герой Платформера|Пройди Platformer",de:"🍄 Plattform-Held|Schließe das Plattformspiel ab",en:"🍄 Platformer Hero|Complete the platformer"},
@@ -562,10 +547,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");
     if(!messages.length) list.innerHTML='<div class="guest-msg">'+(currentLang==="ru"?"Пока сообщений нет. Напиши первым.":currentLang==="de"?"Noch keine Nachrichten. Schreib die erste Nachricht.":"No messages yet. Write the first one.")+'</div>';
   }
-
-  document.querySelectorAll(".portal-nav-btn").forEach(btn=>{
-    btn.addEventListener("click",()=>switchTab(btn.dataset.tab));
-  });
 
   document.getElementById("langToggleBtn").addEventListener("click",()=>{
     currentLang=LANGS[(LANGS.indexOf(currentLang)+1)%LANGS.length];
@@ -995,7 +976,6 @@ window.addEventListener('DOMContentLoaded', () => {
   function switchTab(tab) {
     haptic();
     document.getElementById('gamesBrowser').classList.toggle('hidden', tab !== 'games');
-    document.getElementById('leaderboardView').classList.add('hidden');
     document.getElementById('achievementsView').classList.add('hidden');
     document.getElementById('guestView').classList.toggle('hidden', tab !== 'guest');
     const chatTab=document.getElementById('tabGuest');
