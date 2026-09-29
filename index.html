@@ -135,6 +135,26 @@ h1{color:var(--tg-text);font-size:30px; margin: 2px 0 0; text-shadow: 2px 2px #e
 .guest-input { flex-grow: 1; background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 6px; color: #fff; padding: 6px 10px; font-size: 11px; font-family: monospace; }
 .guest-send { background: var(--tg-blue-dark); border:1px solid var(--tg-blue); color: var(--tg-text); padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
 .guest-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; }
+.chat-auth-state{padding:9px 10px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);font-size:9px;color:var(--tg-text-secondary);text-align:left;margin-bottom:6px}
+.chat-room-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:5px}
+.chat-room-tab{min-width:0;padding:7px 3px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font:bold 9px monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-room-tab.active{background:var(--tg-blue-dark);border-color:var(--tg-blue);color:#fff}
+.chat-toolbar{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-surface-soft);font-size:9px;font-weight:bold;color:var(--tg-text);margin-bottom:5px}
+.chat-mini-btn{width:27px;height:25px;border:1px solid var(--tg-border);border-radius:7px;background:var(--tg-btn);color:var(--tg-text);font-weight:bold}
+.chat-list{max-height:none;flex:1;min-height:130px}
+.chat-compose{flex-shrink:0;margin-top:5px}
+.dm-list{max-height:100%;overflow-y:auto;min-height:0}
+.dm-item{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);color:var(--tg-text);text-align:left;margin-bottom:4px}
+.dm-item-avatar{font-size:20px;width:28px;text-align:center}
+.dm-item-name{font-weight:bold;font-size:10px}
+.dm-item-preview{font-size:8px;color:var(--tg-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-thread{min-height:0;flex:1;display:flex;flex-direction:column}
+.dm-thread-head{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:10px;font-weight:bold}
+.dm-thread .guest-list{flex:1;max-height:none}
+.chat-msg-time{float:right;color:var(--tg-text-secondary);font-size:7px;margin-left:6px}
+.chat-message-own{border-color:var(--tg-blue)}
+.chat-message-block{min-width:0}
+
 .guest-msg { background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 6px; padding: 6px 10px; font-size: 10px; text-align: left; }
 .guest-author { color:var(--tg-blue); font-weight: bold; margin-bottom: 2px; }
 
@@ -255,11 +275,32 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   </div>
 
   <div class="panel-view hidden" id="guestView">
-    <div class="guest-form">
-      <input type="text" id="guestInput" class="guest-input" data-i18n-placeholder="chatPlaceholder" placeholder="Напиши сообщение в зал славы..." maxlength="50">
-      <button class="guest-send" id="sendMsgBtn" data-i18n="send">ОТПРАВИТЬ</button>
+    <div class="chat-auth-state" id="chatAuthState"></div>
+    <div class="chat-layout" id="chatLayout">
+      <div class="chat-room-tabs">
+        <button class="chat-room-tab active" data-room="main">🏠 <span data-chat-room-label="main">ОСНОВНАЯ</span></button>
+        <button class="chat-room-tab" data-room="games">🎮 <span data-chat-room-label="games">ИГРЫ</span></button>
+        <button class="chat-room-tab" data-room="relax">🌙 <span data-chat-room-label="relax">RELAX</span></button>
+        <button class="chat-room-tab" data-room="dm">✉️ <span>ЛС</span></button>
+      </div>
+      <div class="chat-toolbar">
+        <span id="chatRoomTitle">🏠 ОСНОВНАЯ</span>
+        <button id="chatRefreshBtn" class="chat-mini-btn">↻</button>
+      </div>
+      <div class="dm-list hidden" id="dmList"></div>
+      <div class="guest-list chat-list" id="guestList"></div>
+      <div class="dm-thread hidden" id="dmThread">
+        <div class="dm-thread-head">
+          <button id="dmBackBtn" class="chat-mini-btn">‹</button>
+          <span id="dmThreadTitle">Личные сообщения</span>
+        </div>
+        <div class="guest-list" id="dmMessageList"></div>
+      </div>
+      <div class="guest-form chat-compose" id="chatCompose">
+        <input type="text" id="guestInput" class="guest-input" data-i18n-placeholder="chatPlaceholder" placeholder="Напиши сообщение..." maxlength="500" autocomplete="off">
+        <button class="guest-send" id="sendMsgBtn" data-i18n="send">ОТПРАВИТЬ</button>
+      </div>
     </div>
-    <div class="guest-list" id="guestList"></div>
   </div>
 
   <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
@@ -566,48 +607,42 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:"games_10",icon:"🌐",name:{ru:"Исследователь",de:"Entdecker",en:"Explorer"},desc:{ru:"Запустить 10 игр",de:"10 Spiele starten",en:"Launch 10 games"},ok:s=>s.gameLaunches>=10}
   ];
 
-  function renderPlayerProfile(){
+  let profileTargetId=null;
+  async function renderPlayerProfile(target){
     const id=document.getElementById("playerProfileOverlay");
     if(!id)return;
-    const identity=playerIdentity();
-    document.getElementById("playerProfileAvatar").textContent=identity.avatar;
-    document.getElementById("playerProfileName").textContent=identity.name || identity.username || "Игрок";
-    document.getElementById("playerProfileUsername").textContent=identity.username || "";
-    document.getElementById("profilePortalTime").textContent=formatDuration(playerStats.portalSeconds);
-    document.getElementById("profileGameTime").textContent=formatDuration(playerStats.gameSeconds);
-    document.getElementById("profileGameLaunches").textContent=String(playerStats.gameLaunches);
-    document.getElementById("profileMessages").textContent=String(playerStats.messagesSent);
-    document.getElementById("profileChatTime").textContent=formatDuration(playerStats.chatSeconds);
-    document.getElementById("profileActiveDays").textContent=String(playerStats.activeDays.length);
-
+    const isSelf=!target || String(target)===playerId;
+    let data=null;
+    if(!isSelf && chatAuthorized){
+      try{data=await api("/profile/"+encodeURIComponent(String(target)));}catch(e){}
+    }
+    if(!data && isSelf){
+      const identity=playerIdentity();
+      data={id:playerId,avatar:identity.avatar,name:identity.name,username:identity.username,stats:playerStats,achievements:null};
+    }
+    if(!data)data={id:String(target||""),avatar:"👾",name:"Игрок",username:"",stats:{portalSeconds:0,gameSeconds:0,gameLaunches:0,messagesSent:0,chatSeconds:0,activeDays:[]}};
+    profileTargetId=String(data.id||target||playerId);
+    document.getElementById("playerProfileAvatar").textContent=data.avatar||"👾";
+    document.getElementById("playerProfileName").textContent=data.name||data.username||"Игрок";
+    document.getElementById("playerProfileUsername").textContent=data.username||"";
+    const s=data.stats||{};
+    document.getElementById("profilePortalTime").textContent=formatDuration(s.portalSeconds);
+    document.getElementById("profileGameTime").textContent=formatDuration(s.gameSeconds);
+    document.getElementById("profileGameLaunches").textContent=String(s.gameLaunches||0);
+    document.getElementById("profileMessages").textContent=String(s.messagesSent||0);
+    document.getElementById("profileChatTime").textContent=formatDuration(s.chatSeconds);
+    document.getElementById("profileActiveDays").textContent=String(Array.isArray(s.activeDays)?s.activeDays.length:(s.activeDays||0));
     const list=document.getElementById("profileAchievementsList");
     if(list){
-      list.innerHTML=ACHIEVEMENT_DEFS.map(a=>{
-        const unlocked=!!a.ok(playerStats);
-        const n=(a.name[currentLang]||a.name.en);
-        const d=(a.desc[currentLang]||a.desc.en);
-        return '<div class="player-achievement '+(unlocked?"":"locked")+'"><div class="player-achievement-icon">'+(unlocked?a.icon:"🔒")+'</div><div><div class="player-achievement-name">'+n+'</div><div class="player-achievement-desc">'+d+'</div></div></div>';
-      }).join("");
+      const ach=data.achievements||ACHIEVEMENT_DEFS.map(a=>({icon:a.icon,name:a.name[currentLang]||a.name.en,desc:a.desc[currentLang]||a.desc.en,unlocked:!!a.ok(playerStats)}));
+      list.innerHTML=ach.map(a=>'<div class="player-achievement '+(a.unlocked?"":"locked")+'"><div class="player-achievement-icon">'+(a.unlocked?a.icon:"🔒")+'</div><div><div class="player-achievement-name">'+a.name+'</div><div class="player-achievement-desc">'+a.desc+'</div></div></div>').join("");
     }
-    const labels={
-      ru:["ПОРТАЛ","ИГРЫ","ЗАПУСКОВ ИГР","СООБЩЕНИЙ","В ЧАТЕ","ДНЕЙ АКТИВНОСТИ","🏆 АЧИВКИ","ЗАКРЫТЬ"],
-      de:["PORTAL","SPIELE","SPIELSTARTS","NACHRICHTEN","CHATZEIT","AKTIVE TAGE","🏆 ERFOLGE","SCHLIESSEN"],
-      en:["PORTAL","GAMES","GAME LAUNCHES","MESSAGES","CHAT TIME","ACTIVE DAYS","🏆 ACHIEVEMENTS","CLOSE"]
-    }[currentLang]||[];
+    const labels={ru:["ПОРТАЛ","ИГРЫ","ЗАПУСКОВ ИГР","СООБЩЕНИЙ","В ЧАТЕ","ДНЕЙ АКТИВНОСТИ","🏆 АЧИВКИ","ЗАКРЫТЬ"],de:["PORTAL","SPIELE","SPIELSTARTS","NACHRICHTEN","CHATZEIT","AKTIVE TAGE","🏆 ERFOLGE","SCHLIESSEN"],en:["PORTAL","GAMES","GAME LAUNCHES","MESSAGES","CHAT TIME","ACTIVE DAYS","🏆 ACHIEVEMENTS","CLOSE"]}[currentLang]||[];
     ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileClose"].forEach((x,i)=>{const e=document.getElementById(x);if(e&&labels[i])e.textContent=labels[i]});
     id.classList.remove("hidden");
   }
-
-  function closePlayerProfile(){
-    const el=document.getElementById("playerProfileOverlay");
-    if(el)el.classList.add("hidden");
-  }
-
-  function openPlayerProfile(){
-    syncTelegramIdentity();
-    renderPlayerProfile();
-    haptic();
-  }
+  function closePlayerProfile(){const el=document.getElementById("playerProfileOverlay");if(el)el.classList.add("hidden");}
+  function openPlayerProfile(target){syncTelegramIdentity();renderPlayerProfile(target||playerId);haptic();}
 
   document.getElementById("userNameTxt").addEventListener("click",openPlayerProfile);
   document.getElementById("playerProfileClose").addEventListener("click",closePlayerProfile);
@@ -615,42 +650,145 @@ window.addEventListener('DOMContentLoaded', () => {
     if(e.target.id==="playerProfileOverlay")closePlayerProfile();
   });
 
-  function loadMessages(){
-    const list=document.getElementById("guestList");
-    if(!list)return;
-    let messages=[];
-    try{messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");}catch(e){}
-    if(!messages.length){updateGuestEmptyState();return;}
-    list.innerHTML=messages.slice(-100).map((m,i)=>{
-      const author=(m.username||m.name||"Игрок").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      const avatar=m.avatar||"👾";
-      const safeText=String(m.text||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      return '<div class="guest-msg"><div class="guest-author" data-player-id="'+String(m.playerId||"").replace(/"/g,"&quot;")+'">'+avatar+" "+author+'</div><div>'+safeText+'</div></div>';
-    }).join("");
-    list.querySelectorAll(".guest-author").forEach(el=>el.addEventListener("click",openPlayerProfile));
+  // TELEGRAM CHAT API
+  const CHAT_API_BASE = String(window.FREEZZ_CHAT_API || "/api").replace(/\/$/,"");
+  let chatAuthorized=false;
+  let chatRoom="main";
+  let activeDmUserId=null;
+  let chatBusy=false;
+
+  async function api(path, options={}){
+    const opts=Object.assign({credentials:"include",headers:{}},options);
+    if(opts.body && typeof opts.body!=="string"){opts.headers["Content-Type"]="application/json";opts.body=JSON.stringify(opts.body);}
+    const res=await fetch(CHAT_API_BASE+path,opts);
+    let payload=null; try{payload=await res.json();}catch(e){}
+    if(!res.ok)throw new Error(payload?.error||("HTTP "+res.status));
+    return payload;
   }
 
-  document.getElementById("sendMsgBtn").addEventListener("click",()=>{
+  function chatSetStatus(text,ok=false){
+    const el=document.getElementById("chatAuthState");
+    if(el){el.textContent=text;el.style.color=ok?"var(--tg-text)":"var(--tg-text-secondary)";}
+  }
+
+  async function authorizeChat(){
+    if(!tg || !tg.initData){chatAuthorized=false;chatSetStatus(currentLang==="ru"?"Открой чат внутри Telegram для авторизации.":currentLang==="de"?"Öffne den Chat in Telegram zur Anmeldung.":"Open the chat inside Telegram to sign in.");return false;}
+    try{
+      await api("/auth/telegram",{method:"POST",body:{initData:tg.initData}});
+      chatAuthorized=true;
+      chatSetStatus(currentLang==="ru"?"Telegram: авторизация подтверждена":currentLang==="de"?"Telegram: Anmeldung bestätigt":"Telegram: authorization confirmed",true);
+      return true;
+    }catch(e){
+      chatAuthorized=false;
+      chatSetStatus((currentLang==="ru"?"Ошибка авторизации: ":currentLang==="de"?"Anmeldung fehlgeschlagen: ":"Authorization failed: ")+e.message);
+      return false;
+    }
+  }
+
+  function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function formatMsgTime(v){try{return new Date(v).toLocaleTimeString(currentLang==="ru"?"ru-RU":currentLang==="de"?"de-DE":"en-US",{hour:"2-digit",minute:"2-digit"});}catch(e){return "";}}
+  function roomLabel(room){return room==="games"?"🎮 ИГРЫ":room==="relax"?"🌙 RELAX":"🏠 ОСНОВНАЯ";}
+
+  async function loadMessages(){
+    if(!chatAuthorized)return;
+    const list=document.getElementById("guestList"); if(!list)return;
+    try{
+      const data=await api("/chat/messages?room="+encodeURIComponent(chatRoom)+"&limit=100");
+      const messages=data.messages||[];
+      list.innerHTML=messages.length?messages.map(m=>{
+        const own=String(m.playerId)===playerId;
+        return '<div class="guest-msg '+(own?"chat-message-own":"")+'"><div class="guest-author" data-player-id="'+escapeHtml(m.playerId)+'">'+escapeHtml(m.avatar||"👾")+" "+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div class="chat-message-block">'+escapeHtml(m.text)+'</div></div>';
+      }).join(""):'<div class="guest-msg">Пока сообщений нет. Будь первым.</div>';
+      list.querySelectorAll(".guest-author").forEach(el=>el.addEventListener("click",()=>openPlayerProfile(el.dataset.playerId)));
+    }catch(e){chatSetStatus("Chat API: "+e.message);}
+  }
+
+  async function sendChatMessage(){
+    if(chatBusy)return;
     const input=document.getElementById("guestInput");
     const textValue=(input.value||"").trim();
+    if(!textValue || !chatAuthorized)return;
+    chatBusy=true;
+    try{
+      await api("/chat/messages",{method:"POST",body:{room:chatRoom,text:textValue}});
+      input.value="";
+      playerStats.messagesSent++; savePlayerStats();
+      await loadMessages(); haptic();
+    }catch(e){chatSetStatus("Chat: "+e.message);}
+    finally{chatBusy=false;}
+  }
+
+  async function loadDmList(){
+    if(!chatAuthorized)return;
+    const box=document.getElementById("dmList");
+    try{
+      const data=await api("/dm");
+      box.innerHTML=(data.conversations||[]).map(x=>'<button class="dm-item" data-dm-id="'+escapeHtml(x.playerId)+'"><span class="dm-item-avatar">'+escapeHtml(x.avatar||"👾")+'</span><span><div class="dm-item-name">'+escapeHtml(x.username||x.name||"Игрок")+'</div><div class="dm-item-preview">'+escapeHtml(x.lastMessage||"")+'</div></span></button>').join("")||'<div class="guest-msg">Личных диалогов пока нет.</div>';
+      box.querySelectorAll(".dm-item").forEach(el=>el.addEventListener("click",()=>openDm(el.dataset.dmId)));
+    }catch(e){chatSetStatus("DM: "+e.message);}
+  }
+
+  async function openDm(targetId){
+    if(!chatAuthorized || !targetId || String(targetId)===playerId)return;
+    activeDmUserId=String(targetId);
+    document.getElementById("guestList").classList.add("hidden");
+    document.getElementById("dmList").classList.add("hidden");
+    document.getElementById("dmThread").classList.remove("hidden");
+    document.getElementById("chatCompose").classList.remove("hidden");
+    try{
+      const p=await api("/profile/"+encodeURIComponent(activeDmUserId));
+      document.getElementById("dmThreadTitle").textContent=p.username||p.name||"Личные сообщения";
+      const data=await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages?limit=100");
+      const list=document.getElementById("dmMessageList");
+      list.innerHTML=(data.messages||[]).map(m=>'<div class="guest-msg '+(String(m.senderId)===playerId?"chat-message-own":"")+'"><div class="guest-author">'+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div>'+escapeHtml(m.text)+'</div></div>').join("")||'<div class="guest-msg">Нет сообщений.</div>';
+      list.scrollTop=list.scrollHeight;
+    }catch(e){chatSetStatus("DM: "+e.message);}
+  }
+
+  async function sendDmMessage(){
+    if(!activeDmUserId||chatBusy)return;
+    const input=document.getElementById("guestInput"), textValue=(input.value||"").trim();
     if(!textValue)return;
-    const identity=playerIdentity();
-    let messages=[];
-    try{messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");}catch(e){}
-    messages.push({playerId:identity.id,username:identity.username,name:identity.name,avatar:identity.avatar,text:textValue,createdAt:Date.now()});
-    messages=messages.slice(-200);
-    localStorage.setItem("freezzzGuestMessages",JSON.stringify(messages));
-    playerStats.messagesSent++;
-    savePlayerStats();
-    input.value="";
+    chatBusy=true;
+    try{await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages",{method:"POST",body:{text:textValue}});input.value="";playerStats.messagesSent++;savePlayerStats();await openDm(activeDmUserId);haptic();}
+    catch(e){chatSetStatus("DM: "+e.message);}
+    finally{chatBusy=false;}
+  }
+
+  function selectChatRoom(room){
+    chatRoom=room; activeDmUserId=null;
+    document.querySelectorAll(".chat-room-tab").forEach(b=>b.classList.toggle("active",b.dataset.room===room));
+    document.getElementById("chatRoomTitle").textContent=roomLabel(room);
+    document.getElementById("guestList").classList.remove("hidden");
+    document.getElementById("dmList").classList.add("hidden");
+    document.getElementById("dmThread").classList.add("hidden");
+    document.getElementById("chatCompose").classList.remove("hidden");
     loadMessages();
-    haptic();
-  });
+  }
 
-  document.getElementById("guestInput").addEventListener("keydown",e=>{
-    if(e.key==="Enter")document.getElementById("sendMsgBtn").click();
-  });
+  function selectDmMode(){
+    activeDmUserId=null;
+    document.querySelectorAll(".chat-room-tab").forEach(b=>b.classList.toggle("active",b.dataset.room==="dm"));
+    document.getElementById("chatRoomTitle").textContent="✉️ ЛИЧНЫЕ СООБЩЕНИЯ";
+    document.getElementById("guestList").classList.add("hidden");
+    document.getElementById("dmList").classList.remove("hidden");
+    document.getElementById("dmThread").classList.add("hidden");
+    document.getElementById("chatCompose").classList.add("hidden");
+    loadDmList();
+  }
 
+  document.querySelectorAll(".chat-room-tab").forEach(b=>b.addEventListener("click",()=>b.dataset.room==="dm"?selectDmMode():selectChatRoom(b.dataset.room)));
+  document.getElementById("chatRefreshBtn").addEventListener("click",()=>activeDmUserId?openDm(activeDmUserId):chatRoom?loadMessages():loadDmList());
+  document.getElementById("dmBackBtn").addEventListener("click",selectDmMode);
+  document.getElementById("sendMsgBtn").addEventListener("click",()=>activeDmUserId?sendDmMessage():sendChatMessage());
+  document.getElementById("guestInput").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("sendMsgBtn").click();});
+
+  async function openChatPanel(){
+    const ok=await authorizeChat();
+    if(ok){selectChatRoom(chatRoom);}
+  }
+  openChatPanel();
+  setInterval(()=>{if(chatAuthorized && !document.hidden && !document.getElementById("guestView").classList.contains("hidden")){activeDmUserId?openDm(activeDmUserId):chatRoom&&loadMessages();}},10000);
 
   // АВАТАРЫ
   const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
@@ -750,30 +888,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('leaderboardView').classList.toggle('hidden', tab !== 'top');
     document.getElementById('achievementsView').classList.toggle('hidden', tab !== 'ach');
     document.getElementById('guestView').classList.toggle('hidden', tab !== 'guest');
-    ['tabGames', 'tabTop', 'tabAch', 'tabGuest'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('active');
-    });
-
-    if (tab === 'games') {
-      document.getElementById('tabGames').classList.add('active');
-      showCategoryList(false);
-    } else if (tab === 'top') {
-      document.getElementById('tabTop').classList.add('active');
-      loadScores();
-    } else if (tab === 'ach') {
-      document.getElementById('tabAch').classList.add('active');
-      checkAchievements();
-    } else if (tab === 'guest') {
-      document.getElementById('tabGuest').classList.add('active');
-      loadMessages();
-    }
+    ['tabGames','tabTop','tabAch','tabGuest'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+    if(tab==='games'){document.getElementById('tabGames').classList.add('active');showCategoryList(false);}
+    else if(tab==='top'){document.getElementById('tabTop').classList.add('active');loadScores();}
+    else if(tab==='ach'){document.getElementById('tabAch').classList.add('active');checkAchievements();}
+    else if(tab==='guest'){document.getElementById('tabGuest').classList.add('active');openChatPanel();}
   }
-
-
-  document.getElementById('guestInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
-  });
 
   const GAME_CARDS = [
     {id:'snake',title:'SNAKE',emoji:'🐍',genre:'ARCADE',desc:'Классическая змейка: собирай еду, расти и устанавливай новый рекорд.'},
@@ -1003,6 +1123,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   renderCategories();
   showCategoryList(false);
+  window.addEventListener("beforeunload",()=>{try{navigator.sendBeacon?.(CHAT_API_BASE+"/auth/heartbeat","");}catch(e){}});
 
 
 
