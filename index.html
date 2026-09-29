@@ -10,16 +10,17 @@
 <script defer>
 (function(){
   "use strict";
-  const webApp=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
   const API_TIMEOUT_MS=10000;
-  function ready(){try{webApp?.ready?.();}catch(e){}}
-  function expand(){try{webApp?.expand?.();}catch(e){}}
+  function getWebApp(){return window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;}
+  function ready(){try{getWebApp()?.ready?.();}catch(e){}}
+  function expand(){try{getWebApp()?.expand?.();}catch(e){}}
   function openLink(url){
     if(!url)return;
-    try{if(webApp?.openLink)return webApp.openLink(url);}catch(e){}
+    try{const webApp=getWebApp();if(webApp?.openLink)return webApp.openLink(url);}catch(e){}
     window.open(url,"_blank","noopener,noreferrer");
   }
   async function authenticate(apiBase){
+    const webApp=getWebApp();
     const initData=String(webApp?.initData||"");
     if(!initData)throw new Error("Telegram Mini App authorization data is missing");
     const controller=new AbortController();
@@ -35,7 +36,8 @@
     }finally{clearTimeout(timer);}
   }
   window.FREEZZTelegramAuth=Object.freeze({
-    isMiniApp:!!webApp,get initData(){return String(webApp?.initData||"");},
+    get isMiniApp(){return !!getWebApp();},
+    get initData(){return String(getWebApp()?.initData||"");},
     ready,expand,openLink,authenticate
   });
   ready();
