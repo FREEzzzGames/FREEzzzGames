@@ -1,5 +1,7 @@
 import http from "node:http";
 import {URL} from "node:url";
+import fs from "node:fs/promises";
+import path from "node:path";
 import {validateTelegramInitData} from "./auth/telegram.js";
 import {createSession,createSessionCookie,clearSessionCookie,getSessionPlayer,revokeSession} from "./auth/session.js";
 import pg from "pg";
@@ -14,6 +16,23 @@ const pool=new Pool({connectionString:DATABASE_URL,ssl:process.env.PGSSL==="disa
 const rooms=new Set(["main","games","relax"]);
 const json={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
 const origin=ALLOWED_ORIGIN||"*";
+const STATIC_ROOT=path.resolve(process.cwd(),"..");
+const MIME={".html":"text/html; charset=utf-8",".js":"application/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".svg":"image/svg+xml",".ico":"image/x-icon"};
+async function serveStatic(req,res,u){
+  let pathname=decodeURIComponent(u.pathname);
+  if(pathname==="/")pathname="/index.html";
+  const file=path.resolve(STATIC_ROOT,"."+pathname);
+  if(file!==STATIC_ROOT&&!file.startsWith(STATIC_ROOT+path.sep))return false;
+  try{
+    const stat=await fs.stat(file);
+    if(!stat.isFile())return false;
+    const ext=path.extname(file).toLowerCase();
+    const body=await fs.readFile(file);
+    res.writeHead(200,{"Content-Type":MIME[ext]||"application/octet-stream","Cache-Control":"no-store"});
+    res.end(body);
+    return true;
+  }catch(e){return false;}
+}
 function out(res,status,data,extra={}){res.writeHead(status,{...json,"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true",...extra});res.end(JSON.stringify(data));}
 async function body(req){const a=[];for await(const x of req)a.push(x);const s=Buffer.concat(a).toString("utf8");return s?JSON.parse(s):{};}
 async function me(req){return getSessionPlayer(pool,req);}
@@ -33,6 +52,7 @@ async function router(req,res){
    if(requestOrigin&&requestOrigin!==ALLOWED_ORIGIN)return out(res,403,{error:"Origin not allowed"});
  }
  if(u.pathname==="/api/health")return out(res,200,{ok:true});
+ if(req.method==="GET"&&!u.pathname.startsWith("/api/")&&await serveStatic(req,res,u))return;
  try{
   if(req.method==="POST"&&u.pathname==="/api/auth/telegram/session"){
    const b=await body(req);
