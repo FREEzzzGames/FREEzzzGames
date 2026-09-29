@@ -717,7 +717,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function openPlayerProfile(target){syncTelegramIdentity();renderPlayerProfile(target||playerId);haptic();}
   document.getElementById("playerProfileMessageBtn").addEventListener("click",()=>{if(profileTargetId&&profileTargetId!==playerId){closePlayerProfile();switchTab("guest");setTimeout(()=>openDm(profileTargetId),0);}});
 
-  document.getElementById("userNameTxt").addEventListener("click",openPlayerProfile);
+  document.getElementById("userNameTxt").addEventListener("click",()=>openPlayerProfile(playerId));
   document.getElementById("playerProfileClose").addEventListener("click",closePlayerProfile);
   document.getElementById("playerProfileOverlay").addEventListener("click",e=>{
     if(e.target.id==="playerProfileOverlay")closePlayerProfile();
@@ -792,7 +792,7 @@ window.addEventListener('DOMContentLoaded', () => {
       input.value="";
       playerStats.messagesSent++; savePlayerStats();
       await loadMessages(); haptic();
-    }catch(e){chatSetStatus("Chat: "+e.message);}
+    }catch(e){chatSetStatus(tr("chatApiError")+e.message);}
     finally{chatBusy=false;}
   }
 
@@ -818,9 +818,9 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("dmThreadTitle").textContent=p.username||p.name||tr("dmTitle");
       const data=await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages?limit=100");
       const list=document.getElementById("dmMessageList");
-      list.innerHTML=(data.messages||[]).map(m=>'<div class="guest-msg '+(String(m.senderId)===playerId?"chat-message-own":"")+'"><div class="guest-author">'+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div>'+escapeHtml(m.text)+'</div></div>').join("")||'<div class="guest-msg">Нет сообщений.</div>';
+      list.innerHTML=(data.messages||[]).map(m=>'<div class="guest-msg '+(String(m.senderId)===playerId?"chat-message-own":"")+'"><div class="guest-author">'+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div>'+escapeHtml(m.text)+'</div></div>').join("")||'<div class="guest-msg">'+tr("noMessages")+'</div>';
       list.scrollTop=list.scrollHeight;
-    }catch(e){chatSetStatus("DM: "+e.message);}
+    }catch(e){chatSetStatus(tr("dmApiError")+e.message);}
   }
 
   async function sendDmMessage(){
