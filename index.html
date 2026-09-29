@@ -981,6 +981,12 @@ window.addEventListener('DOMContentLoaded', () => {
     else if(tab==='guest'){openChatPanel();}
   }
 
+  const chatTabButton=document.getElementById('tabGuest');
+  if(chatTabButton && !chatTabButton.dataset.bound){
+    chatTabButton.dataset.bound='1';
+    chatTabButton.addEventListener('click',()=>switchTab('guest'));
+  }
+
   const GAME_CARDS = [
     {id:'snake',title:'SNAKE',emoji:'🐍',genre:'ARCADE',desc:'Классическая змейка: собирай еду, расти и устанавливай новый рекорд.'},
     {id:'slowroads',title:'SLOW ROADS',emoji:'🏎️',genre:'DRIVING',desc:'Бесконечная поездка по процедурно создаваемым дорогам с расслабляющей атмосферой.'},
