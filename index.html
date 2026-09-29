@@ -978,20 +978,47 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const GAME_CARDS = [
-    {id:'snake',title:'SNAKE',emoji:'🐍',genre:'АРКАДА',desc:'Классическая змейка. Сразу запускается в браузере.'},
-    {id:'2048',title:'2048',emoji:'🔢',genre:'ГОЛОВОЛОМКА',desc:'Соединяй одинаковые плитки и доберись до 2048.'},
-    {id:'tetris',title:'TETRIS',emoji:'🧱',genre:'АРКАДА',desc:'Собирай линии из падающих фигур.'},
-    {id:'breakout',title:'BREAKOUT',emoji:'🧱',genre:'АРКАДА',desc:'Разбивай блоки и удерживай мяч в игре.'},
-    {id:'minesweeper',title:'MINESWEEPER',emoji:'💣',genre:'ГОЛОВОЛОМКА',desc:'Открывай безопасные клетки и отмечай опасные.'},
-    {id:'wordle',title:'WORDLE',emoji:'🟩',genre:'СЛОВА',desc:'Угадай слово за ограниченное число попыток.'},
-    {id:'flappy',title:'FLAPPY BIRD',emoji:'🐦',genre:'АРКАДА',desc:'Нажимай, чтобы удерживать персонажа в воздухе.'},
-    {id:'dino',title:'DINO DASH',emoji:'🦖',genre:'АРКАДА',desc:'Прыгай через препятствия и набирай очки.'},
-    {id:'pong',title:'PONG',emoji:'🏓',genre:'АРКАДА',desc:'Классический матч против компьютера.'}
+    {id:"roottrees",title:"THE ROOTTREES ARE DEAD",emoji:"🕵️",genre:"ДЕТЕКТИВ",desc:"Генеалогическая загадка и большое логическое расследование."},
+    {id:"password",title:"THE PASSWORD GAME",emoji:"🔐",genre:"ГОЛОВОЛОМКА",desc:"Создай пароль, который одновременно выполняет всё больше правил."},
+    {id:"infinite",title:"INFINITE CRAFT",emoji:"🧪",genre:"КРАФТ",desc:"Соединяй элементы и открывай неожиданные комбинации."},
+    {id:"polytrack",title:"POLYTRACK",emoji:"🏎️",genre:"ГОНКИ",desc:"Высокоскоростные трассы, редактор и управление на мобильных."},
+    {id:"remojibus",title:"REMOJIBUS",emoji:"🧩",genre:"СЛОВА",desc:"Разгадывай ребусы из эмодзи — 101 загадка."},
+    {id:"hexasort",title:"HEXASORT",emoji:"⬡",genre:"ПАЗЛ",desc:"Сортируй, объединяй и очищай цветные шестиугольники."},
+    {id:"puffpilot",title:"PUFF PILOT",emoji:"💨",genre:"АРКАДА",desc:"Проводи воздушный поток через кольца одним касанием."},
+    {id:"knightle",title:"KNIGHTLE",emoji:"♞",genre:"ШАХМАТЫ",desc:"Найди кратчайший маршрут конём через все отмеченные клетки."},
+    {id:"buttoncountdown",title:"BUTTON COUNTDOWN",emoji:"🔘",genre:"РЕАКЦИЯ",desc:"Неоновая мини-игра на скорость реакции."},
+    {id:"doodlejump",title:"DOODLE JUMP",emoji:"🦘",genre:"ПЛАТФОРМЕР",desc:"Прыгай всё выше по платформам и не падай."},
+    {id:"periodic",title:"PERIODIC TABLE RPG",emoji:"⚗️",genre:"ВИКТОРИНА",desc:"Открывай элементы, отвечая на вопросы химии."},
+    {id:"lightsout",title:"LIGHTS OUT",emoji:"💡",genre:"ЛОГИКА",desc:"Погаси все огни, находя правильную последовательность ходов."},
+    {id:"fillsquare",title:"FILL THE SQUARE",emoji:"◼️",genre:"ПАЗЛ",desc:"Заполняй поле и решай компактные пространственные задачи."},
+    {id:"puzzle15",title:"15 PUZZLE",emoji:"🔢",genre:"ПАЗЛ",desc:"Собери числа в правильном порядке."},
+    {id:"horserace",title:"HORSE RACE",emoji:"🐎",genre:"СИМУЛЯЦИЯ",desc:"Наблюдай за случайной гонкой и следи за финишем."},
+    {id:"synonymsprint",title:"SYNONYM SPRINT",emoji:"🔤",genre:"СЛОВА",desc:"Подбирай синонимы на время и расширяй словарный запас."},
+    {id:"addtown",title:"ADD TOWN",emoji:"🏘️",genre:"ПАЗЛ",desc:"Объединяй одинаковые плитки и развивай маленький город."},
+    {id:"jammy",title:"JAMMY",emoji:"🎵",genre:"МУЗЫКА",desc:"Угадывай песни и проверяй музыкальную память."},
+    {id:"dailydecision",title:"DAILY DECISION",emoji:"⚖️",genre:"ИСТОРИЯ",desc:"Один выбор в день — и мир запоминает твои решения."},
+    {id:"ricochetdaily",title:"RICOCHET DAILY",emoji:"🔵",genre:"АРКАДА",desc:"Рассчитывай отскоки и проходи ежедневную задачу."},
+    {id:"easterchilly",title:"EASTER CHILLY",emoji:"🥚",genre:"ПАЗЛ",desc:"Небольшая атмосферная задача на путь и пространство."},
+    {id:"racinggame",title:"NEON CITY RACING",emoji:"🏁",genre:"ГОНКИ",desc:"Неоновая 3D-гонка с трассами и соперниками."},
+    {id:"indiana",title:"INDIANA AARDewerk",emoji:"🏺",genre:"ИССЛЕДОВАНИЕ",desc:"Небольшая 2D-игра с исследовательским и образовательным уклоном."},
+    {id:"manyme",title:"MANY ME",emoji:"👥",genre:"ПЛАТФОРМЕР",desc:"Используй предыдущие действия своего персонажа, чтобы пройти уровень."},
+    {id:"backwords",title:"BACKWORDS",emoji:"🔤",genre:"СЛОВА",desc:"Ежедневная словесная головоломка с необычной логикой."},
+    {id:"protocol",title:"PROTOCOL ERRORMIND",emoji:"🧠",genre:"МИСТЕРИЯ",desc:"Серия браузерных логических уровней с кодами и наблюдением."},
+    {id:"lumenoffice",title:"LUMEN OFFICE RPG",emoji:"🏢",genre:"ПАЗЛ",desc:"Исследуй офис, находи подсказки и решай загадки."},
+    {id:"snakes",title:"SNAKES WITHOUT BRAKES",emoji:"🐍",genre:"АРКАДА",desc:"Быстрая аркада с процедурными уровнями и управлением."},
+    {id:"sleepy",title:"SLEEPY SLEEPOVER",emoji:"🌙",genre:"ИСТОРИЯ",desc:"Небольшая интерактивная история в браузере."},
+    {id:"pip",title:"PIP: SKULL DEMO",emoji:"💀",genre:"ЭКСПЕРИМЕНТ",desc:"Небольшой самостоятельный Three.js игровой прототип."},
+    {id:"snake",title:"SNAKE",emoji:"🐍",genre:"CLASSIC",desc:"Классическая змейка с мгновенным запуском."},
+    {id:"2048",title:"2048",emoji:"🔢",genre:"CLASSIC",desc:"Соединяй одинаковые плитки и доберись до 2048."},
+    {id:"ohh1",title:"0h h1",emoji:"◼️",genre:"CLASSIC",desc:"Логический пазл с двумя цветами и строгими правилами."},
+    {id:"ohn0",title:"0h n0",emoji:"🔵",genre:"CLASSIC",desc:"Числовой логический пазл на основе видимости клеток."},
+    {id:"hextris",title:"HEXTRIS",emoji:"⬡",genre:"CLASSIC",desc:"Быстрая головоломка с падающими цветными блоками."}
   ];
   const CATEGORIES = [
-    {id:'arcade',name:'АРКАДА',icon:'🕹️',ids:['snake','tetris','breakout','flappy','dino','pong']},
-    {id:'puzzle',name:'ГОЛОВОЛОМКИ',icon:'🧠',ids:['2048','minesweeper']},
-    {id:'word',name:'СЛОВА',icon:'🔤',ids:['wordle']}
+    {id:"modern1",name:"ИНДИ • ПЕРВАЯ ВОЛНА",icon:"✨",ids:["roottrees","password","infinite","polytrack","remojibus","hexasort","puffpilot","knightle","buttoncountdown","doodlejump"]},
+    {id:"modern2",name:"ИНДИ • ПАЗЛЫ И ИДЕИ",icon:"🧠",ids:["periodic","lightsout","fillsquare","puzzle15","horserace","synonymsprint","addtown","jammy","dailydecision","ricochetdaily"]},
+    {id:"modern3",name:"ИНДИ • ЭКСПЕРИМЕНТЫ",icon:"🧪",ids:["easterchilly","racinggame","indiana","manyme","backwords","protocol","lumenoffice","snakes","sleepy","pip"]},
+    {id:"classics",name:"КЛАССИКА",icon:"🕹️",ids:["snake","2048","ohh1","ohn0","hextris"]}
   ];
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
   let currentCategory = null;
@@ -1150,15 +1177,41 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
 
   const GAME_LINKS = {
-    snake:'https://emjay045.github.io/browser-games/snake/',
-    '2048':'https://emjay045.github.io/browser-games/2048/',
-    tetris:'https://emjay045.github.io/browser-games/tetris/',
-    breakout:'https://emjay045.github.io/browser-games/breakout/',
-    minesweeper:'https://emjay045.github.io/browser-games/minesweeper/',
-    wordle:'https://emjay045.github.io/browser-games/wordle/',
-    flappy:'https://emjay045.github.io/browser-games/flappy-bird/',
-    dino:'https://emjay045.github.io/browser-games/dino-dash/',
-    pong:'https://emjay045.github.io/browser-games/pong/'
+    "2048":"https://play2048.co/",
+    "roottrees":"https://theroottreesaredead.com/en/online",
+    "password":"https://neal.fun/password-game/",
+    "infinite":"https://neal.fun/infinite-craft/",
+    "polytrack":"https://www.kodub.com/games/polytrack/",
+    "remojibus":"https://starzonmyarmz.github.io/remojibus/",
+    "hexasort":"https://lordbasilaiassistant-sudo.github.io/hexasort/",
+    "puffpilot":"https://bte808.github.io/fun-20260601-a-puff-pilot/",
+    "knightle":"https://brooklyn-dev.github.io/Knightle/",
+    "buttoncountdown":"https://arizustudio.github.io/minigame-button-countdown/",
+    "doodlejump":"https://cozyrain.github.io/DoodleJumpGame/",
+    "periodic":"https://gunavardhanareddyt.github.io/periodic-table-rpg/",
+    "lightsout":"https://amank04.github.io/lightsOut/",
+    "fillsquare":"https://ryanbalieiro.github.io/fill-the-square/",
+    "puzzle15":"https://louislohmer.github.io/15-Puzzle/",
+    "horserace":"https://qafaraz.github.io/Horse-Race/",
+    "synonymsprint":"https://appsbyjames.github.io/synonymsprint/",
+    "addtown":"https://www.lexaloffle.com/bbs/?pid=add_town",
+    "jammy":"https://jwkinney443.github.io/JAMMY/",
+    "dailydecision":"https://devrumitech.github.io/A-minimalist-daily-decision-game.-One-choice-per-day.-Everything-remembers/",
+    "ricochetdaily":"https://teknamin.github.io/ricochet-daily/",
+    "easterchilly":"https://626d7a7179207166206f75646f7171.github.io/easter-chilly/",
+    "racinggame":"https://bhanu2006-24.github.io/racing-game/",
+    "indiana":"https://hovinhthanh7893.github.io/indiana-aardewerk/",
+    "manyme":"https://taharez.github.io/fz-spelsylt-2025-many-me/",
+    "backwords":"https://freesampul.github.io/backwords/",
+    "protocol":"https://protocol-errormind.github.io/",
+    "lumenoffice":"https://samirsaad786.github.io/LumenOfficeRPG/",
+    "snakes":"https://www.kodub.com/games/snakes-without-brakes/",
+    "sleepy":"https://dee-24r.github.io/Sleepy_sleepover/",
+    "pip":"https://bandinopla.github.io/pip-skull-demo/",
+    "snake":"https://www.snake.at/game/1.3/index.html",
+    "ohh1":"https://0hh1.com/",
+    "ohn0":"https://0hn0.com/",
+    "hextris":"https://hextris.io/"
   };
   function openExternal(url) {
     if (!url) return;
@@ -1194,5 +1247,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
+<script src="./js/game-card-animations.js"></script>
 </body>
 </html>
