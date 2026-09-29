@@ -1,26 +1,26 @@
-# FREEzzzGames Telegram Chat backend
+# FREEzzzGames API backend
 
-GitHub Pages is static hosting, so this Node.js backend must run separately with PostgreSQL. The portal calls `/api` by default; with a separate API host, set `window.FREEZZ_CHAT_API` to that API's `/api` base before the portal script.
+The Node.js backend provides player accounts, chat, profiles and statistics for the portal.
 
-## Features
-- Telegram Mini App authentication with server-side HMAC validation.
-- Three public rooms: main, games, relax.
-- PostgreSQL message history.
-- Telegram forum-topic archive mirror for public rooms.
-- Private 1-to-1 messages.
-- Public profiles and server-side player stats.
-- HttpOnly session cookie, message length/rate limits.
+## Architecture
+
+- Telegram Mini App sends official Telegram `initData` to the backend.
+- The backend validates the HMAC signature and rejects stale authorization data.
+- A random server-side session is stored as a hash in PostgreSQL.
+- The browser receives only an HttpOnly Secure SameSite=None session cookie.
+- No bearer session token is exposed to JavaScript or localStorage.
+- Telegram is the identity provider; PostgreSQL is the application database.
+- Public-room messages are stored only in PostgreSQL. The old Telegram archive mirror has been removed.
 
 ## Setup
+
 1. Create PostgreSQL.
 2. Run `psql "$DATABASE_URL" -f schema.sql`.
 3. Fill `.env` from `.env.example`.
-4. Add the bot to the Telegram archive supergroup and give it permission to post to the three forum topics.
+4. Set the Telegram bot token only on the server.
 5. `npm install && npm start`.
 6. Put the API behind HTTPS.
 7. Configure the Mini App URL in BotFather.
-8. If API is separate from GitHub Pages, configure `window.FREEZZ_CHAT_API` and `ALLOWED_ORIGIN`.
+8. Keep `ALLOWED_ORIGIN` equal to the actual portal origin.
 
-Telegram is the archive mirror, not the application's database. The app needs its own indexed database for reliable history and private conversations. Public messages are mirrored to Telegram forum topics using Bot API `message_thread_id`.
-
-Keep the bot token server-side. Add moderation/report/block endpoints and stronger distributed rate limiting before a public launch.
+Before a public launch, add moderation/report/block endpoints and distributed rate limiting.
