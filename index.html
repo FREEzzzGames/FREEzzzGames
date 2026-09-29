@@ -166,6 +166,16 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .game-card-logo{width:100%;height:100%;max-width:92%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;border-radius:10px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
 .game-card-logo-fallback{font-size:74px;line-height:1}
 @media(max-width:420px){.game-card-art{min-height:190px;padding:14px}.game-card-logo-fallback{font-size:64px}}
+
+/* COMPACT ALWAYS-ON SCREEN CONTROLS */
+.always-controls{position:absolute;top:8px;right:8px;z-index:80;display:flex;align-items:center;gap:5px;pointer-events:auto}
+.always-btn{width:32px;height:32px;padding:0;border:1px solid color-mix(in srgb,var(--tg-border) 72%,var(--tg-blue));border-radius:9px;background:color-mix(in srgb,var(--tg-surface) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--tg-text);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.72;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:opacity .18s,transform .18s,background .18s}
+.always-btn:active{opacity:1;transform:scale(.92);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
+.always-btn.home{color:var(--tg-blue);font-size:16px}
+.always-btn.lang{font:bold 9px monospace;letter-spacing:.2px}
+.portal.game-active .always-controls{top:7px;right:7px}
+.portal.game-active .always-btn{width:30px;height:30px}
+@media(max-width:420px){.always-controls{top:6px;right:6px;gap:4px}.always-btn{width:29px;height:29px;border-radius:8px;font-size:13px}.always-btn.home{font-size:15px}}
 </style>
 </head>
 <body id="bodyRoot">
@@ -175,10 +185,10 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
       <div class="user-avatar" id="currentAvatarEmoji">👾</div>
       <div id="userNameTxt">Игрок</div>
     </div>
-    <div class="header-btns">
-      <button class="top-btn" id="themeToggleBtn" title="Тема">☀️</button>
-      <button class="top-btn" id="langToggleBtn" title="Language">RU</button>
-      <button class="top-btn" id="soundToggle" title="Sound">🔊</button>
+    <div class="always-controls" id="alwaysControls">
+      <button class="always-btn home" id="homeMenuBtn" title="Главное меню" aria-label="Главное меню">⌂</button>
+      <button class="always-btn" id="soundToggle" title="Звук" aria-label="Звук">🔊</button>
+      <button class="always-btn lang" id="langToggleBtn" title="Язык" aria-label="Язык">RU</button>
     </div>
   </div>
 
@@ -187,15 +197,6 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="subtitle" data-i18n="subtitle">ARCADE PORTAL 🕹️</div>
   </div>
 
-  <div class="actions-row">
-    <button class="action-btn active" id="tabGames" data-i18n="games">🎮 ИГРЫ</button>
-    <button class="action-btn" id="tabTop" data-i18n="top">🏆 ТОП</button>
-    <button class="action-btn" id="tabAch" data-i18n="achievements">🎖️ АЧИВКИ</button>
-    <button class="action-btn" id="tabGuest" data-i18n="chat">💬 ЧАТ</button>
-    <button class="action-btn special" id="randomGameBtn" data-i18n="random">🎲 РАНДОМ</button>
-    <button class="action-btn" id="shareBtn" data-i18n="share">📤 ДРУЗЬЯМ</button>
-  </div>
-  
   <div class="games-browser" id="gamesBrowser">
     <div class="category-list" id="categoryList"></div>
     <div class="category-view hidden" id="categoryView">
@@ -502,60 +503,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  document.getElementById('tabGames').addEventListener('click', () => switchTab('games'));
-  document.getElementById('tabTop').addEventListener('click', () => switchTab('top'));
-  document.getElementById('tabAch').addEventListener('click', () => switchTab('ach'));
-  document.getElementById('tabGuest').addEventListener('click', () => switchTab('guest'));
-
-  function loadScores() {
-    document.getElementById('scoreDuck').textContent = localStorage.getItem("duckMudackHighScore") || "0";
-    let bestLap = localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap");
-    document.getElementById('scoreRace').textContent = bestLap ? Number(bestLap).toFixed(2) + "s" : "--.--";
-    document.getElementById('scoreTetris').textContent = localStorage.getItem("tetrisHighScore") || "0";
-    document.getElementById('scoreSnake').textContent = localStorage.getItem("snakeHighScore") || "0";
-    document.getElementById('scorePlatformer').textContent = localStorage.getItem("platformerBest") || "0";
-    document.getElementById('scoreJumper').textContent = localStorage.getItem("doodleBest") || "0";
-  }
-
-  function checkAchievements() {
-    if (Number(localStorage.getItem("snakeHighScore") || 0) >= 100) { document.getElementById('achSnake').classList.add('unlocked'); document.getElementById('statSnake').textContent = "✅"; }
-    if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) {
-      document.getElementById('achTetris').classList.add('unlocked');
-      document.getElementById('statTetris').textContent = "✅";
-    }
-    if (Number(localStorage.getItem("platformerBest") || 0) > 0) {
-      document.getElementById('achMario').classList.add('unlocked');
-      document.getElementById('statMario').textContent = "✅";
-    }
-    if (localStorage.getItem("f1WallBestLap") || localStorage.getItem("retroBestLap")) {
-      document.getElementById('achRacer').classList.add('unlocked');
-      document.getElementById('statRacer').textContent = "✅";
-    }
-  }
-
-  function loadMessages() {
-    const list = document.getElementById('guestList');
-    if (!list) return;
-    const messages = JSON.parse(localStorage.getItem('freezzzGuestMessages') || '[]');
-    list.innerHTML = messages.length ? messages.slice(-30).reverse().map(m =>
-      '<div class="guest-msg"><div class="guest-author">' +
-      String(m.author).replace(/[&<>"]/g,'') +
-      '</div><div>' + String(m.text).replace(/[&<>"]/g,'') +
-      '</div></div>'
-    ).join('') : '<div class="guest-msg">Пока сообщений нет. Напиши первым.</div>';
-  }
-
-  document.getElementById('sendMsgBtn').addEventListener('click', () => {
-    const input = document.getElementById('guestInput');
-    const text = (input.value || '').trim();
-    if (!text) return;
-    const messages = JSON.parse(localStorage.getItem('freezzzGuestMessages') || '[]');
-    messages.push({author:userName, text:text, at:Date.now()});
-    localStorage.setItem('freezzzGuestMessages', JSON.stringify(messages.slice(-50)));
-    input.value = '';
-    loadMessages();
-    haptic();
-  });
 
   document.getElementById('guestInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
@@ -727,7 +674,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
   applyLanguage();
 
-  document.getElementById('categoryBack').addEventListener('click',()=>showCategoryList(true));
+  function returnToMainMenu(){
+    const cv=document.getElementById('categoryView');
+    const cl=document.getElementById('categoryList');
+    if(cv)cv.classList.add('hidden');
+    if(cl)cl.classList.remove('hidden');
+    currentCategory=null;
+    categoryGameIndex=0;
+    renderCategories();
+    haptic();
+  }
+
+  document.getElementById('homeMenuBtn').addEventListener('click',returnToMainMenu);
+  document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
 
   const GAME_LINKS = {
     snake:'https://www.snake.at/game/1.3/index.html',
@@ -776,20 +735,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderCategories();
   showCategoryList(false);
 
-  document.getElementById('randomGameBtn').addEventListener('click', () => {
-    const category=CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
-    const id=category.ids[Math.floor(Math.random()*category.ids.length)];
-    openCategory(category.id);
-    categoryGameIndex=category.ids.indexOf(id);
-    renderCategoryCarousel();
-    haptic();
-  });
 
-  document.getElementById('shareBtn').addEventListener('click', () => {
-    const shareUrl='https://freezzzgames.github.io/FREEzzzGames/';
-    const share='https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent('🎮 FREEzzzGames — аркадный портал');
-    openExternal(share);
-  });
 
 });
 </script>
