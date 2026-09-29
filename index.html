@@ -758,12 +758,15 @@ window.addEventListener('DOMContentLoaded', () => {
   // TELEGRAM CHAT API
   const CHAT_API_BASE = String(window.FREEZZ_CHAT_API || "https://freezzgames-chat.onrender.com/api").replace(/\/$/,"");
   let chatAuthorized=false;
+  let chatSessionToken="";
   let chatRoom="main";
   let activeDmUserId=null;
   let chatBusy=false;
 
   async function api(path, options={}){
     const opts=Object.assign({credentials:"include",headers:{}},options);
+    opts.headers=Object.assign({},opts.headers);
+    if(chatSessionToken)opts.headers["Authorization"]="Bearer "+chatSessionToken;
     if(opts.body && typeof opts.body!=="string"){opts.headers["Content-Type"]="application/json";opts.body=JSON.stringify(opts.body);}
     const res=await fetch(CHAT_API_BASE+path,opts);
     let payload=null; try{payload=await res.json();}catch(e){}
@@ -779,7 +782,9 @@ window.addEventListener('DOMContentLoaded', () => {
   async function authorizeChat(){
     if(!tg || !tg.initData){chatAuthorized=false;chatSetStatus(tr("authOpen"));return false;}
     try{
-      await api("/auth/telegram",{method:"POST",body:{initData:tg.initData}});
+      const auth=await api("/auth/telegram",{method:"POST",body:{initData:tg.initData}});
+      chatSessionToken=String(auth?.sessionToken||"");
+      if(!chatSessionToken)throw new Error("Telegram session token was not returned");
       chatAuthorized=true;
       chatSetStatus(tr("authOk"),true);
       return true;
