@@ -18,6 +18,10 @@ const json={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no
 const origin=ALLOWED_ORIGIN||"*";
 function sha(v){return crypto.createHash("sha256").update(v).digest("hex");}
 function cookies(req){const o={};for(const p of String(req.headers.cookie||"").split(";")){const i=p.indexOf("=");if(i>0)o[p.slice(0,i).trim()]=decodeURIComponent(p.slice(i+1));}return o;}
+function bearer(req){
+ const h=String(req.headers.authorization||"");
+ return h.startsWith("Bearer ")?h.slice(7).trim():"";
+}
 function out(res,status,data,extra={}){res.writeHead(status,{...json,"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true",...extra});res.end(JSON.stringify(data));}
 function sessionCookie(t){return "freezzz_session="+encodeURIComponent(t)+"; Path=/; HttpOnly; Secure; SameSite=None; Max-Age="+(SESSION_DAYS*86400);}
 async function body(req){const a=[];for await(const x of req)a.push(x);const s=Buffer.concat(a).toString("utf8");return s?JSON.parse(s):{};}
@@ -33,7 +37,8 @@ function validateInitData(raw){
  const user=JSON.parse(p.get("user")||"null");if(!user?.id)throw new Error("Telegram user missing");return user;
 }
 async function me(req){
- const t=cookies(req).freezzz_session;if(!t)return null;
+ const t=bearer(req)||cookies(req).freezzz_session;
+ if(!t)return null;
  const q=await pool.query("SELECT p.* FROM sessions s JOIN players p ON p.telegram_id=s.telegram_id WHERE s.token_hash=$1 AND s.expires_at>NOW()",[sha(t)]);
  return q.rows[0]||null;
 }
@@ -59,7 +64,7 @@ async function router(req,res){
    const user=validateInitData((await body(req)).initData);await upsert(user);
    const token=crypto.randomBytes(32).toString("base64url");
    await pool.query("INSERT INTO sessions(token_hash,telegram_id,expires_at) VALUES($1,$2,NOW()+(($3::text)||' days')::interval)",[sha(token),String(user.id),String(SESSION_DAYS)]);
-   return out(res,200,{ok:true,user:{id:String(user.id),username:user.username||"",name:name(user)}},{"Set-Cookie":sessionCookie(token)});
+   return out(res,200,{ok:true,user:{id:String(user.id),username:user.username||"",name:name(user)},sessionToken:token},{"Set-Cookie":sessionCookie(token)});
   }
   const user=await me(req);if(!user)return out(res,401,{error:"Telegram authorization required"});
   if(req.method==="GET"&&u.pathname==="/api/chat/messages"){
