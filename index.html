@@ -54,11 +54,13 @@ body{
 .hidden { display: none !important; }
 
 /* ШАПКА ПОРТАЛА */
-.header-top { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; gap: 6px; flex-shrink: 0; position:relative; }
-.header-chat-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:32px;padding:0 12px;border:1px solid color-mix(in srgb,var(--tg-border) 72%,var(--tg-blue));border-radius:9px;background:color-mix(in srgb,var(--tg-surface) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--tg-text);font:bold 9px monospace;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;opacity:.86;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:81;transition:.18s}
-.header-chat-btn:active{transform:translate(-50%,-50%) scale(.94);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
+.header-top { display:grid;grid-template-columns:auto minmax(52px,1fr) auto;align-items:center;padding:4px 6px;gap:6px;flex-shrink:0;position:relative;min-width:0 }
+.header-chat-btn{position:static;justify-self:center;height:32px;padding:0 12px;border:1px solid color-mix(in srgb,var(--tg-border) 72%,var(--tg-blue));border-radius:9px;background:color-mix(in srgb,var(--tg-surface) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--tg-text);font:bold 9px monospace;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;opacity:.86;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:81;transition:.18s;white-space:nowrap}
+.header-chat-btn:active{transform:scale(.94);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
 .header-chat-btn.active{border-color:var(--tg-blue);background:var(--tg-blue-dark);color:var(--tg-text)}
-@media(max-width:420px){.header-chat-btn{height:30px;padding:0 10px;border-radius:8px;font-size:8px}}
+.header-top .always-controls{position:static;justify-self:end}
+@media(max-width:420px){.header-chat-btn{height:30px;padding:0 10px;border-radius:8px;font-size:8px}.header-top{gap:4px}.header-top .always-controls{gap:4px}.header-top .always-btn{width:29px;height:29px}}
+@media(max-width:340px){.header-chat-btn{width:32px;padding:0;font-size:0}.header-chat-btn span{display:none}.header-top{grid-template-columns:auto minmax(34px,1fr) auto}}
 .profile-box { font-size: 11px; color:var(--tg-blue); text-align: left; display: flex; align-items: center; gap: 6px; background:var(--tg-btn); padding: 4px 8px; border-radius: 8px; border:1px solid var(--tg-border); cursor: pointer; }
 .profile-box:active { background: var(--tg-blue-dark); }
 .user-avatar { width: 26px; height: 26px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 15px; border:1px solid var(--tg-blue); flex-shrink: 0; }
