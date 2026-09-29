@@ -170,22 +170,23 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     </div>
     <div class="header-btns">
       <button class="top-btn" id="themeToggleBtn" title="Тема">☀️</button>
-      <button class="top-btn" id="soundToggle">🔊</button>
+      <button class="top-btn" id="langToggleBtn" title="Language">RU</button>
+      <button class="top-btn" id="soundToggle" title="Sound">🔊</button>
     </div>
   </div>
 
   <div>
     <h1>FREEzzzGames</h1>
-    <div class="subtitle">ARCADE PORTAL 🕹️</div>
+    <div class="subtitle" data-i18n="subtitle">ARCADE PORTAL 🕹️</div>
   </div>
 
   <div class="actions-row">
-    <button class="action-btn active" id="tabGames">🎮 ИГРЫ</button>
-    <button class="action-btn" id="tabTop">🏆 ТОП</button>
-    <button class="action-btn" id="tabAch">🎖️ АЧИВКИ</button>
-    <button class="action-btn" id="tabGuest">💬 ЧАТ</button>
-    <button class="action-btn special" id="randomGameBtn">🎲 РАНДОМ</button>
-    <button class="action-btn" id="shareBtn">📤 ДРУЗЬЯМ</button>
+    <button class="action-btn active" id="tabGames" data-i18n="games">🎮 ИГРЫ</button>
+    <button class="action-btn" id="tabTop" data-i18n="top">🏆 ТОП</button>
+    <button class="action-btn" id="tabAch" data-i18n="achievements">🎖️ АЧИВКИ</button>
+    <button class="action-btn" id="tabGuest" data-i18n="chat">💬 ЧАТ</button>
+    <button class="action-btn special" id="randomGameBtn" data-i18n="random">🎲 РАНДОМ</button>
+    <button class="action-btn" id="shareBtn" data-i18n="share">📤 ДРУЗЬЯМ</button>
   </div>
   
   <div class="games-browser" id="gamesBrowser">
@@ -195,11 +196,11 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
         <button class="category-back" id="categoryBack" aria-label="Назад">‹</button>
         <div class="category-head-copy">
           <div class="category-head-title" id="categoryHeadTitle"></div>
-          <div class="category-head-sub">СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ</div>
+          <div class="category-head-sub" data-i18n="swipeHint">СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ</div>
         </div>
       </div>
       <div class="games-carousel" id="gamesCarousel">
-        <div class="carousel-hint">← СВАЙП →</div>
+        <div class="carousel-hint" data-i18n="swipeShort">← СВАЙП →</div>
         <div class="games-track" id="gamesTrack"></div>
         <div class="carousel-dots" id="carouselDots"></div>
       </div>
@@ -224,22 +225,22 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 
   <div class="panel-view hidden" id="guestView">
     <div class="guest-form">
-      <input type="text" id="guestInput" class="guest-input" placeholder="Напиши сообщение в зал славы..." maxlength="50">
-      <button class="guest-send" id="sendMsgBtn">ОТПРАВИТЬ</button>
+      <input type="text" id="guestInput" class="guest-input" data-i18n-placeholder="chatPlaceholder" placeholder="Напиши сообщение в зал славы..." maxlength="50">
+      <button class="guest-send" id="sendMsgBtn" data-i18n="send">ОТПРАВИТЬ</button>
     </div>
     <div class="guest-list" id="guestList"></div>
   </div>
 
-  <div class="footer-info">FREEzzzGames • ARCADE HUB</div>
+  <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
 </div>
 
 <!-- МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ -->
 <div class="modal-overlay hidden" id="avatarModal">
   <div class="modal-card">
-    <h3 style="color:var(--tg-text); margin:0; font-size:14px;">КОЛЛЕКЦИЯ АВАТАРОВ</h3>
-    <p style="font-size:9px; color:var(--tg-text-secondary); margin:0;">Выбирай собранную аватарку или заходи ежедневно за новой!</p>
+    <h3 style="color:var(--tg-text); margin:0; font-size:14px;" data-i18n="avatarCollection">КОЛЛЕКЦИЯ АВАТАРОВ</h3>
+    <p style="font-size:9px; color:var(--tg-text-secondary); margin:0;" data-i18n="avatarHint">Выбирай собранную аватарку или заходи ежедневно за новой!</p>
     <div class="avatar-grid" id="avatarGrid"></div>
-    <button class="action-btn" style="width:100%; justify-content:center; padding:8px; margin-top:2px;" id="closeModalBtn">ЗАКРЫТЬ</button>
+    <button class="action-btn" style="width:100%; justify-content:center; padding:8px; margin-top:2px;" id="closeModalBtn" data-i18n="close">ЗАКРЫТЬ</button>
   </div>
 </div>
 
@@ -254,6 +255,127 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   const nameTxt = document.getElementById('userNameTxt');
   if (nameTxt) nameTxt.textContent = userName;
+
+  const LANGS = ["ru","de","en"];
+  const LANG = {
+    ru:{
+      code:"RU",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 ИГРЫ",top:"🏆 ТОП",achievements:"🎖️ АЧИВКИ",chat:"💬 ЧАТ",random:"🎲 РАНДОМ",share:"📤 ДРУЗЬЯМ",
+      swipeHint:"СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ",swipeShort:"← СВАЙП →",send:"ОТПРАВИТЬ",close:"ЗАКРЫТЬ",arcadeHub:"ARCADE HUB",
+      avatarCollection:"КОЛЛЕКЦИЯ АВАТАРОВ",avatarHint:"Выбирай собранную аватарку или заходи ежедневно за новой!",
+      chatPlaceholder:"Напиши сообщение в зал славы...",back:"Назад",play:"ИГРАТЬ →",oneGame:"ИГРА",gamesCount:"ИГРЫ",
+      score:"Счёт",locked:"🔒",unlocked:"✅",topTitle:"ТОП ИГР",theme:"Тема",sound:"Звук"
+    },
+    de:{
+      code:"DE",subtitle:"ARCADE-PORTAL 🕹️",games:"🎮 SPIELE",top:"🏆 TOP",achievements:"🎖️ ERFOLGE",chat:"💬 CHAT",random:"🎲 ZUFALL",share:"📤 TEILEN",
+      swipeHint:"NACH LINKS / RECHTS WISCHEN • SPIEL DURCH ANTIPPEN ÖFFNEN",swipeShort:"← WISCHEN →",send:"SENDEN",close:"SCHLIESSEN",arcadeHub:"ARCADE HUB",
+      avatarCollection:"AVATAR-SAMMLUNG",avatarHint:"Wähle einen gesammelten Avatar oder komm täglich für einen neuen vorbei!",
+      chatPlaceholder:"Nachricht in die Ruhmeshalle schreiben...",back:"Zurück",play:"SPIELEN →",oneGame:"SPIEL",gamesCount:"SPIELE",
+      score:"Punktzahl",locked:"🔒",unlocked:"✅",topTitle:"SPIELE-TOP",theme:"Thema",sound:"Ton"
+    },
+    en:{
+      code:"EN",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 GAMES",top:"🏆 TOP",achievements:"🎖️ ACHIEVEMENTS",chat:"💬 CHAT",random:"🎲 RANDOM",share:"📤 SHARE",
+      swipeHint:"SWIPE LEFT / RIGHT • TAP TO OPEN THE GAME",swipeShort:"← SWIPE →",send:"SEND",close:"CLOSE",arcadeHub:"ARCADE HUB",
+      avatarCollection:"AVATAR COLLECTION",avatarHint:"Choose a collected avatar or come back daily for a new one!",
+      chatPlaceholder:"Write a message to the hall of fame...",back:"Back",play:"PLAY →",oneGame:"GAME",gamesCount:"GAMES",
+      score:"Score",locked:"🔒",unlocked:"✅",topTitle:"TOP GAMES",theme:"Theme",sound:"Sound"
+    }
+  };
+  const GAME_TEXT = {
+    snake:{ru:["АРКАДА","Классическая змейка: собирай еду, расти и устанавливай новый рекорд."],de:["ARCADE","Klassische Schlange: Sammle Futter, wachse und stelle einen neuen Rekord auf."],en:["ARCADE","Classic Snake: collect food, grow longer and set a new high score."]},
+    slowroads:{ru:["ГОНКИ","Бесконечная поездка по процедурно создаваемым дорогам с расслабляющей атмосферой."],de:["FAHREN","Endlose Fahrt über prozedural erzeugte Straßen in entspannter Atmosphäre."],en:["DRIVING","An endless drive on procedurally generated roads with a relaxing atmosphere."]},
+    quickdraw:{ru:["ЭКСПЕРИМЕНТ","Рисуй заданный объект, а нейросеть попробует понять, что ты нарисовал."],de:["EXPERIMENT","Zeichne ein vorgegebenes Objekt und lass die KI erraten, was du gezeichnet hast."],en:["EXPERIMENTAL","Draw the requested object and let the neural network try to guess it."]},
+    ligmar:{ru:["ОНЛАЙН RPG","Большой браузерный мир с персонажем, развитием, заданиями и онлайн-активностями."],de:["ONLINE-RPG","Eine große Browserwelt mit Charakterentwicklung, Aufgaben und Online-Aktivitäten."],en:["ONLINE RPG","A large browser world with character progression, quests and online activities."]},
+    sixcats:{ru:["ГОЛОВОЛОМКА","Милый point-and-click пазл: помоги котам выбраться, используя необычные способности."],de:["PUZZLE","Ein charmantes Point-and-Click-Puzzle: Hilf den Katzen mit ungewöhnlichen Fähigkeiten zu entkommen."],en:["PUZZLE","A charming point-and-click puzzle: help the cats escape using unusual abilities."]},
+    sortcourt:{ru:["СИМУЛЯЦИЯ","Принимай решения от имени королевства и смотри, как меняется твой город."],de:["SIMULATION","Triff Entscheidungen für dein Königreich und beobachte, wie sich deine Stadt verändert."],en:["SIMULATION","Make decisions for your kingdom and watch your city change."]},
+    dragonsweeper:{ru:["ГОЛОВОЛОМКА","Необычная смесь Minesweeper и приключения с исследованием поля."],de:["PUZZLE","Eine ungewöhnliche Mischung aus Minesweeper und Abenteuer mit Erkundung."],en:["PUZZLE","An unusual mix of Minesweeper and adventure with field exploration."]},
+    mossmoss:{ru:["ПЛАТФОРМЕР","Атмосферное исследование маленького мира, секреты и короткие пиксельные приключения."],de:["PLATTFORMER","Atmosphärische Erkundung einer kleinen Welt mit Geheimnissen und Pixel-Abenteuern."],en:["PLATFORMER","Atmospheric exploration of a small world filled with secrets and pixel adventures."]},
+    peggys:{ru:["СИМУЛЯЦИЯ","Спокойный симулятор сортировки посылок с коллекционированием марок."],de:["SIMULATION","Ruhige Simulation zum Sortieren von Paketen mit Briefmarken-Sammlung."],en:["SIMULATION","A relaxing parcel-sorting simulation with stamp collecting."]},
+    ducklings:{ru:["ПРИКЛЮЧЕНИЕ","Плавай по пруду, спасай утят и развивай своё уютное гнездо."],de:["ABENTEUER","Schwimme durch den Teich, rette Entenküken und entwickle dein gemütliches Nest."],en:["ADVENTURE","Swim around the pond, rescue ducklings and grow your cozy nest."]},
+    polytrack:{ru:["ГОНКИ","Высокоскоростные low-poly трассы, прыжки, петли и собственный редактор трасс."],de:["RENNEN","Schnelle Low-Poly-Strecken mit Sprüngen, Loopings und eigenem Strecken-Editor."],en:["RACING","High-speed low-poly tracks with jumps, loops and a track editor."]},
+    tanuki:{ru:["АРКАДА","Расслабляющая поездка на лонгборде по неоновому побережью."],de:["ARCADE","Eine entspannte Longboard-Fahrt entlang einer Neon-Küste."],en:["ARCADE","A relaxing longboard ride along a neon coastline."]},
+    maketen:{ru:["ГОЛОВОЛОМКА","Соединяй числа так, чтобы получить десять, и попробуй побить свой результат."],de:["PUZZLE","Verbinde Zahlen zu Zehn und versuche, deinen Rekord zu brechen."],en:["PUZZLE","Combine numbers to make ten and try to beat your score."]},
+    sudoku:{ru:["ЛОГИКА","Классическое Sudoku с быстрым управлением и сохранением прогресса."],de:["LOGIK","Klassisches Sudoku mit schneller Steuerung und gespeicherten Fortschritten."],en:["LOGIC","Classic Sudoku with quick controls and progress saving."]},
+    sokoban:{ru:["ГОЛОВОЛОМКА","Толкай ящики к целям и проходи 60 постепенно усложняющихся уровней."],de:["PUZZLE","Schiebe Kisten zu den Zielen und löse 60 zunehmend schwierigere Level."],en:["PUZZLE","Push boxes onto targets across 60 increasingly challenging levels."]},
+    lif3d:{ru:["СИМУЛЯЦИЯ","Экспериментируй с трёхмерными клеточными автоматами и наблюдай за структурами."],de:["SIMULATION","Experimentiere mit dreidimensionalen zellulären Automaten und beobachte Strukturen."],en:["SIMULATION","Experiment with 3D cellular automata and watch structures emerge."]},
+    snakesbrakes:{ru:["ГОЛОВОЛОМКА","Змейка, которая не может остановиться: длина тела становится частью решения."],de:["PUZZLE","Eine Schlange ohne Bremse: Die Körperlänge wird Teil der Lösung."],en:["PUZZLE","A snake that cannot stop: its body length becomes part of the solution."]},
+    bigbubbles:{ru:["ПЕСОЧНИЦА","Поглощай частицы и масштабируйся от микромира до космических размеров."],de:["SANDBOX","Verschlinge Partikel und wachse von der Mikrowelt bis zu kosmischen Größen."],en:["SANDBOX","Absorb particles and grow from the microscopic world to cosmic scale."]},
+    planets:{ru:["КОСМОС","Посмотри, как выглядело бы ночное небо с другой планетой вместо Луны."],de:["WELTRAUM","Sieh, wie der Nachthimmel mit einem anderen Planeten statt des Mondes aussehen würde."],en:["SPACE","See what the night sky would look like with another planet instead of the Moon."]},
+    dustsim:{ru:["ФИЗИКА","Песочница частиц: создавай массы и гравитацию и наблюдай за их движением."],de:["PHYSIK","Partikel-Sandbox: Erzeuge Massen und Gravitation und beobachte ihre Bewegung."],en:["PHYSICS","A particle sandbox: create masses and gravity and watch them move."]},
+    petalquest:{ru:["ПРИКЛЮЧЕНИЕ","Короткое уютное приключение с исследованием и лёгкими головоломками."],de:["ABENTEUER","Ein kurzes, gemütliches Abenteuer mit Erkundung und leichten Rätseln."],en:["ADVENTURE","A short cozy adventure with exploration and light puzzles."]},
+    greybox:{ru:["ЭКСПЕРИМЕНТ","Экспериментальная головоломка, где нестандартное мышление важнее обычных правил."],de:["EXPERIMENT","Ein experimentelles Puzzle, bei dem unkonventionelles Denken zählt."],en:["EXPERIMENTAL","An experimental puzzle where unconventional thinking matters more than usual rules."]},
+    cellmachine:{ru:["ГОЛОВОЛОМКА","Создавай машины из клеток и превращай простые правила в сложные системы."],de:["PUZZLE","Baue Maschinen aus Zellen und verwandle einfache Regeln in komplexe Systeme."],en:["PUZZLE","Build machines from cells and turn simple rules into complex systems."]},
+    waterworks:{ru:["СТРАТЕГИЯ","Управляй водоснабжением средневекового города и планируй свою колоду."],de:["STRATEGIE","Verwalte die Wasserversorgung einer mittelalterlichen Stadt und plane dein Kartendeck."],en:["STRATEGY","Manage a medieval city's water supply and plan your card deck."]},
+    fillhole:{ru:["СИМУЛЯЦИЯ","Развивай поселение, автоматизируй производство и открывай улучшения."],de:["SIMULATION","Entwickle deine Siedlung, automatisiere die Produktion und schalte Verbesserungen frei."],en:["SIMULATION","Develop your settlement, automate production and unlock upgrades."]},
+    loopa:{ru:["ГОЛОВОЛОМКА","Создавай петли из движущихся элементов и решай всё более хитрые задачи."],de:["PUZZLE","Erzeuge Schleifen aus beweglichen Elementen und löse immer kniffligere Aufgaben."],en:["PUZZLE","Create loops from moving elements and solve increasingly tricky puzzles."]},
+    nointernet2:{ru:["АРКАДА","Быстрый пиксельный раннер в духе знаменитой игры без интернета."],de:["ARCADE","Ein schneller Pixel-Runner im Stil des bekannten Offline-Spiels."],en:["ARCADE","A fast pixel runner inspired by the famous offline browser game."]},
+    minelayer:{ru:["ГОЛОВОЛОМКА","Перевёрнутая идея Minesweeper: правильно расставляй числа на поле."],de:["PUZZLE","Eine umgekehrte Minesweeper-Idee: Platziere die Zahlen richtig auf dem Feld."],en:["PUZZLE","A reversed Minesweeper idea: place the numbers correctly on the board."]},
+    cosmobeat:{ru:["РИТМ","Космическая танцевальная игра с ярким 3D-миром и ритмичными испытаниями."],de:["RHYTHMUS","Ein kosmisches Tanzspiel mit einer farbenfrohen 3D-Welt und Rhythmus-Herausforderungen."],en:["RHYTHM","A cosmic dance game with a colorful 3D world and rhythmic challenges."]},
+    resistance:{ru:["ПЛАТФОРМЕР","Короткий платформер с необычной механикой времени и физики."],de:["PLATTFORMER","Ein kurzer Plattformer mit ungewöhnlichen Zeit- und Physikmechaniken."],en:["PLATFORMER","A short platformer with unusual time and physics mechanics."]}
+  };
+  const CATEGORY_TEXT = {
+    arcade:{ru:"АРКАДА",de:"ARCADE",en:"ARCADE"},racing:{ru:"ГОНКИ",de:"RENNEN",en:"RACING"},puzzle:{ru:"ГОЛОВОЛОМКИ",de:"PUZZLES",en:"PUZZLES"},
+    adventure:{ru:"ПРИКЛЮЧЕНИЯ",de:"ABENTEUER",en:"ADVENTURE"},simulation:{ru:"СИМУЛЯЦИИ",de:"SIMULATIONEN",en:"SIMULATIONS"},
+    logic:{ru:"ЛОГИКА И СТРАТЕГИЯ",de:"LOGIK & STRATEGIE",en:"LOGIC & STRATEGY"},sandbox:{ru:"ПЕСОЧНИЦА И ЭКСПЕРИМЕНТЫ",de:"SANDBOX & EXPERIMENTE",en:"SANDBOX & EXPERIMENTS"},
+    space:{ru:"КОСМОС И РИТМ",de:"WELTRAUM & RHYTHMUS",en:"SPACE & RHYTHM"},online:{ru:"ОНЛАЙН",de:"ONLINE",en:"ONLINE"},special:{ru:"СПЕЦИАЛЬНОЕ",de:"SPECIAL",en:"SPECIAL"}
+  };
+  let currentLang = localStorage.getItem("freezzzLang") || "ru";
+  if(!LANGS.includes(currentLang)) currentLang="ru";
+  const tr=(key)=>LANG[currentLang][key]||LANG.ru[key]||key;
+  const gameText=(id,field)=>{
+    const x=GAME_TEXT[id]&&GAME_TEXT[id][currentLang];
+    if(x) return field==="genre"?x[0]:x[1];
+    const g=GAME_BY_ID[id]; return field==="genre"?g.genre:g.desc;
+  };
+  const categoryText=(id)=>CATEGORY_TEXT[id]?.[currentLang]||id;
+
+  function applyLanguage(){
+    const L=LANG[currentLang];
+    const staticText={
+      scoreSnake:{ru:"🐍 Классическая Змейка",de:"🐍 Klassisches Snake",en:"🐍 Classic Snake"},
+      scoreTetris:{ru:"🧱 Классический Тетрис",de:"🧱 Klassisches Tetris",en:"🧱 Classic Tetris"},
+      scorePlatformer:{ru:"🍄 Платформер",de:"🍄 Plattformspiel",en:"🍄 Platformer"},
+      scoreRace:{ru:"🏎️ Slow Roads",de:"🏎️ Slow Roads",en:"🏎️ Slow Roads"},
+      scoreDuck:{ru:"🦆 Duck Mudack",de:"🦆 Duck Mudack",en:"🦆 Duck Mudack"},
+      scoreJumper:{ru:"🦘 Retro Jumper",de:"🦘 Retro Jumper",en:"🦘 Retro Jumper"},
+      achSnake:{ru:"🐍 Мастер Змейки|Счёт от 100 в Snake",de:"🐍 Snake-Meister|Mindestens 100 Punkte in Snake",en:"🐍 Snake Master|Score 100+ in Snake"},
+      achTetris:{ru:"🧱 Архитектор Тетриса|Счёт от 500 в Tetris",de:"🧱 Tetris-Architekt|Mindestens 500 Punkte in Tetris",en:"🧱 Tetris Architect|Score 500+ in Tetris"},
+      achMario:{ru:"🍄 Герой Платформера|Пройди Platformer",de:"🍄 Plattform-Held|Schließe das Plattformspiel ab",en:"🍄 Platformer Hero|Complete the platformer"},
+      achRacer:{ru:"🏎️ Путешественник|Открой Slow Roads",de:"🏎️ Reisender|Öffne Slow Roads",en:"🏎️ Traveler|Open Slow Roads"}
+    };
+    Object.entries(staticText).forEach(([id,val])=>{
+      const el=document.getElementById(id); if(!el)return;
+      const parts=val[currentLang].split("|");
+      const name=el.querySelector(".row-name"); const desc=el.querySelector(".ach-desc");
+      if(name){name.textContent=parts[0]} else {el.querySelector(".row-name")?.replaceChildren(document.createTextNode(parts[0]));}
+      if(desc&&parts[1])desc.textContent=parts[1];
+    });
+
+    document.documentElement.lang=currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=tr(el.dataset.i18n)});
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=tr(el.dataset.i18nPlaceholder)});
+    document.getElementById("langToggleBtn").textContent=L.code;
+    document.getElementById("langToggleBtn").title=currentLang==="ru"?"Язык":currentLang==="de"?"Sprache":"Language";
+    document.getElementById("themeToggleBtn").title=tr("theme");
+    document.getElementById("soundToggle").title=tr("sound");
+    document.getElementById("userNameTxt").textContent=userName;
+    if(currentCategory) document.getElementById("categoryHeadTitle").textContent=categoryText(currentCategory.id);
+    renderCategories();
+    if(currentCategory) renderCategoryCarousel();
+    updateGuestEmptyState();
+  }
+
+  function updateGuestEmptyState(){
+    const list=document.getElementById("guestList");
+    if(!list)return;
+    const messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");
+    if(!messages.length) list.innerHTML='<div class="guest-msg">'+(currentLang==="ru"?"Пока сообщений нет. Напиши первым.":currentLang==="de"?"Noch keine Nachrichten. Schreib die erste Nachricht.":"No messages yet. Write the first one.")+'</div>';
+  }
+
+  document.getElementById("langToggleBtn").addEventListener("click",()=>{
+    currentLang=LANGS[(LANGS.indexOf(currentLang)+1)%LANGS.length];
+    localStorage.setItem("freezzzLang",currentLang);
+    applyLanguage(); haptic();
+  });
 
   // АВАТАРЫ
   const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
@@ -479,6 +601,7 @@ window.addEventListener('DOMContentLoaded', () => {
   ];
 
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
+  applyLanguage();
   let currentCategory = null;
   let categoryGameIndex = 0;
   let swipeStartX = 0;
@@ -502,7 +625,7 @@ window.addEventListener('DOMContentLoaded', () => {
     categoryGameIndex=0;
     document.getElementById('categoryList').classList.add('hidden');
     document.getElementById('categoryView').classList.remove('hidden');
-    document.getElementById('categoryHeadTitle').textContent=category.name;
+    document.getElementById('categoryHeadTitle').textContent=categoryText(category.id);
     renderCategoryCarousel();
     haptic();
   }
@@ -513,7 +636,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const count=c.ids.length;
       return '<button class="category-item" data-category="'+c.id+'">'+
         '<span class="category-icon">'+c.icon+'</span>'+
-        '<span class="category-copy"><span class="category-name">'+c.name+'</span><span class="category-count">'+count+' '+(count===1?'ИГРА':'ИГРЫ')+'</span></span>'+
+        '<span class="category-copy"><span class="category-name">'+categoryText(c.id)+'</span><span class="category-count">'+count+' '+(count===1?tr('oneGame'):tr('gamesCount'))+'</span></span>'+
         '<span class="category-arrow">›</span>'+
       '</button>';
     }).join('');
@@ -539,8 +662,8 @@ window.addEventListener('DOMContentLoaded', () => {
         '<div class="game-card-art">'+g.emoji+'</div>'+
         '<div class="game-card-body">'+
           '<div class="game-card-title">'+g.title+'</div>'+
-          '<div class="game-card-desc">'+g.desc+'</div>'+
-          '<div class="game-card-meta"><span>'+g.genre+'</span><span class="game-card-play">ИГРАТЬ →</span></div>'+
+          '<div class="game-card-desc">'+gameText(g.id,'desc')+'</div>'+
+          '<div class="game-card-meta"><span>'+gameText(g.id,'genre')+'</span><span class="game-card-play">'+tr('play')+'</span></div>'+
         '</div></div>';
     }).join('');
     dots.innerHTML=ids.map((id,i)=>'<span class="carousel-dot '+(i===categoryGameIndex?'active':'')+'"></span>').join('');
