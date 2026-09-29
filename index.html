@@ -370,7 +370,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
 </div>
 
-<!-- ОТДЕЛЬНЫЙ РАДИО-БЛОК TECHNО.FM -->
+<!-- ОТДЕЛЬНЫЙ РАДИО-БЛОК TECHNO.FM -->
 <div class="radio-overlay hidden" id="radioOverlay">
   <div class="radio-card" role="dialog" aria-modal="true" aria-label="Techno.FM Radio">
     <div class="radio-head">
@@ -1034,8 +1034,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
   }
 
-  // TECHNО.FM RADIO — separate module; starts only after a user action.
-  const TECHNО_FM_STREAM = "https://stream.techno.fm/radio1-320k.mp3";
+  // TECHNO.FM RADIO — separate module; starts only after a user action.
+  const TECHNO_FM_STREAM = "https://stream.techno.fm/radio1-320k.mp3";
   const radioAudio = document.getElementById("technoFmAudio");
   const radioOverlay = document.getElementById("radioOverlay");
   const radioStatus = document.getElementById("radioStatus");
@@ -1043,9 +1043,9 @@ window.addEventListener('DOMContentLoaded', () => {
   async function playTechnoFm(){
     if(!radioAudio)return;
     try{
-      radioAudio.src=TECHNО_FM_STREAM;
+      radioAudio.src=TECHNO_FM_STREAM;
       await radioAudio.play();
-      setRadioStatus("PLAYING • TECHNО.FM 320K");
+      setRadioStatus("PLAYING • TECHNO.FM 320K");
     }catch(e){
       setRadioStatus("PLAY ERROR • TAP PLAY AGAIN");
     }
@@ -1055,7 +1055,7 @@ window.addEventListener('DOMContentLoaded', () => {
     try{radioAudio.pause();radioAudio.currentTime=0;radioAudio.removeAttribute("src");radioAudio.load();}catch(e){}
     setRadioStatus("STOPPED");
   }
-  function openRadioPanel(){radioOverlay?.classList.remove("hidden");setRadioStatus(radioAudio?.paused!==false?"STOPPED":"PLAYING • TECHNО.FM 320K");}
+  function openRadioPanel(){radioOverlay?.classList.remove("hidden");setRadioStatus(radioAudio?.paused!==false?"STOPPED":"PLAYING • TECHNO.FM 320K");}
   function closeRadioPanel(){radioOverlay?.classList.add("hidden");}
   document.getElementById("radioPlayBtn")?.addEventListener("click",()=>{openRadioPanel();playTechnoFm();});
   document.getElementById("radioStopBtn")?.addEventListener("click",stopTechnoFm);
