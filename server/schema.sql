@@ -19,3 +19,11 @@ CREATE TABLE IF NOT EXISTS player_stats (
  chat_seconds DOUBLE PRECISION NOT NULL DEFAULT 0, game_launches INTEGER NOT NULL DEFAULT 0, messages_sent INTEGER NOT NULL DEFAULT 0,
  category_opens INTEGER NOT NULL DEFAULT 0, game_views INTEGER NOT NULL DEFAULT 0, active_days TEXT[] NOT NULL DEFAULT '{}', updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS telegram_topics (
+ chat_id BIGINT NOT NULL,
+ thread_id BIGINT NOT NULL,
+ topic_name TEXT NOT NULL DEFAULT '',
+ updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+ PRIMARY KEY(chat_id,thread_id)
+);
