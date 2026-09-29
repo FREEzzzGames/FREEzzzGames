@@ -299,8 +299,8 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
       <div class="chat-room-tabs">
         <button class="chat-room-tab active" data-room="main">🏠 <span data-chat-room-label="main">ОСНОВНАЯ</span></button>
         <button class="chat-room-tab" data-room="games">🎮 <span data-chat-room-label="games">ИГРЫ</span></button>
-        <button class="chat-room-tab" data-room="relax">🌙 <span data-chat-room-label="relax">RELAX</span></button>
-        <button class="chat-room-tab" data-room="dm">✉️ <span>ЛС</span></button>
+        <button class="chat-room-tab" data-room="relax">🌙 <span data-chat-room-label="relax">ОТДЫХ</span></button>
+        <button class="chat-room-tab" data-room="dm">✉️ <span data-chat-room-label="dm">ЛИЧНЫЕ СООБЩЕНИЯ</span></button>
       </div>
       <div class="chat-toolbar">
         <span id="chatRoomTitle">🏠 ОСНОВНАЯ</span>
@@ -421,25 +421,40 @@ window.addEventListener('DOMContentLoaded', () => {
   const LANGS = ["ru","de","en"];
   const LANG = {
     ru:{
-      code:"RU",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 ИГРЫ",top:"🏆 ТОП",achievements:"🎖️ АЧИВКИ",chat:"💬 ЧАТ",random:"🎲 РАНДОМ",share:"📤 ДРУЗЬЯМ",
-      swipeHint:"СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ",swipeShort:"← СВАЙП →",send:"ОТПРАВИТЬ",close:"ЗАКРЫТЬ",arcadeHub:"ARCADE HUB",
-      avatarCollection:"КОЛЛЕКЦИЯ АВАТАРОВ",avatarHint:"Выбирай собранную аватарку или заходи ежедневно за новой!",
-      chatPlaceholder:"Напиши сообщение в зал славы...",back:"Назад",play:"ИГРАТЬ →",oneGame:"ИГРА",gamesCount:"ИГРЫ",
-      score:"Счёт",locked:"🔒",unlocked:"✅",topTitle:"ТОП ИГР",theme:"Тема",sound:"Звук"
+      code:"RU",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 ИГРЫ",top:"🏆 ТОП",achievements:"🎖️ АЧИВКИ",chat:"💬 ЧАТ",random:"🎲 СЛУЧАЙНАЯ ИГРА",share:"📤 ПОДЕЛИТЬСЯ",
+      swipeHint:"СВАЙП ВЛЕВО / ВПРАВО • НАЖМИ, ЧТОБЫ ОТКРЫТЬ ИГРУ",swipeShort:"← СВАЙП →",send:"ОТПРАВИТЬ",close:"ЗАКРЫТЬ",arcadeHub:"АРКАДНЫЙ ПОРТАЛ",
+      avatarCollection:"КОЛЛЕКЦИЯ АВАТАРОВ",avatarHint:"Выбирай собранную аватарку или возвращайся каждый день за новой!",
+      chatPlaceholder:"Напиши сообщение...",back:"НАЗАД",play:"ИГРАТЬ →",oneGame:"ИГРА",gamesCount:"ИГРЫ",
+      score:"СЧЁТ",locked:"🔒",unlocked:"✅",topTitle:"ТОП ИГР",theme:"ТЕМА",sound:"ЗВУК",
+      roomMain:"ОСНОВНАЯ",roomGames:"ИГРЫ",roomRelax:"ОТДЫХ",roomDm:"ЛИЧНЫЕ СООБЩЕНИЯ",dmTitle:"ЛИЧНЫЕ СООБЩЕНИЯ",
+      noMessages:"Пока сообщений нет. Будь первым.",noDialogs:"Личных диалогов пока нет.",authOpen:"Открой чат внутри Telegram для авторизации.",
+      authOk:"Telegram: авторизация подтверждена",authError:"Ошибка авторизации: ",chatApiError:"Ошибка чата: ",dmApiError:"Ошибка личных сообщений: ",
+      profilePortal:"ПОРТАЛ",profileGames:"ИГРЫ",profileLaunches:"ЗАПУСКОВ ИГР",profileMessages:"СООБЩЕНИЙ",profileChat:"В ЧАТЕ",profileDays:"ДНЕЙ АКТИВНОСТИ",
+      profileAchievements:"🏆 АЧИВКИ",write:"НАПИСАТЬ",player:"Игрок"
     },
     de:{
-      code:"DE",subtitle:"ARCADE-PORTAL 🕹️",games:"🎮 SPIELE",top:"🏆 TOP",achievements:"🎖️ ERFOLGE",chat:"💬 CHAT",random:"🎲 ZUFALL",share:"📤 TEILEN",
-      swipeHint:"NACH LINKS / RECHTS WISCHEN • SPIEL DURCH ANTIPPEN ÖFFNEN",swipeShort:"← WISCHEN →",send:"SENDEN",close:"SCHLIESSEN",arcadeHub:"ARCADE HUB",
-      avatarCollection:"AVATAR-SAMMLUNG",avatarHint:"Wähle einen gesammelten Avatar oder komm täglich für einen neuen vorbei!",
-      chatPlaceholder:"Nachricht in die Ruhmeshalle schreiben...",back:"Zurück",play:"SPIELEN →",oneGame:"SPIEL",gamesCount:"SPIELE",
-      score:"Punktzahl",locked:"🔒",unlocked:"✅",topTitle:"SPIELE-TOP",theme:"Thema",sound:"Ton"
+      code:"DE",subtitle:"ARCADE-PORTAL 🕹️",games:"🎮 SPIELE",top:"🏆 TOP",achievements:"🎖️ ERFOLGE",chat:"💬 CHAT",random:"🎲 ZUFALLSSPIEL",share:"📤 TEILEN",
+      swipeHint:"NACH LINKS / RECHTS WISCHEN • ANTIPPEN, UM DAS SPIEL ZU ÖFFNEN",swipeShort:"← WISCHEN →",send:"SENDEN",close:"SCHLIESSEN",arcadeHub:"ARCADE-PORTAL",
+      avatarCollection:"AVATAR-SAMMLUNG",avatarHint:"Wähle einen gesammelten Avatar oder komm jeden Tag für einen neuen zurück!",
+      chatPlaceholder:"Nachricht schreiben...",back:"ZURÜCK",play:"SPIELEN →",oneGame:"SPIEL",gamesCount:"SPIELE",
+      score:"PUNKTZAHL",locked:"🔒",unlocked:"✅",topTitle:"SPIELE-TOP",theme:"THEMA",sound:"TON",
+      roomMain:"HAUPTRAUM",roomGames:"SPIELE",roomRelax:"PAUSE",roomDm:"PRIVATNACHRICHTEN",dmTitle:"PRIVATNACHRICHTEN",
+      noMessages:"Noch keine Nachrichten. Sei die erste Person.",noDialogs:"Noch keine privaten Gespräche.",authOpen:"Öffne den Chat in Telegram zur Anmeldung.",
+      authOk:"Telegram: Anmeldung bestätigt",authError:"Anmeldung fehlgeschlagen: ",chatApiError:"Chat-Fehler: ",dmApiError:"Fehler bei den Privatnachrichten: ",
+      profilePortal:"PORTAL",profileGames:"SPIELE",profileLaunches:"SPIELSTARTS",profileMessages:"NACHRICHTEN",profileChat:"CHATZEIT",profileDays:"AKTIVE TAGE",
+      profileAchievements:"🏆 ERFOLGE",write:"SCHREIBEN",player:"Spieler"
     },
     en:{
-      code:"EN",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 GAMES",top:"🏆 TOP",achievements:"🎖️ ACHIEVEMENTS",chat:"💬 CHAT",random:"🎲 RANDOM",share:"📤 SHARE",
-      swipeHint:"SWIPE LEFT / RIGHT • TAP TO OPEN THE GAME",swipeShort:"← SWIPE →",send:"SEND",close:"CLOSE",arcadeHub:"ARCADE HUB",
-      avatarCollection:"AVATAR COLLECTION",avatarHint:"Choose a collected avatar or come back daily for a new one!",
-      chatPlaceholder:"Write a message to the hall of fame...",back:"Back",play:"PLAY →",oneGame:"GAME",gamesCount:"GAMES",
-      score:"Score",locked:"🔒",unlocked:"✅",topTitle:"TOP GAMES",theme:"Theme",sound:"Sound"
+      code:"EN",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 GAMES",top:"🏆 TOP",achievements:"🎖️ ACHIEVEMENTS",chat:"💬 CHAT",random:"🎲 RANDOM GAME",share:"📤 SHARE",
+      swipeHint:"SWIPE LEFT / RIGHT • TAP TO OPEN THE GAME",swipeShort:"← SWIPE →",send:"SEND",close:"CLOSE",arcadeHub:"ARCADE PORTAL",
+      avatarCollection:"AVATAR COLLECTION",avatarHint:"Choose a collected avatar or come back every day for a new one!",
+      chatPlaceholder:"Write a message...",back:"BACK",play:"PLAY →",oneGame:"GAME",gamesCount:"GAMES",
+      score:"SCORE",locked:"🔒",unlocked:"✅",topTitle:"TOP GAMES",theme:"THEME",sound:"SOUND",
+      roomMain:"MAIN",roomGames:"GAMES",roomRelax:"RELAX",roomDm:"PRIVATE MESSAGES",dmTitle:"PRIVATE MESSAGES",
+      noMessages:"No messages yet. Be the first.",noDialogs:"No private conversations yet.",authOpen:"Open the chat inside Telegram to sign in.",
+      authOk:"Telegram: authorization confirmed",authError:"Authorization failed: ",chatApiError:"Chat error: ",dmApiError:"Private message error: ",
+      profilePortal:"PORTAL",profileGames:"GAMES",profileLaunches:"GAME LAUNCHES",profileMessages:"MESSAGES",profileChat:"CHAT TIME",profileDays:"ACTIVE DAYS",
+      profileAchievements:"🏆 ACHIEVEMENTS",write:"WRITE",player:"Player"
     }
   };
   const GAME_TEXT = {
@@ -519,7 +534,21 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("langToggleBtn").title=currentLang==="ru"?"Язык":currentLang==="de"?"Sprache":"Language";
     const themeBtn=document.getElementById("themeToggleBtn"); if(themeBtn) themeBtn.title=tr("theme");
     document.getElementById("soundToggle").title=tr("sound");
-    document.getElementById("userNameTxt").textContent=userName;
+    document.getElementById("userNameTxt").textContent=userName || tr("player");
+    document.querySelectorAll("[data-chat-room-label]").forEach(el=>{
+      const room=el.parentElement?.dataset?.room || el.dataset.chatRoomLabel;
+      const key=room==="main"?"roomMain":room==="games"?"roomGames":room==="relax"?"roomRelax":"roomDm";
+      el.textContent=tr(key);
+    });
+    const roomTitle=document.getElementById("chatRoomTitle");
+    if(roomTitle && !activeDmUserId) roomTitle.textContent=roomLabel(chatRoom);
+    const dmTitle=document.getElementById("dmThreadTitle");
+    if(dmTitle && !activeDmUserId) dmTitle.textContent=tr("dmTitle");
+    ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileMessageBtn","playerProfileClose"].forEach((id)=>{
+      const map={profilePortalLabel:"profilePortal",profileGameLabel:"profileGames",profileLaunchesLabel:"profileLaunches",profileMessagesLabel:"profileMessages",profileChatTimeLabel:"profileChat",profileDaysLabel:"profileDays",profileAchievementsTitle:"profileAchievements",playerProfileMessageBtn:"write",playerProfileClose:"close"};
+      const el=document.getElementById(id); if(el && map[id]) el.textContent=tr(map[id]);
+    });
+    document.getElementById("userProfileBox")?.setAttribute("aria-label",tr("player"));
     if(currentCategory) document.getElementById("categoryHeadTitle").textContent=categoryText(currentCategory.id);
     renderCategories();
     if(currentCategory) renderCategoryCarousel();
@@ -747,22 +776,22 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   async function authorizeChat(){
-    if(!tg || !tg.initData){chatAuthorized=false;chatSetStatus(currentLang==="ru"?"Открой чат внутри Telegram для авторизации.":currentLang==="de"?"Öffne den Chat in Telegram zur Anmeldung.":"Open the chat inside Telegram to sign in.");return false;}
+    if(!tg || !tg.initData){chatAuthorized=false;chatSetStatus(tr("authOpen"));return false;}
     try{
       await api("/auth/telegram",{method:"POST",body:{initData:tg.initData}});
       chatAuthorized=true;
-      chatSetStatus(currentLang==="ru"?"Telegram: авторизация подтверждена":currentLang==="de"?"Telegram: Anmeldung bestätigt":"Telegram: authorization confirmed",true);
+      chatSetStatus(tr("authOk"),true);
       return true;
     }catch(e){
       chatAuthorized=false;
-      chatSetStatus((currentLang==="ru"?"Ошибка авторизации: ":currentLang==="de"?"Anmeldung fehlgeschlagen: ":"Authorization failed: ")+e.message);
+      chatSetStatus(tr("authError")+e.message);
       return false;
     }
   }
 
   function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function formatMsgTime(v){try{return new Date(v).toLocaleTimeString(currentLang==="ru"?"ru-RU":currentLang==="de"?"de-DE":"en-US",{hour:"2-digit",minute:"2-digit"});}catch(e){return "";}}
-  function roomLabel(room){return room==="games"?"🎮 ИГРЫ":room==="relax"?"🌙 RELAX":"🏠 ОСНОВНАЯ";}
+  function roomLabel(room){return room==="games"?"🎮 "+tr("roomGames"):room==="relax"?"🌙 "+tr("roomRelax"):"🏠 "+tr("roomMain");}
 
   async function loadMessages(){
     if(!chatAuthorized)return;
@@ -773,9 +802,9 @@ window.addEventListener('DOMContentLoaded', () => {
       list.innerHTML=messages.length?messages.map(m=>{
         const own=String(m.playerId)===playerId;
         return '<div class="guest-msg '+(own?"chat-message-own":"")+'"><div class="guest-author" data-player-id="'+escapeHtml(m.playerId)+'">'+escapeHtml(m.avatar||"👾")+" "+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div class="chat-message-block">'+escapeHtml(m.text)+'</div></div>';
-      }).join(""):'<div class="guest-msg">Пока сообщений нет. Будь первым.</div>';
+      }).join(""):'<div class="guest-msg">'+tr("noMessages")+'</div>';
       list.querySelectorAll(".guest-author").forEach(el=>el.addEventListener("click",()=>openPlayerProfile(el.dataset.playerId)));
-    }catch(e){chatSetStatus("Chat API: "+e.message);}
+    }catch(e){chatSetStatus(tr("chatApiError")+e.message);}
   }
 
   async function sendChatMessage(){
@@ -798,9 +827,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const box=document.getElementById("dmList");
     try{
       const data=await api("/dm");
-      box.innerHTML=(data.conversations||[]).map(x=>'<button class="dm-item" data-dm-id="'+escapeHtml(x.playerId)+'"><span class="dm-item-avatar">'+escapeHtml(x.avatar||"👾")+'</span><span><div class="dm-item-name">'+escapeHtml(x.username||x.name||"Игрок")+'</div><div class="dm-item-preview">'+escapeHtml(x.lastMessage||"")+'</div></span></button>').join("")||'<div class="guest-msg">Личных диалогов пока нет.</div>';
+      box.innerHTML=(data.conversations||[]).map(x=>'<button class="dm-item" data-dm-id="'+escapeHtml(x.playerId)+'"><span class="dm-item-avatar">'+escapeHtml(x.avatar||"👾")+'</span><span><div class="dm-item-name">'+escapeHtml(x.username||x.name||tr("player"))+'</div><div class="dm-item-preview">'+escapeHtml(x.lastMessage||"")+'</div></span></button>').join("")||'<div class="guest-msg">'+tr("noDialogs")+'</div>';
       box.querySelectorAll(".dm-item").forEach(el=>el.addEventListener("click",()=>openDm(el.dataset.dmId)));
-    }catch(e){chatSetStatus("DM: "+e.message);}
+    }catch(e){chatSetStatus(tr("dmApiError")+e.message);}
   }
 
   async function openDm(targetId){
@@ -812,7 +841,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("chatCompose").classList.remove("hidden");
     try{
       const p=await api("/profile/"+encodeURIComponent(activeDmUserId));
-      document.getElementById("dmThreadTitle").textContent=p.username||p.name||"Личные сообщения";
+      document.getElementById("dmThreadTitle").textContent=p.username||p.name||tr("dmTitle");
       const data=await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages?limit=100");
       const list=document.getElementById("dmMessageList");
       list.innerHTML=(data.messages||[]).map(m=>'<div class="guest-msg '+(String(m.senderId)===playerId?"chat-message-own":"")+'"><div class="guest-author">'+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div>'+escapeHtml(m.text)+'</div></div>').join("")||'<div class="guest-msg">Нет сообщений.</div>';
@@ -844,7 +873,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function selectDmMode(){
     activeDmUserId=null;
     document.querySelectorAll(".chat-room-tab").forEach(b=>b.classList.toggle("active",b.dataset.room==="dm"));
-    document.getElementById("chatRoomTitle").textContent="✉️ ЛИЧНЫЕ СООБЩЕНИЯ";
+    document.getElementById("chatRoomTitle").textContent="✉️ "+tr("dmTitle");
     document.getElementById("guestList").classList.add("hidden");
     document.getElementById("dmList").classList.remove("hidden");
     document.getElementById("dmThread").classList.add("hidden");
