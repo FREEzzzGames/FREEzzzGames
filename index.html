@@ -1130,9 +1130,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Start the portal only after all data/constants/functions are initialized.
-  applyLanguage();
-  showCategoryList(false);
+  // Final portal boot. Keep rendering isolated so one optional module cannot blank the whole portal.
+  function bootPortal(){
+    try{
+      applyLanguage();
+      showCategoryList(false);
+    }catch(err){
+      console.error("FREEzzzGames boot error:",err);
+      const list=document.getElementById("categoryList");
+      if(list){
+        list.classList.remove("hidden");
+        list.innerHTML='<div style="padding:16px;border:1px solid #e52225;border-radius:10px;background:#fff;color:#17212b;font:12px monospace;text-align:left"><b>FREEzzzGames</b><br>Portal boot error.<br><small>'+String(err&&err.message||err).replace(/</g,"&lt;")+'</small></div>';
+      }
+    }
+  }
+  bootPortal();
   window.addEventListener("beforeunload",()=>{try{navigator.sendBeacon?.(CHAT_API_BASE+"/auth/heartbeat","");}catch(e){}});
 
 
