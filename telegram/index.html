@@ -17,20 +17,68 @@ body{min-height:100vh;overflow-x:hidden}.app{width:min(760px,100%);margin:auto;p
 .genres{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.genre{border:2px solid;border-radius:13px;min-height:116px;padding:9px 5px;background:#0d1325;color:#fff;text-align:center;font-weight:1000;font-size:11px;display:flex;flex-direction:column;justify-content:space-between}.genre b{font-size:29px}.genre span{line-height:1.1}.g1{border-color:#b74cff}.g2{border-color:#ffad27}.g3{border-color:#ff3f4d}.g4{border-color:#25cfff}.g5{border-color:#d94dff}
 .lower{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.low{border:2px solid #258eff;border-radius:13px;background:#0b1325;padding:10px 4px;color:#fff;text-align:center;font-size:11px;font-weight:1000;min-height:68px}.low span{display:block;font-size:24px;margin-bottom:3px}
 .footer{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;border:2px solid #14519c;border-radius:14px;padding:7px;background:#071020}.footer button{border:0;background:transparent;color:#b9dcff;font-size:9px;font-weight:900;padding:5px 2px}.footer span{display:block;font-size:19px;margin-bottom:2px}button{font:inherit;cursor:pointer}
-@media(max-width:520px){.genre{min-height:100px;font-size:9px}.genre b{font-size:24px}.lower{grid-template-columns:repeat(2,1fr)}}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:20}.modal.open{display:flex}.panel{width:min(760px,100%);max-height:88vh;overflow:auto;border:2px solid #5a62ff;border-radius:22px 22px 14px 14px;background:linear-gradient(180deg,#101936,#060a15);padding:14px;box-shadow:0 0 40px #2146ff66}.panelHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.panelTitle{font-size:24px;font-weight:1000}.close{border:1px solid #6270a8;border-radius:10px;background:#111a31;color:#fff;padding:8px 12px}.games{display:grid;grid-template-columns:1fr;gap:9px}.game{display:flex;align-items:center;gap:10px;border:1px solid #31436f;border-radius:15px;background:#0b1325;padding:11px;color:#fff;text-align:left}.gameIcon{font-size:34px;width:48px;text-align:center}.gameMain{flex:1}.gameName{font-size:16px;font-weight:1000}.gameMeta{font-size:11px;color:#9db4dc;margin-top:3px}.go{border:0;border-radius:10px;background:#245cff;color:#fff;font-weight:1000;padding:10px 12px}
+@media(max-width:520px){.genre{min-height:100px;font-size:9px}.genre b{font-size:24px}.lower{grid-template-columns:repeat(2,1fr)}.game{padding:9px}.go{padding:9px 10px}}
 </style>
 </head>
 <body><main class="app">
 <header class="header"><div class="logo">FREEzzzGAMES</div><div class="sub">БРАУЗЕРНЫЕ ИГРЫ ПРЯМО В TELEGRAM</div><div class="tag">ИГРАЙ • ОТКРЫВАЙ • ОБЩАЙСЯ • РАЗВИВАЙСЯ</div></header>
-<section class="hero"><div class="heroIcon">🎮</div><div style="flex:1"><h1>ИГРАТЬ</h1><p>ВСЕ ИГРЫ ПОРТАЛА</p></div><button class="play" onclick="openGames()">▶</button></section>
-<section class="section"><button class="quick new" onclick="showMsg('🆕 Новые игры')">🆕 НОВИНКИ<small>новые игры каждую неделю</small></button><button class="quick top" onclick="showMsg('🏆 Топ игр')">🏆 ТОП ИГР<small>самые популярные</small></button></section>
+<section class="hero"><div class="heroIcon">🎮</div><div style="flex:1"><h1>ИГРАТЬ</h1><p>ИГРЫ С POKI • БЫСТРЫЙ ПЕРЕХОД</p></div><button class="play" onclick="openGames()">▶</button></section>
+<section class="section"><button class="quick new" onclick="showMsg('🆕 Раздел новинок — подключим позже')">🆕 НОВИНКИ<small>новые игры каждую неделю</small></button><button class="quick top" onclick="openGames()">🏆 ТОП ИГР<small>топ подборки Poki</small></button></section>
 <section class="genres"><button class="genre g1" onclick="genre('puzzle')"><b>🧩</b><span>PUZZLE<br>ГОЛОВОЛОМКИ</span></button><button class="genre g2" onclick="genre('strategy')"><b>🏰</b><span>STRATEGY<br>СТРАТЕГИИ</span></button><button class="genre g3" onclick="genre('arcade')"><b>🚀</b><span>ARCADE<br>АРКАДЫ</span></button><button class="genre g4" onclick="genre('adventure')"><b>🧭</b><span>ADVENTURE<br>ПРИКЛЮЧЕНИЯ</span></button><button class="genre g5" onclick="genre('racing')"><b>🏎️</b><span>RACING<br>ГОНКИ И СПОРТ</span></button></section>
-<section class="lower"><button class="low" onclick="showMsg('🎁 Игра дня')"><span>🎁</span>ИГРА ДНЯ</button><button class="low" onclick="showMsg('📰 Новости')"><span>📰</span>НОВОСТИ</button><button class="low" onclick="showMsg('📊 Рейтинг')"><span>📊</span>РЕЙТИНГ</button><button class="low" onclick="showMsg('👤 Профиль')"><span>👤</span>МОЙ ПРОФИЛЬ</button></section>
+<section class="lower"><button class="low" onclick="showMsg('🎁 Игра дня — раздел будет подключён отдельно')"><span>🎁</span>ИГРА ДНЯ</button><button class="low" onclick="showMsg('📰 Новости — раздел будет подключён отдельно')"><span>📰</span>НОВОСТИ</button><button class="low" onclick="openGames()"><span>📊</span>РЕЙТИНГ</button><button class="low" onclick="showMsg('👤 Профиль — подключим позже')"><span>👤</span>МОЙ ПРОФИЛЬ</button></section>
 <nav class="footer"><button onclick="showMsg('💬 Чат')"><span>💬</span>ЧАТ</button><button onclick="showMsg('👥 Сообщество')"><span>👥</span>СООБЩЕСТВО</button><button onclick="showMsg('⭐ События')"><span>⭐</span>СОБЫТИЯ</button><button onclick="showMsg('⚙️ Настройки')"><span>⚙️</span>НАСТРОЙКИ</button><button onclick="showMsg('❓ Помощь')"><span>❓</span>ПОМОЩЬ</button></nav>
 </main>
+<div class="modal" id="modal" onclick="if(event.target===this)closeGames()"><section class="panel"><div class="panelHead"><div class="panelTitle" id="modalTitle">ТОП ИГР</div><button class="close" onclick="closeGames()">✕</button></div><div class="games" id="games"></div></section></div>
 <script>
-const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor('#070b18');tg.setBackgroundColor('#050814')}
-function openGames(){showMsg('🎮 Каталог игр — реальные ссылки подключим после отбора игр')}
-function genre(x){showMsg('🎮 Жанр: '+x)}
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor('#070b18');tg.setBackgroundColor('#050814')}
+
+const GAME_DATA={
+puzzle:[
+ {n:'There Is No Game',i:'🧠',m:'Puzzle • 4.4★',u:'https://poki.com/en/g/there-is-no-game'},
+ {n:'Blocky Blast Puzzle',i:'🧩',m:'Puzzle • 4.3★',u:'https://poki.com/en/g/blocky-blast-puzzle'},
+ {n:'Bubble Shooter',i:'🫧',m:'Puzzle • 4.3★',u:'https://poki.com/en/g/bubble-shooter-lak'}
+],
+strategy:[
+ {n:'The Final Earth 2',i:'🏙️',m:'Strategy / simulation',u:'https://poki.com/en/g/the-final-earth-2'},
+ {n:'Paper.io 2',i:'🗺️',m:'Territory strategy',u:'https://poki.com/en/g/paperio-2'},
+ {n:'Village Builder',i:'🏡',m:'Strategy / city building • 4.2★',u:'https://poki.com/en/g/village-builder'}
+],
+arcade:[
+ {n:'Subway Surfers',i:'🏃',m:'Arcade • 4.4★',u:'https://poki.com/en/g/subway-surfers'},
+ {n:'Drive Mad',i:'🚗',m:'Arcade / driving • 4.3★',u:'https://poki.com/en/g/drive-mad'},
+ {n:'Blocky Blast Puzzle',i:'🧩',m:'Arcade / puzzle • 4.3★',u:'https://poki.com/en/g/blocky-blast-puzzle'}
+],
+adventure:[
+ {n:'Subway Surfers',i:'🏃',m:'Adventure • 4.4★',u:'https://poki.com/en/g/subway-surfers'},
+ {n:'Dadish',i:'🌱',m:'Adventure • 4.5★',u:'https://poki.com/en/g/dadish'},
+ {n:'The Final Earth 2',i:'🚀',m:'Adventure / simulation',u:'https://poki.com/en/g/the-final-earth-2'}
+],
+racing:[
+ {n:'Super Star Car',i:'🏎️',m:'Racing • 4.5★',u:'https://poki.com/en/g/super-star-car'},
+ {n:'MR RACER - Car Racing',i:'🚘',m:'Racing • 4.5★',u:'https://poki.com/en/g/mr-racer-car-racing'},
+ {n:'PolyTrack',i:'🏁',m:'Racing • 4.4★',u:'https://poki.com/en/g/polytrack'}
+]
+};
+
+const TITLES={puzzle:'🧩 PUZZLE',strategy:'🏰 STRATEGY',arcade:'🚀 ARCADE',adventure:'🧭 ADVENTURE',racing:'🏎️ RACING'};
+
+function openLink(url){
+ if(tg?.openLink) tg.openLink(url);
+ else window.open(url,'_blank','noopener,noreferrer');
+}
+function renderGames(list,title){
+ document.getElementById('modalTitle').textContent=title;
+ document.getElementById('games').innerHTML=list.map(g=>'<article class="game"><div class="gameIcon">'+g.i+'</div><div class="gameMain"><div class="gameName">'+g.n+'</div><div class="gameMeta">'+g.m+' • Poki</div></div><button class="go" onclick="openLink(\''+g.u+'\')">ИГРАТЬ</button></article>').join('');
+ document.getElementById('modal').classList.add('open');
+}
+function genre(x){renderGames(GAME_DATA[x],TITLES[x])}
+function openGames(){
+ const all=Object.values(GAME_DATA).flat();
+ const unique=all.filter((g,i,a)=>a.findIndex(x=>x.u===g.u)===i);
+ renderGames(unique,'🎮 ТОП ИГР POKI');
+}
+function closeGames(){document.getElementById('modal').classList.remove('open')}
 function showMsg(t){if(tg?.showAlert)tg.showAlert(t);else alert(t)}
 </script></body></html>
