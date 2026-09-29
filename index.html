@@ -341,8 +341,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function checkAchievements() {
     if (Number(localStorage.getItem("snakeHighScore") || 0) >= 100) { document.getElementById('achSnake').classList.add('unlocked'); document.getElementById('statSnake').textContent = "✅"; }
-    if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) { document.getElementById('achTetris').classList.add('unlocked'); document.getElementById('statTetris')
-
+    if (Number(localStorage.getItem("tetrisHighScore") || 0) >= 500) {
+      document.getElementById('achTetris').classList.add('unlocked');
+      document.getElementById('statTetris').textContent = "✅";
+    }
     if (Number(localStorage.getItem("platformerBest") || 0) > 0) {
       document.getElementById('achMario').classList.add('unlocked');
       document.getElementById('statMario').textContent = "✅";
@@ -360,8 +362,7 @@ window.addEventListener('DOMContentLoaded', () => {
     list.innerHTML = messages.length ? messages.slice(-30).reverse().map(m =>
       '<div class="guest-msg"><div class="guest-author">' +
       String(m.author).replace(/[&<>"]/g,'') +
-      '</div><div>' +
-      String(m.text).replace(/[&<>"]/g,'') +
+      '</div><div>' + String(m.text).replace(/[&<>"]/g,'') +
       '</div></div>'
     ).join('') : '<div class="guest-msg">Пока сообщений нет. Напиши первым.</div>';
   }
@@ -382,7 +383,6 @@ window.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
   });
 
-  // Реальные ссылки для плиток.
   const GAME_LINKS = {
     snake:'https://poki.com/en/g/snake-cool',
     tetris:'https://poki.com/en/g/tetra-blocks',
