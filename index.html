@@ -455,7 +455,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=tr(el.dataset.i18nPlaceholder)});
     document.getElementById("langToggleBtn").textContent=L.code;
     document.getElementById("langToggleBtn").title=currentLang==="ru"?"Язык":currentLang==="de"?"Sprache":"Language";
-    document.getElementById("themeToggleBtn").title=tr("theme");
+    const themeBtn=document.getElementById("themeToggleBtn"); if(themeBtn) themeBtn.title=tr("theme");
     document.getElementById("soundToggle").title=tr("sound");
     document.getElementById("userNameTxt").textContent=userName;
     if(currentCategory) document.getElementById("categoryHeadTitle").textContent=categoryText(currentCategory.id);
@@ -860,7 +860,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("freezzzTheme", currentThemeIdx);
     applyTheme();
   }
-  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+  const themeToggleBtn=document.getElementById('themeToggleBtn'); if(themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
 
   function applyTheme() {
     document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
