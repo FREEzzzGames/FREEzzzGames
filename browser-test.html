@@ -479,7 +479,7 @@ window.addEventListener('DOMContentLoaded', () => {
       score:"СЧЁТ",locked:"🔒",unlocked:"✅",topTitle:"ТОП ИГР",theme:"ТЕМА",sound:"ЗВУК",
       roomMain:"ОСНОВНАЯ",roomGames:"ИГРЫ",roomRelax:"ОТДЫХ",roomDm:"ЛИЧНЫЕ СООБЩЕНИЯ",dmTitle:"ЛИЧНЫЕ СООБЩЕНИЯ",
       noMessages:"Пока сообщений нет. Будь первым.",noDialogs:"Личных диалогов пока нет.",authOpen:"Открой чат внутри Telegram для авторизации.",
-      authOk:"Telegram: авторизация подтверждена",authError:"Ошибка авторизации: ",chatApiError:"Ошибка чата: ",dmApiError:"Ошибка личных сообщений: ",
+      authOk:"Браузер: локальный вход подтверждён",authError:"Ошибка авторизации: ",chatApiError:"Ошибка чата: ",dmApiError:"Ошибка личных сообщений: ",
       profilePortal:"ПОРТАЛ",profileGames:"ИГРЫ",profileLaunches:"ЗАПУСКОВ ИГР",profileMessages:"СООБЩЕНИЙ",profileChat:"В ЧАТЕ",profileDays:"ДНЕЙ АКТИВНОСТИ",
       profileAchievements:"🏆 АЧИВКИ",write:"НАПИСАТЬ",player:"Игрок"
     },
@@ -491,7 +491,7 @@ window.addEventListener('DOMContentLoaded', () => {
       score:"PUNKTZAHL",locked:"🔒",unlocked:"✅",topTitle:"SPIELE-TOP",theme:"THEMA",sound:"TON",
       roomMain:"HAUPTRAUM",roomGames:"SPIELE",roomRelax:"PAUSE",roomDm:"PRIVATNACHRICHTEN",dmTitle:"PRIVATNACHRICHTEN",
       noMessages:"Noch keine Nachrichten. Sei die erste Person.",noDialogs:"Noch keine privaten Gespräche.",authOpen:"Öffne den Chat in Telegram zur Anmeldung.",
-      authOk:"Telegram: Anmeldung bestätigt",authError:"Anmeldung fehlgeschlagen: ",chatApiError:"Chat-Fehler: ",dmApiError:"Fehler bei den Privatnachrichten: ",
+      authOk:"Browser: lokaler Zugang bestätigt",authError:"Anmeldung fehlgeschlagen: ",chatApiError:"Chat-Fehler: ",dmApiError:"Fehler bei den Privatnachrichten: ",
       profilePortal:"PORTAL",profileGames:"SPIELE",profileLaunches:"SPIELSTARTS",profileMessages:"NACHRICHTEN",profileChat:"CHATZEIT",profileDays:"AKTIVE TAGE",
       profileAchievements:"🏆 ERFOLGE",write:"SCHREIBEN",player:"Spieler"
     },
@@ -503,7 +503,7 @@ window.addEventListener('DOMContentLoaded', () => {
       score:"SCORE",locked:"🔒",unlocked:"✅",topTitle:"TOP GAMES",theme:"THEME",sound:"SOUND",
       roomMain:"MAIN",roomGames:"GAMES",roomRelax:"RELAX",roomDm:"PRIVATE MESSAGES",dmTitle:"PRIVATE MESSAGES",
       noMessages:"No messages yet. Be the first.",noDialogs:"No private conversations yet.",authOpen:"Open the chat inside Telegram to sign in.",
-      authOk:"Telegram: authorization confirmed",authError:"Authorization failed: ",chatApiError:"Chat error: ",dmApiError:"Private message error: ",
+      authOk:"Browser: local access confirmed",authError:"Authorization failed: ",chatApiError:"Chat error: ",dmApiError:"Private message error: ",
       profilePortal:"PORTAL",profileGames:"GAMES",profileLaunches:"GAME LAUNCHES",profileMessages:"MESSAGES",profileChat:"CHAT TIME",profileDays:"ACTIVE DAYS",
       profileAchievements:"🏆 ACHIEVEMENTS",write:"WRITE",player:"Player"
     }
@@ -786,7 +786,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // LOCAL BROWSER CHAT
-  const CHAT_API_BASE = String(window.FREEZZ_CHAT_API || "https://freezzgames-chat-v2.onrender.com/api").replace(/\/$/,"");
   let chatAuthorized=false;
   let chatRoom="main";
   let activeDmUserId=null;
@@ -798,7 +797,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const write=v=>localStorage.setItem(key,JSON.stringify(v));
     const body=options&&options.body&&typeof options.body==="object"?options.body:{};
     if(path.startsWith("/chat/messages") && (!options.method || options.method==="GET")){
-      const list=read().filter(x=>x.room===(new URLSearchParams(path.split("?")[1]||"")).get("room")||"main");
+      const room=(new URLSearchParams(path.split("?")[1]||"")).get("room")||"main"; const list=read().filter(x=>x.room===room);
       return {messages:list.slice(-100)};
     }
     if(path==="/chat/messages" && options.method==="POST"){
