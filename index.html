@@ -984,10 +984,6 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:'princejs',title:'PRINCE OF PERSIA JS',emoji:'🏺',genre:'TIME TRIP',desc:'Классическое приключение прямо в браузере с touch-управлением.'},
     {id:'paperio',title:'PAPER.IO',emoji:'🗺️',genre:'TERRITORY',desc:'Рисуй свой след, захватывай территорию и не пересекай опасные линии.'},
     {id:'txtaria',title:'TXTARIA',emoji:'⌨️',genre:'ODD WORLDS',desc:'Минималистичное ASCII-приключение с сенсорным управлением.'},
-    {id:'labyrinth',title:'LABYRINTH',emoji:'🌀',genre:'LOST & FOUND',desc:'Найди выход из нового лабиринта, не торопясь.'},
-    {id:'memory',title:'MEMORY',emoji:'🃏',genre:'BRAIN GYM',desc:'Открывай пары карточек и тренируй память.'},
-    {id:'whacmole',title:'WHAC-A-MOLE',emoji:'🔨',genre:'REACTION',desc:'Лови появляющиеся цели на время одним быстрым касанием.'},
-    {id:'pong',title:'PONG',emoji:'🏓',genre:'TWO SIDES',desc:'Минималистичная дуэль с мгновенным управлением.'},
     {id:'tetris',title:'TETRIS',emoji:'🧱',genre:'FALLING LOGIC',desc:'Собирай линии из падающих фигур и очищай поле.'},
     {id:'quickdraw',title:'QUICK, DRAW!',emoji:'🎨',genre:'MIND READER',desc:'Рисуй, а нейросеть попробует угадать твой рисунок.'},
     {id:'slowroads',title:'SLOW ROADS',emoji:'🏎️',genre:'ZEN DRIVE',desc:'Бесконечная поездка по процедурным дорогам в спокойном ритме.'},
@@ -995,14 +991,12 @@ window.addEventListener('DOMContentLoaded', () => {
   ];
   const CATEGORIES = [
     {id:'onefinger',name:'ОДИН ПАЛЕЦ',icon:'👆',ids:['snake','2048']},
-    {id:'think',name:'НЕ СПЕШИ',icon:'🧠',ids:['wordle','memory','tetris']},
-    {id:'reaction',name:'РЕАКТОР',icon:'⚡',ids:['whacmole','pong']},
+    {id:'think',name:'НЕ СПЕШИ',icon:'🧠',ids:['wordle','tetris']},
     {id:'strange',name:'СТРАННОЕ',icon:'🧪',ids:['txtaria','quickdraw']},
-    {id:'lost',name:'ПОТЕРЯЙСЯ И НАЙДИСЬ',icon:'🌀',ids:['labyrinth','paperio']},
+    {id:'lost',name:'ПОТЕРЯЙСЯ И НАЙДИСЬ',icon:'🗺️',ids:['paperio']},
     {id:'timetrip',name:'МАШИНА ВРЕМЕНИ',icon:'⌛',ids:['princejs']},
     {id:'zen',name:'НЕ СПЕШИ ЕХАТЬ',icon:'🌅',ids:['slowroads']},
     {id:'worlds',name:'ЖИВЫЕ МИРЫ',icon:'🌍',ids:['ligmar']},
-    {id:'duel',name:'ДВА БОКА ЭКРАНА',icon:'🏓',ids:['pong']},
     {id:'lab',name:'FREEzzz LAB',icon:'🧪',ids:['quickdraw','txtaria']}
   ];
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
@@ -1168,10 +1162,6 @@ window.addEventListener('DOMContentLoaded', () => {
     princejs:'https://princejs.com/',
     paperio:'https://bodhiprotocol.github.io/paper-io/',
     txtaria:'https://ar0se.itch.io/txtaria',
-    labyrinth:'https://opengames-dev.github.io/',
-    memory:'https://opengames-dev.github.io/',
-    whacmole:'https://opengames-dev.github.io/',
-    pong:'https://opengames-dev.github.io/',
     tetris:'https://emjay045.github.io/browser-games/tetris/',
     quickdraw:'https://quickdraw.withgoogle.com/',
     slowroads:'https://slowroads.io/#A2-83b7f485@0',
