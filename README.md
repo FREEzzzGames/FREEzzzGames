@@ -1,17 +1,13 @@
-## Hi there 👋
+# FREEzzzGames
 
-<!--
-**FREEzzzGames/FREEzzzGames** is a ✨ _special_ ✨ repository because your `README.md` (this file) appears on your GitHub profile.
+FREEzzzGames arcade portal.
 
-Here are some ideas to get you started:
+## Architecture
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 📫 Ask me about ...
-- 😄 Pronouns ...
-- ⚡ Fun fact ...
--->
-
-<!-- GitHub Pages deployment refresh: 2026-09-29 -->
+- Static portal: GitHub Pages.
+- API: Node.js + PostgreSQL on Render.
+- Telegram Mini App: official Telegram WebApp SDK on the client.
+- Authentication: the browser sends Telegram `initData` to the API; the server validates the Telegram signature and creates an HttpOnly Secure SameSite=None session cookie.
+- The Telegram bot token never reaches the browser.
+- API requests use the secure session cookie; no bearer token is stored in localStorage.
+- The old Telegram archive worker, archive topic configuration and redirect page have been removed.
