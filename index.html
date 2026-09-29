@@ -601,7 +601,6 @@ window.addEventListener('DOMContentLoaded', () => {
   ];
 
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
-  applyLanguage();
   let currentCategory = null;
   let categoryGameIndex = 0;
   let swipeStartX = 0;
@@ -697,6 +696,8 @@ window.addEventListener('DOMContentLoaded', () => {
       moveCategoryGame(dx<0?1:-1);
     }
   },{passive:true});
+
+  applyLanguage();
 
   document.getElementById('categoryBack').addEventListener('click',()=>showCategoryList(true));
 
