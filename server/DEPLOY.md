@@ -2,28 +2,24 @@
 
 ## Render
 
-The repository contains a `render.yaml` Blueprint for the API and PostgreSQL database.
-
 1. Create/import the repository in Render and deploy the Blueprint.
-2. Set the secret `TELEGRAM_BOT_TOKEN`.
-3. Set `TELEGRAM_ARCHIVE_CHAT_ID`.
-4. Set the three forum topic IDs:
-   - `TG_ROOM_MAIN_THREAD_ID`
-   - `TG_ROOM_GAMES_THREAD_ID`
-   - `TG_ROOM_RELAX_THREAD_ID`
-5. Add the Telegram bot to the archive supergroup and allow it to post in all three topics.
-6. Confirm `/api/health` returns JSON with `ok: true`.
-7. The frontend is configured to use the Render API URL fallback; if the service name or URL is changed, update `CHAT_API_BASE` in `index.html`.
+2. Set the server secret `TELEGRAM_BOT_TOKEN`.
+3. Confirm `ALLOWED_ORIGIN` is the exact GitHub Pages origin.
+4. Confirm `/api/health` returns JSON with `ok: true`.
+5. The frontend uses the Render API fallback configured in `index.html` unless `window.FREEZZ_CHAT_API` is supplied.
+6. Run the database migration before starting the API.
 
-## Telegram forum
+## Telegram Mini App
 
-Create one Telegram supergroup with Topics enabled and three topics named:
-- 🏠 Основная
-- 🎮 Игры
-- 🌙 Relax
+1. Configure the Mini App URL in BotFather.
+2. The Mini App loads the official Telegram WebApp SDK.
+3. The client sends only Telegram `initData` to `POST /api/auth/telegram/session`.
+4. The server validates the signature and creates the secure session cookie.
+5. All subsequent chat/profile/stats requests use that cookie.
 
-The IDs of those topics are the values used by the three thread environment variables.
+## Security
 
-## Important
-
-The database is application storage. Telegram receives a mirror of public-room messages. Private messages are not copied into the public archive.
+- Never put the bot token in the GitHub Pages files.
+- Never store the session token in localStorage.
+- Keep HTTPS enabled on the API.
+- The application database is PostgreSQL; Telegram is not used as a message archive.
