@@ -615,5 +615,23 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  renderCategories();
+  showCategoryList(false);
+
+  document.getElementById('randomGameBtn').addEventListener('click', () => {
+    const category=CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
+    const id=category.ids[Math.floor(Math.random()*category.ids.length)];
+    openCategory(category.id);
+    categoryGameIndex=category.ids.indexOf(id);
+    renderCategoryCarousel();
+    haptic();
+  });
+
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    const shareUrl='https://freezzzgames.github.io/FREEzzzGames/';
+    const share='https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent('🎮 FREEzzzGames — аркадный портал');
+    openExternal(share);
+  });
+
 
 
