@@ -178,7 +178,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .ctrl-pad-btn { background:var(--tg-btn); border: 2px solid var(--tg-blue); color: var(--tg-text); font-size: 20px; width: 60px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 3px 8px rgba(0,0,0,0.5); }
 .ctrl-pad-btn:active { background: var(--tg-blue-dark); transform: scale(0.92); }
 
-.portal-nav{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px 4px 4px;border-top:1px solid var(--tg-border);background:var(--tg-surface)}
+.portal-nav{flex-shrink:0;display:grid;grid-template-columns:repeat(2,1fr);gap:5px;padding:6px 4px 4px;border-top:1px solid var(--tg-border);background:var(--tg-surface)}
 .portal-nav-btn{min-width:0;padding:7px 3px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);color:var(--tg-text-secondary);font:bold 9px monospace;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .portal-nav-btn.active{background:var(--tg-blue-dark);border-color:var(--tg-blue);color:var(--tg-text);box-shadow:0 0 8px rgba(80,180,255,.16)}
 .portal-nav-btn:active{transform:scale(.98)}
@@ -320,9 +320,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   </div>
 
   <nav class="portal-nav" id="portalNav" aria-label="Portal navigation">
-    <button class="portal-nav-btn active" id="tabGames" type="button" data-tab="games">🎮 <span data-i18n="games">ИГРЫ</span></button>
-    <button class="portal-nav-btn" id="tabTop" type="button" data-tab="top">🏆 <span data-i18n="top">ТОП</span></button>
-    <button class="portal-nav-btn" id="tabAch" type="button" data-tab="ach">🎖️ <span data-i18n="achievements">АЧИВКИ</span></button>
+    <button class="portal-nav-btn active" id="tabAch" type="button" data-tab="ach">🎖️ <span data-i18n="achievements">АЧИВКИ</span></button>
     <button class="portal-nav-btn" id="tabGuest" type="button" data-tab="guest">💬 <span data-i18n="chat">ЧАТ</span></button>
   </nav>
 
@@ -960,16 +958,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Вкладки
+  // Вкладки: в нижней навигации оставлены только АЧИВКИ и ЧАТ.
+  // Игры остаются основным экраном портала, а отдельный раздел ТОП убран из интерфейса.
   function switchTab(tab) {
     haptic();
     document.getElementById('gamesBrowser').classList.toggle('hidden', tab !== 'games');
-    document.getElementById('leaderboardView').classList.toggle('hidden', tab !== 'top');
+    document.getElementById('leaderboardView').classList.add('hidden');
     document.getElementById('achievementsView').classList.toggle('hidden', tab !== 'ach');
     document.getElementById('guestView').classList.toggle('hidden', tab !== 'guest');
-    ['tabGames','tabTop','tabAch','tabGuest'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
-    if(tab==='games'){document.getElementById('tabGames').classList.add('active');showCategoryList(false);}
-    else if(tab==='top'){document.getElementById('tabTop').classList.add('active');loadScores();}
+    ['tabAch','tabGuest'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+    if(tab==='games'){showCategoryList(false);}
     else if(tab==='ach'){document.getElementById('tabAch').classList.add('active');checkAchievements();}
     else if(tab==='guest'){document.getElementById('tabGuest').classList.add('active');openChatPanel();}
   }
