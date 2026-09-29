@@ -159,6 +159,13 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .ctrl-pad-btn:active { background: var(--tg-blue-dark); transform: scale(0.92); }
 
 .footer-info { color: #83a4c9; font-size: 8px; letter-spacing: 1px; margin-top: auto; padding: 2px; flex-shrink: 0; }
+
+/* ORIGINAL GAME ART / LOGO CARDS */
+.game-card-art{position:relative;min-height:220px;padding:18px;background:var(--tg-surface-soft);text-shadow:none;overflow:hidden}
+.game-card-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(0,0,0,.10));pointer-events:none}
+.game-card-logo{width:100%;height:100%;max-width:92%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;border-radius:10px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+.game-card-logo-fallback{font-size:74px;line-height:1}
+@media(max-width:420px){.game-card-art{min-height:190px;padding:14px}.game-card-logo-fallback{font-size:64px}}
 </style>
 </head>
 <body id="bodyRoot">
@@ -644,6 +651,31 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* Official/creator-sourced artwork where a direct public image URL is available.
+     Other cards use the official game's domain icon as a safe visual fallback. */
+  const GAME_LOGOS = {
+    sixcats:'https://img.itch.zone/aW1nLzM0NjIwODcucG5n/original/Zya8qj.png',
+    slowroads:'https://slowroads.io/favicon.ico',
+    ligmar:'https://pbs.twimg.com/profile_images/1131163352758149122/JeNn3lex.png',
+    dragonsweeper:'https://geometrylite.net/data/image/game/dragonsweeper/dragonsweeper.png',
+    mossmoss:'https://images.stopgame.ru/games/logos/18153/c896x896/wNO1xZjg1Zjnobk1gd-orA/moss-square.jpg',
+    ducklings:'https://snow-rider.io/data/image/game/ducklings.png',
+    petalquest:'https://img.itch.zone/aW1nLzI0Njk4MDYucG5n/original/4f2Q1K.png',
+    greybox:'https://img.itch.zone/aW1nLzQyNzY4MzUucG5n/original/4RdKon.png',
+    lif3d:'https://img.itch.zone/aW1nLzQ1NTU1NjUucG5n/original/7r4QkK.png',
+    waterworks:'https://scriptwelder.wiki.gg/images/4/4d/Waterworks.jpg',
+    cosmobeat:'https://matthias-portfolio.de/images/worksampledancegame.jpg',
+    sokoban:'https://imgs.crazygames.com/games/sokoban/cover-1657180776191.jpg',
+    tanuki:'https://www.nintendo.com/content/dam/noa/en_US/games/switch/t/tanuki-sunset-switch/hero.jpg',
+    maketen:'https://img.itch.zone/aW1nLzE1NjY4Njg4LnBuZw==/original/example.png'
+  };
+  function gameLogoUrl(id){
+    if(GAME_LOGOS[id]) return GAME_LOGOS[id];
+    const g=GAME_BY_ID[id];
+    const link=GAME_LINKS[id]||'';
+    try{return 'https://www.google.com/s2/favicons?domain='+encodeURIComponent(new URL(link).hostname)+'&sz=256'}catch(e){return ''}
+  }
+
   function renderCategoryCarousel(){
     if(!currentCategory)return;
     const ids=currentCategory.ids;
@@ -658,7 +690,9 @@ window.addEventListener('DOMContentLoaded', () => {
       else if(offset===-1)cls='game-card is-prev';
       else if(offset===1)cls='game-card is-next';
       return '<div class="'+cls+'" data-carousel-game="'+g.id+'">'+
-        '<div class="game-card-art">'+g.emoji+'</div>'+
+        '<div class="game-card-art">'+
+          '<img class="game-card-logo" src="'+gameLogoUrl(g.id)+'" alt="'+g.title.replace(/"/g,'&quot;')+'" loading="eager" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">'+
+          '<span class="game-card-logo-fallback" style="display:none">'+g.emoji+'</span>'+        '</div>'+
         '<div class="game-card-body">'+
           '<div class="game-card-title">'+g.title+'</div>'+
           '<div class="game-card-desc">'+gameText(g.id,'desc')+'</div>'+
