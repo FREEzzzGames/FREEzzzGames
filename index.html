@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>FREEzzzGames — Arcade Portal</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="./js/telegram-auth.js"></script>
 <style>
 :root {
   --tg-bg:#ffffff;
@@ -356,8 +356,8 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-  const tg = window.Telegram?.WebApp || null;
-  if (tg && tg.ready) { tg.ready(); tg.expand(); }
+  const tg = window.FREEZZTelegramAuth || null;
+  if (tg) { tg.ready(); tg.expand(); }
 
   // Critical header controls are initialized first so a later optional module
   // cannot leave the core navigation/sound/theme buttons dead.
@@ -555,9 +555,9 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // PLAYER / TELEGRAM IDENTITY / STATISTICS
-  const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-  const playerId = tgUser && tgUser.id ? String(tgUser.id) : "local_guest";
+  // PLAYER IDENTITY / STATISTICS
+  let tgUser = null;
+  let playerId = "local_guest";
   const playerKey = "freezzzPlayerStats:" + playerId;
 
   const defaultPlayerStats = {
@@ -739,7 +739,6 @@ window.addEventListener('DOMContentLoaded', () => {
   // TELEGRAM CHAT API
   const CHAT_API_BASE = String(window.FREEZZ_CHAT_API || "https://freezzgames-chat.onrender.com/api").replace(/\/$/,"");
   let chatAuthorized=false;
-  let chatSessionToken="";
   let chatRoom="main";
   let activeDmUserId=null;
   let chatBusy=false;
@@ -747,7 +746,6 @@ window.addEventListener('DOMContentLoaded', () => {
   async function api(path, options={}){
     const opts=Object.assign({credentials:"include",headers:{}},options);
     opts.headers=Object.assign({},opts.headers);
-    if(chatSessionToken)opts.headers["Authorization"]="Bearer "+chatSessionToken;
     if(opts.body && typeof opts.body!=="string"){opts.headers["Content-Type"]="application/json";opts.body=JSON.stringify(opts.body);}
     const res=await fetch(CHAT_API_BASE+path,opts);
     let payload=null; try{payload=await res.json();}catch(e){}
@@ -763,11 +761,13 @@ window.addEventListener('DOMContentLoaded', () => {
   async function authorizeChat(){
     if(!tg || !tg.initData){chatAuthorized=false;chatSetStatus(tr("authOpen"));return false;}
     try{
-      const auth=await api("/auth/telegram",{method:"POST",body:{initData:tg.initData}});
-      chatSessionToken=String(auth?.sessionToken||"");
-      if(!chatSessionToken)throw new Error("Telegram session token was not returned");
+      const auth=await tg.authenticate(CHAT_API_BASE);
+      if(!auth?.user?.id)throw new Error("Telegram session was not created");
+      tgUser=auth.user;
+      playerId=String(tgUser.id);
       chatAuthorized=true;
       chatSetStatus(tr("authOk"),true);
+      syncTelegramIdentity();
       return true;
     }catch(e){
       chatAuthorized=false;
@@ -1247,7 +1247,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
   bootPortal();
-  window.addEventListener("beforeunload",()=>{try{navigator.sendBeacon?.(CHAT_API_BASE+"/auth/heartbeat","");}catch(e){}});
+
 
 
 
