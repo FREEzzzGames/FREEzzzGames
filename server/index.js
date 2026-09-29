@@ -92,6 +92,13 @@ async function router(req,res){
    await pool.query("UPDATE player_stats SET messages_sent=messages_sent+1,updated_at=NOW() WHERE telegram_id=$1",[String(user.telegram_id)]);
    return out(res,201,{ok:true,id:String(q.rows[0].id),createdAt:q.rows[0].created_at});
   }
+  if(req.method==="POST"&&u.pathname==="/api/stats"){
+   const b=await body(req),active=Array.isArray(b.activeDays)?b.activeDays.slice(-366).map(String):[];
+   const v={portalSeconds:Math.max(0,Number(b.portalSeconds||0)),gameSeconds:Math.max(0,Number(b.gameSeconds||0)),chatSeconds:Math.max(0,Number(b.chatSeconds||0)),gameLaunches:Math.max(0,Number(b.gameLaunches||0)),messagesSent:Math.max(0,Number(b.messagesSent||0)),categoryOpens:Math.max(0,Number(b.categoryOpens||0)),gameViews:Math.max(0,Number(b.gameViews||0))};
+   await pool.query("UPDATE player_stats SET portal_seconds=$2,game_seconds=$3,chat_seconds=$4,game_launches=$5,messages_sent=$6,category_opens=$7,game_views=$8,active_days=$9,updated_at=NOW() WHERE telegram_id=$1",
+     [String(user.telegram_id),v.portalSeconds,v.gameSeconds,v.chatSeconds,Math.floor(v.gameLaunches),Math.floor(v.messagesSent),Math.floor(v.categoryOpens),Math.floor(v.gameViews),active]);
+   return out(res,200,{ok:true});
+  }
   const profile=u.pathname.match(/^\/api\/profile\/([^/]+)$/);
   if(profile&&req.method==="GET"){
    const target=profile[1],p=await pool.query("SELECT * FROM players WHERE telegram_id=$1",[target]);if(!p.rowCount)return out(res,404,{error:"Player not found"});const s=await pool.query("SELECT * FROM player_stats WHERE telegram_id=$1",[target]);const x=s.rows[0];
