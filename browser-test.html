@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="freezzz-build" content="2026-09-29-browser-test-01">
+<title>FREEzzzGames — Browser Test</title>
+<style>
+:root {
+  --tg-bg:#e7e0d5;
+  --tg-surface:#eee8de;
+  --tg-surface-soft:#ddd6ca;
+  --tg-text:#292722;
+  --tg-text-secondary:#716b62;
+  --tg-blue:#3f78a8;
+  --tg-blue-dark:#315f86;
+  --tg-border:#c9c0b4;
+  --tg-shadow:0 2px 8px rgba(0,0,0,.08);
+  --tg-overlay:rgba(255,255,255,.92);
+  --tg-accent:#3390ec;
+  --tg-title:#17212b;
+  --tg-btn:#f0f2f5;
+}
+body.theme-dark {
+  --tg-bg:#212121;
+  --tg-surface:#2b2b2b;
+  --tg-surface-soft:#333333;
+  --tg-text:#f5f5f5;
+  --tg-text-secondary:#a7a7a7;
+  --tg-blue:#64b5f6;
+  --tg-blue-dark:#4da3e8;
+  --tg-border:#3d3d3d;
+  --tg-shadow:0 2px 10px rgba(0,0,0,.28);
+  --tg-overlay:rgba(33,33,33,.94);
+  --tg-accent:#64b5f6;
+  --tg-title:#f5f5f5;
+  --tg-btn:#333333;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;width:100%;height:100%;background:var(--tg-bg);color:var(--tg-text);font-family:monospace;overflow:hidden;}
+body{
+  padding:4px;display:flex;justify-content:center;align-items:center;
+  background:var(--tg-bg);position:fixed; inset: 0;
+}
+.portal{
+  width: 100%; height: 100%; max-width:520px;max-height:100vh;
+  text-align: center; display: flex; flex-direction: column; gap: 6px;
+  overflow-y: auto; padding: 8px; z-index: 10;
+  background:var(--tg-surface);border:1px solid var(--tg-border);
+  border-radius: 12px; box-shadow:var(--tg-shadow);
+  position: relative;
+}
+.hidden { display: none !important; }
+
+/* ШАПКА ПОРТАЛА */
+.header-top { display:grid;grid-template-columns:auto minmax(52px,1fr) auto;align-items:center;padding:4px 6px;gap:6px;flex-shrink:0;position:relative;min-width:0 }
+.header-chat-btn{position:static;justify-self:center;height:32px;padding:0 12px;border:1px solid color-mix(in srgb,var(--tg-border) 72%,var(--tg-blue));border-radius:9px;background:color-mix(in srgb,var(--tg-surface) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--tg-text);font:bold 9px monospace;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;opacity:.86;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:81;transition:.18s;white-space:nowrap}
+.header-chat-btn:active{transform:scale(.94);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
+.header-chat-btn.active{border-color:var(--tg-blue);background:var(--tg-blue-dark);color:var(--tg-text)}
+.header-top .always-controls{position:relative;justify-self:end;z-index:1000}
+.always-btn.home{position:relative;z-index:1001}
+@media(max-width:420px){.header-chat-btn{height:30px;padding:0 10px;border-radius:8px;font-size:8px}.header-top{gap:4px}.header-top .always-controls{gap:4px}.header-top .always-btn{width:29px;height:29px}}
+@media(max-width:340px){.header-chat-btn{width:32px;padding:0;font-size:0}.header-chat-btn span{display:none}.header-top{grid-template-columns:auto minmax(34px,1fr) auto}}
+.profile-box { font-size: 11px; color:var(--tg-blue); text-align: left; display: flex; align-items: center; gap: 6px; background:var(--tg-btn); padding: 4px 8px; border-radius: 8px; border:1px solid var(--tg-border); cursor: pointer; }
+.profile-box:active { background: var(--tg-blue-dark); }
+.user-avatar { width: 26px; height: 26px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 15px; border:1px solid var(--tg-blue); flex-shrink: 0; }
+
+.header-btns { display: flex; gap: 6px; }
+.top-btn { background:var(--tg-btn); border:1px solid var(--tg-border); color: var(--tg-text); padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+
+h1{color:var(--tg-text);font-size:30px; margin: 2px 0 0; text-shadow: 2px 2px #e52225; letter-spacing: 2px; flex-shrink: 0; }
+.subtitle { color:var(--tg-blue); font-size: 9px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; flex-shrink: 0; }
+
+/* КНОПКИ НАВИГАЦИИ */
+.actions-row { display: flex; gap: 4px; justify-content: center; margin-bottom: 2px; flex-wrap: wrap; flex-shrink: 0; }
+.action-btn { background:var(--tg-btn); border:1px solid var(--tg-border); color: #83a4c9; padding: 6px 8px; border-radius: 8px; font: bold 9px monospace; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 3px; }
+.action-btn.active { background: var(--tg-blue-dark); border-color:var(--tg-blue); color: var(--tg-text); }
+.action-btn.special { border-color: #ffd42aaa; color: #ffd42a; }
+
+/* КАТЕГОРИИ И КАРУСЕЛЬ ИГР */
+.games-browser{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:4px 0;touch-action:manipulation;user-select:none}
+.category-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:4px 2px 8px;scrollbar-width:none}
+.category-list::-webkit-scrollbar{display:none}
+.category-item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.15);color:#fff;box-shadow:inset 0 0 18px rgba(255,255,255,.025);transition:transform .18s ease,border-color .18s ease,background .18s ease;overflow:hidden}
+.category-item:active{transform:scale(.985);border-color:var(--tg-blue);background:rgba(255,255,255,.22)}
+.category-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:0 0 42px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:rgba(0,0,0,.12);font-size:22px}
+.category-copy{min-width:0;flex:1;display:block;overflow:hidden}
+.category-name{display:block;font-size:13px;font-weight:900;color:var(--tg-text);letter-spacing:.7px;line-height:1.15;white-space:normal;overflow-wrap:anywhere}
+.category-count{display:block;font-size:9px;color:var(--tg-text-secondary);margin-top:4px;line-height:1.1;white-space:nowrap}
+.category-arrow{color:var(--tg-blue);font-size:20px}
+.category-view{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.category-head{display:flex;align-items:center;gap:8px;padding:4px 2px 8px;flex-shrink:0}
+.category-back{width:38px;height:34px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);color:var(--tg-blue);font-size:18px}
+.category-head-copy{text-align:left;min-width:0}
+.category-head-title{font-size:14px;font-weight:900;color:var(--tg-text)}
+.category-head-sub{font-size:8px;color:var(--tg-text-secondary);margin-top:2px}
+.games-carousel{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px 0 12px;touch-action:none;user-select:none;overscroll-behavior:contain}
+.games-track{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;will-change:transform}
+.game-card{position:absolute;width:min(88%,420px);height:min(64vh,455px);min-height:300px;border:1px solid var(--tg-blue);border-radius:18px;background:linear-gradient(145deg,rgba(16,24,58,.98),rgba(4,7,20,.98));box-shadow:var(--tg-shadow);display:flex;flex-direction:column;overflow:hidden;transition:transform .38s cubic-bezier(.22,.8,.22,1),opacity .38s ease,filter .38s ease;cursor:pointer;will-change:transform,opacity}
+.game-card.is-active{transform:translate3d(0,0,0) scale(1);opacity:1;z-index:3;filter:none}
+.game-card.is-prev{transform:translate3d(-96%,0,0) scale(.86);opacity:.22;z-index:2;pointer-events:none}
+.game-card.is-next{transform:translate3d(96%,0,0) scale(.86);opacity:.22;z-index:2;pointer-events:none}
+.game-card.is-hidden{transform:translate3d(0,10px,0) scale(.78);opacity:0;z-index:1;pointer-events:none}
+.game-card-art{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;font-size:88px;background:var(--tg-surface-soft);text-shadow:0 0 25px var(--tg-blue)}
+.game-card-body{padding:14px 16px 12px;text-align:left;background:var(--tg-surface-soft);border-top:1px solid var(--tg-border)}
+.game-card-title{font-size:20px;font-weight:900;color:var(--tg-text);letter-spacing:1px;margin-bottom:6px}
+.game-card-desc{font-size:11px;line-height:1.45;color:var(--tg-text);min-height:48px}
+.game-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--tg-blue);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.game-card-play{display:inline-flex;padding:5px 9px;border:1px solid var(--tg-blue);border-radius:7px;color:var(--tg-text);background:var(--tg-btn);font-weight:bold}
+.carousel-dots{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:10;max-width:90%;overflow:hidden}
+.carousel-dot{width:6px;height:6px;flex:0 0 auto;border-radius:50%;background:#52617b;transition:.2s}
+.carousel-dot.active{width:18px;border-radius:4px;background:var(--tg-blue);box-shadow:0 0 7px var(--tg-blue)}
+.carousel-hint{position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--tg-text-secondary);letter-spacing:1px;z-index:10;opacity:.8}
+
+.games-track{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.game-card{position:absolute;width:min(92%,430px);height:min(68vh,470px);min-height:330px;border:1px solid var(--tg-blue);border-radius:18px;background:linear-gradient(145deg,rgba(16,24,58,.98),rgba(4,7,20,.98));box-shadow:var(--tg-shadow);display:flex;flex-direction:column;overflow:hidden;transition:transform .34s ease,opacity .34s ease,filter .34s ease;cursor:pointer}
+.game-card.is-active{transform:translateX(0) scale(1);opacity:1;z-index:3;filter:none}
+.game-card.is-prev{transform:translateX(-108%) scale(.82);opacity:.18;z-index:2;pointer-events:none}
+.game-card.is-next{transform:translateX(108%) scale(.82);opacity:.18;z-index:2;pointer-events:none}
+.game-card.is-hidden{transform:scale(.72);opacity:0;z-index:1;pointer-events:none}
+.game-card-art{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;font-size:96px;background:var(--tg-surface-soft);text-shadow:0 0 25px var(--tg-blue)}
+.game-card-body{padding:14px 16px 12px;text-align:left;background:var(--tg-surface-soft);border-top:1px solid var(--tg-border)}
+.game-card-title{font-size:20px;font-weight:900;color:var(--tg-text);letter-spacing:1px;margin-bottom:6px}
+.game-card-desc{font-size:11px;line-height:1.45;color:var(--tg-text);min-height:48px}
+.game-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--tg-blue);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.game-card-play{display:inline-flex;padding:5px 9px;border:1px solid var(--tg-blue);border-radius:7px;color:var(--tg-text);background:var(--tg-btn);font-weight:bold}
+.carousel-dots{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:10}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:#52617b;transition:.2s}
+.carousel-dot.active{width:18px;border-radius:4px;background:var(--tg-blue);box-shadow:0 0 7px var(--tg-blue)}
+.carousel-hint{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--tg-text-secondary);letter-spacing:1px;z-index:10;opacity:.8}
+
+/* ПАНЕЛИ ТОПА, АЧИВОК, ЧАТА */
+.row-card { display: flex; justify-content: space-between; align-items: center; background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 8px; padding: 8px 12px; font-size: 11px; text-align: left; }
+.row-name { color:var(--tg-blue); font-weight: bold; }
+.row-val { color: var(--tg-text); font-weight: bold; }
+.achievement { opacity: 0.4; border-color: #444; }
+.achievement.unlocked { opacity: 1; border-color:var(--tg-blue); background: rgba(32,232,255,0.08); }
+.ach-desc { font-size: 9px; color: #83a4c9; }
+
+.guest-form { display: flex; gap: 4px; }
+.guest-input { flex-grow: 1; background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 6px; color: #fff; padding: 6px 10px; font-size: 11px; font-family: monospace; }
+.guest-send { background: var(--tg-blue-dark); border:1px solid var(--tg-blue); color: var(--tg-text); padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+.guest-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; }
+.chat-auth-state{padding:9px 10px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);font-size:9px;color:var(--tg-text-secondary);text-align:left;margin-bottom:6px}
+.chat-room-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:5px}
+.chat-room-tab{min-width:0;padding:7px 3px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font:bold 9px monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-room-tab.active{background:var(--tg-blue-dark);border-color:var(--tg-blue);color:#fff}
+.chat-toolbar{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-surface-soft);font-size:9px;font-weight:bold;color:var(--tg-text);margin-bottom:5px}
+.chat-mini-btn{width:27px;height:25px;border:1px solid var(--tg-border);border-radius:7px;background:var(--tg-btn);color:var(--tg-text);font-weight:bold}
+.chat-list{max-height:none;flex:1;min-height:130px}
+.chat-compose{flex-shrink:0;margin-top:5px}
+.dm-list{max-height:100%;overflow-y:auto;min-height:0}
+.dm-item{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);color:var(--tg-text);text-align:left;margin-bottom:4px}
+.dm-item-avatar{font-size:20px;width:28px;text-align:center}
+.dm-item-name{font-weight:bold;font-size:10px}
+.dm-item-preview{font-size:8px;color:var(--tg-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-thread{min-height:0;flex:1;display:flex;flex-direction:column}
+.dm-thread-head{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:10px;font-weight:bold}
+.dm-thread .guest-list{flex:1;max-height:none}
+.chat-msg-time{float:right;color:var(--tg-text-secondary);font-size:7px;margin-left:6px}
+.chat-message-own{border-color:var(--tg-blue)}
+.chat-message-block{min-width:0}
+
+.guest-msg { background:var(--tg-surface-soft); border:1px solid var(--tg-border); border-radius: 12px; padding: 7px 10px; font-size: 10px; text-align: left; max-width:88%; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+.guest-author { color:var(--tg-blue); font-weight: bold; margin-bottom: 2px; }
+.chat-message-own { align-self:flex-end; background:color-mix(in srgb,var(--tg-blue) 15%,var(--tg-surface)); border-color:color-mix(in srgb,var(--tg-blue) 55%,var(--tg-border)); }
+.chat-layout { width:min(100%,520px); height:min(82vh,620px); margin:auto; display:flex; flex-direction:column; background:var(--tg-surface); border:1px solid var(--tg-border); border-radius:14px; padding:8px; box-shadow:0 10px 32px rgba(0,0,0,.24); }
+#guestView { position:absolute; inset:0; z-index:110; padding:12px; background:var(--tg-overlay); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px); }
+#guestView .chat-auth-state { flex-shrink:0; }
+
+/* МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ */
+.modal-overlay { position: absolute; inset: 0; background: rgba(2,3,11,0.88); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 15px; }
+.modal-card { background: var(--tg-surface); border: 2px solid var(--tg-blue); border-radius: 12px; width: 100%; max-width: 340px; padding: 14px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.9); display: flex; flex-direction: column; gap: 8px; }
+.avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; max-height: 200px; overflow-y: auto; padding: 2px; }
+.avatar-item { aspect-ratio: 1/1; background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 22px; cursor: pointer; }
+.avatar-item.active { border-color: var(--tg-text); box-shadow: 0 0 8px var(--tg-text); }
+
+/* КОНТЕЙНЕР АКТИВНОЙ ИГРЫ */
+.portal.game-active { padding: 4px; gap: 4px; }
+.game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 8px; width: 100%; flex-shrink: 0; }
+.back-btn { background: #8c0505; border: 1px solid #ff6b55; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(255,0,0,0.4); }
+.back-btn:active { background: #b30707; transform: scale(0.95); }
+
+#gameContainer { flex-grow: 1; width: 100%; position: relative; background: #010206; border: 2px solid var(--tg-blue); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 0; }
+canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
+
+.game-controls { display: flex; gap: 6px; justify-content: center; align-items: center; width: 100%; padding: 2px; flex-shrink: 0; flex-wrap: wrap; }
+.ctrl-pad-btn { background:var(--tg-btn); border: 2px solid var(--tg-blue); color: var(--tg-text); font-size: 20px; width: 60px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 3px 8px rgba(0,0,0,0.5); }
+.ctrl-pad-btn:active { background: var(--tg-blue-dark); transform: scale(0.92); }
+
+.footer-info { color: #83a4c9; font-size: 8px; letter-spacing: 1px; margin-top: auto; padding: 2px; flex-shrink: 0; }
+
+/* ORIGINAL GAME ART / LOGO CARDS */
+.game-card-art{position:relative;min-height:220px;padding:18px;background:var(--tg-surface-soft);text-shadow:none;overflow:hidden}
+.game-card-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(0,0,0,.10));pointer-events:none}
+.game-card-logo{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;display:block;position:relative;z-index:1;border-radius:0;filter:none}
+.game-card-logo-fallback{font-size:74px;line-height:1}
+@media(max-width:420px){.game-card-art{min-height:190px;padding:14px}.game-card-logo-fallback{font-size:64px}}
+
+/* COMPACT ALWAYS-ON SCREEN CONTROLS */
+.always-controls{position:absolute;top:8px;right:8px;z-index:80;display:flex;align-items:center;gap:5px;pointer-events:auto}
+.always-btn{width:32px;height:32px;padding:0;border:1px solid color-mix(in srgb,var(--tg-border) 72%,var(--tg-blue));border-radius:9px;background:color-mix(in srgb,var(--tg-surface) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--tg-text);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.72;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:opacity .18s,transform .18s,background .18s}
+.always-btn:active{opacity:1;transform:scale(.92);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
+.always-btn.home{color:var(--tg-blue);font-size:16px}
+.always-btn.lang{font:bold 9px monospace;letter-spacing:.2px}
+.always-btn.radio{font:bold 11px monospace;color:var(--tg-blue)}
+.chat-unread-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#20b45a;box-shadow:0 0 5px rgba(32,180,90,.7);margin-left:2px;flex:0 0 7px}
+.portal.game-active .header-chat-btn{position:absolute;top:43px;right:7px;z-index:1002}
+.radio-overlay{position:absolute;inset:0;z-index:130;display:flex;align-items:flex-start;justify-content:flex-end;padding:52px 8px 8px;background:rgba(0,0,0,.18);pointer-events:none}
+.radio-overlay:not(.hidden){pointer-events:auto}
+.radio-card{width:min(92%,300px);background:var(--tg-surface);border:1px solid var(--tg-blue);border-radius:14px;padding:10px;box-shadow:0 12px 35px rgba(0,0,0,.28)}
+.radio-head{display:flex;align-items:center;justify-content:space-between;color:var(--tg-text);font-size:12px}
+.radio-close{width:28px;height:28px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font-size:18px}
+.radio-status{margin:8px 0;padding:7px 8px;border-radius:8px;background:var(--tg-surface-soft);color:var(--tg-text-secondary);font:9px monospace}
+.radio-actions{display:flex;gap:6px}
+.radio-actions button{flex:1;padding:8px;border:1px solid var(--tg-blue);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font:bold 9px monospace}
+.portal.game-active .always-controls{top:7px;right:7px}
+.portal.game-active .always-btn{width:30px;height:30px}
+@media(max-width:420px){.always-controls{top:6px;right:6px;gap:4px}.always-btn{width:29px;height:29px;border-radius:8px;font-size:13px}.always-btn.home{font-size:15px}}
+
+/* PLAYER PROFILE / BUSINESS CARD */
+.player-profile-overlay{position:absolute;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.player-profile-card{width:min(92%,360px);max-height:82%;overflow:auto;background:var(--tg-surface);border:1px solid var(--tg-blue);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.28);padding:18px;color:var(--tg-text)}
+.player-profile-head{display:flex;align-items:center;gap:12px;text-align:left}
+.player-profile-avatar{width:58px;height:58px;border-radius:16px;background:var(--tg-btn);border:1px solid var(--tg-blue);display:flex;align-items:center;justify-content:center;font-size:30px;flex:0 0 58px}
+.player-profile-name{font-size:18px;font-weight:900;color:var(--tg-text);word-break:break-word}
+.player-profile-username{font-size:11px;color:var(--tg-blue);margin-top:3px}
+.player-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+.player-stat{padding:9px 8px;border:1px solid var(--tg-border);border-radius:11px;background:var(--tg-btn);text-align:left}
+.player-stat-value{font-size:15px;font-weight:900;color:var(--tg-text)}
+.player-stat-label{font-size:8px;color:var(--tg-text-secondary);margin-top:3px}
+.player-achievements{margin-top:14px;text-align:left}
+.player-achievements-title{font-size:11px;font-weight:900;color:var(--tg-text);margin-bottom:7px}
+.player-achievement{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);margin-bottom:5px}
+.player-achievement.locked{opacity:.42}
+.player-achievement-icon{font-size:17px;width:22px;text-align:center}
+.player-achievement-name{font-size:9px;font-weight:900;color:var(--tg-text)}
+.player-achievement-desc{font-size:7px;color:var(--tg-text-secondary);margin-top:2px}
+.player-profile-close{width:100%;margin-top:12px;padding:9px;border:1px solid var(--tg-border);border-radius:10px;background:var(--tg-btn);color:var(--tg-text);font-weight:900}
+.guest-author{cursor:pointer}
+.guest-author:active{opacity:.65}
+
+</style>
+<link rel="stylesheet" href="./css/portal-cyber.css">
+<!-- pages-redeploy -->
+</head>
+<body id="bodyRoot">
+<div id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#e7e0d5;color:#292722;font-family:monospace;padding:20px">
+  <div style="width:min(420px,100%);padding:24px;border:1px solid #c9c0b4;border-radius:16px;background:#eee8de;box-shadow:0 10px 30px rgba(0,0,0,.18);text-align:center">
+    <div style="font-size:28px;font-weight:900;margin-bottom:10px">FREEzzzGames</div>
+    <div id="ageGateTitle" style="font-size:14px;font-weight:700;margin-bottom:8px">Возрастной экран</div>
+    <div style="font-size:11px;line-height:1.5;color:#716b62;margin-bottom:18px">В каталоге могут встречаться игры и материалы с возрастными ограничениями. Подтвердите, что вам 18 лет или больше.</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button id="ageYes" type="button" style="padding:10px 18px;border:1px solid #3f78a8;border-radius:9px;background:#3f78a8;color:#fff;font:bold 11px monospace;cursor:pointer">ДА, МНЕ 18+</button>
+      <button id="ageNo" type="button" style="padding:10px 18px;border:1px solid #c9c0b4;border-radius:9px;background:#f0f2f5;color:#292722;font:bold 11px monospace;cursor:pointer">НЕТ</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const key="freezzz_age_confirmed";
+  const gate=document.getElementById("ageGate");
+  const yes=document.getElementById("ageYes");
+  const no=document.getElementById("ageNo");
+  if(localStorage.getItem(key)==="1") gate.remove();
+  yes.addEventListener("click",()=>{localStorage.setItem(key,"1");gate.remove();});
+  no.addEventListener("click",()=>{localStorage.removeItem(key);window.location.replace("about:blank");});
+})();
+</script>
+
+<div class="portal" id="mainPortal">
+  <div class="header-top">
+    <div class="profile-box" id="userProfileBox">
+      <div class="user-avatar" id="currentAvatarEmoji">👾</div>
+      <div id="userNameTxt">Игрок</div>
+    </div>
+    <button class="header-chat-btn" id="tabGuest" type="button" data-tab="guest" title="Чат" aria-label="Чат">💬 <span data-i18n="chat">ЧАТ</span><span class="chat-unread-dot hidden" id="chatUnreadDot" aria-hidden="true"></span></button>
+    <div class="always-controls" id="alwaysControls">
+      <button class="always-btn home" id="homeMenuBtn" title="Главное меню" aria-label="Главное меню">⌂</button>
+      <button class="always-btn" id="soundToggle" title="Звук" aria-label="Звук">🔊</button>
+      <button class="always-btn" id="themeToggleBtn" title="Тема" aria-label="Тема">☀️</button>
+      <button class="always-btn radio" id="radioPlayBtn" title="Techno.FM — play" aria-label="Techno.FM — play">▶</button>
+      <button class="always-btn radio" id="radioStopBtn" title="Techno.FM — stop" aria-label="Techno.FM — stop">■</button>
+      <button class="always-btn lang" id="langToggleBtn" title="Язык" aria-label="Язык">RU</button>
+    </div>
+  </div>
+
+  <div>
+    <h1>FREEzzzGames</h1>
+    <div class="subtitle" data-i18n="subtitle">ARCADE PORTAL 🕹️</div>
+  </div>
+
+  <div class="games-browser" id="gamesBrowser">
+    <div class="category-list" id="categoryList">
+      <button class="category-item" data-category="arcade"><span class="category-icon">🕹️</span><span class="category-copy"><span class="category-name">АРКАДА</span><span class="category-count">3 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="racing"><span class="category-icon">🏁</span><span class="category-copy"><span class="category-name">ГОНКИ</span><span class="category-count">2 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="puzzle"><span class="category-icon">🧩</span><span class="category-copy"><span class="category-name">ГОЛОВОЛОМКИ</span><span class="category-count">8 ИГР</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="adventure"><span class="category-icon">🌍</span><span class="category-copy"><span class="category-name">ПРИКЛЮЧЕНИЯ</span><span class="category-count">3 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="simulation"><span class="category-icon">⚙️</span><span class="category-copy"><span class="category-name">СИМУЛЯЦИИ</span><span class="category-count">4 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="logic"><span class="category-icon">🧠</span><span class="category-copy"><span class="category-name">ЛОГИКА И СТРАТЕГИЯ</span><span class="category-count">2 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="sandbox"><span class="category-icon">🧪</span><span class="category-copy"><span class="category-name">ПЕСОЧНИЦА И ЭКСПЕРИМЕНТЫ</span><span class="category-count">4 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="space"><span class="category-icon">🪐</span><span class="category-copy"><span class="category-name">КОСМОС И РИТМ</span><span class="category-count">2 ИГРЫ</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="online"><span class="category-icon">🌐</span><span class="category-copy"><span class="category-name">ОНЛАЙН</span><span class="category-count">1 ИГРА</span></span><span class="category-arrow">›</span></button>
+      <button class="category-item" data-category="special"><span class="category-icon">🎮</span><span class="category-copy"><span class="category-name">СПЕЦИАЛЬНОЕ</span><span class="category-count">1 ИГРА</span></span><span class="category-arrow">›</span></button>
+    </div>
+    <div class="category-view hidden" id="categoryView">
+      <div class="category-head">
+        <button class="category-back" id="categoryBack" aria-label="Назад">‹</button>
+        <div class="category-head-copy">
+          <div class="category-head-title" id="categoryHeadTitle"></div>
+          <div class="category-head-sub" data-i18n="swipeHint">СВАЙП ВЛЕВО / ВПРАВО • ИГРА ОТКРЫВАЕТСЯ КАСАНИЕМ</div>
+        </div>
+      </div>
+      <div class="games-carousel" id="gamesCarousel">
+        <div class="carousel-hint" data-i18n="swipeShort">← СВАЙП →</div>
+        <div class="games-track" id="gamesTrack"></div>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-view hidden" id="achievementsView">
+    <div class="row-card achievement" id="achSnake"><div><span class="row-name">🐍 Мастер Змейки</span><div class="ach-desc">Счет от 100 в Snake</div></div><span class="row-val" id="statSnake">🔒</span></div>
+    <div class="row-card achievement" id="achTetris"><div><span class="row-name">🧱 Архитектор Тетриса</span><div class="ach-desc">Счет от 500 в Tetris</div></div><span class="row-val" id="statTetris">🔒</span></div>
+    <div class="row-card achievement" id="achMario"><div><span class="row-name">🍄 Герой Платформера</span><div class="ach-desc">Пройди Platformer</div></div><span class="row-val" id="statMario">🔒</span></div>
+    <div class="row-card achievement" id="achRacer"><div><span class="row-name">🏎️ Путешественник</span><div class="ach-desc">Открой Slow Roads</div></div><span class="row-val" id="statRacer">🔒</span></div>
+  </div>
+
+  <div class="panel-view hidden" id="guestView">
+    <div class="chat-auth-state" id="chatAuthState"></div>
+    <div class="chat-layout" id="chatLayout">
+      <div class="chat-room-tabs">
+        <button class="chat-room-tab active" data-room="main">🏠 <span data-chat-room-label="main">ОСНОВНАЯ</span></button>
+        <button class="chat-room-tab" data-room="games">🎮 <span data-chat-room-label="games">ИГРЫ</span></button>
+        <button class="chat-room-tab" data-room="relax">🌙 <span data-chat-room-label="relax">ОТДЫХ</span></button>
+        <button class="chat-room-tab" data-room="dm">✉️ <span data-chat-room-label="dm">ЛИЧНЫЕ СООБЩЕНИЯ</span></button>
+      </div>
+      <div class="chat-toolbar">
+        <span id="chatRoomTitle">🏠 ОСНОВНАЯ</span>
+        <button id="chatRefreshBtn" class="chat-mini-btn">↻</button>
+      </div>
+      <div class="dm-list hidden" id="dmList"></div>
+      <div class="guest-list chat-list" id="guestList"></div>
+      <div class="dm-thread hidden" id="dmThread">
+        <div class="dm-thread-head">
+          <button id="dmBackBtn" class="chat-mini-btn">‹</button>
+          <span id="dmThreadTitle">Личные сообщения</span>
+        </div>
+        <div class="guest-list" id="dmMessageList"></div>
+      </div>
+      <div class="guest-form chat-compose" id="chatCompose">
+        <input type="text" id="guestInput" class="guest-input" data-i18n-placeholder="chatPlaceholder" placeholder="Напиши сообщение..." maxlength="500" autocomplete="off">
+        <button class="guest-send" id="sendMsgBtn" data-i18n="send">ОТПРАВИТЬ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
+</div>
+
+<!-- ОТДЕЛЬНЫЙ РАДИО-БЛОК TECHNO.FM -->
+<div class="radio-overlay hidden" id="radioOverlay">
+  <div class="radio-card" role="dialog" aria-modal="true" aria-label="Techno.FM Radio">
+    <div class="radio-head">
+      <strong>📻 Techno.FM</strong>
+      <button class="radio-close" id="radioCloseBtn" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <div class="radio-status" id="radioStatus">STOPPED</div>
+    <audio id="technoFmAudio" preload="none" playsinline></audio>
+    <div class="radio-actions">
+      <button id="radioPanelPlay" type="button">▶ PLAY</button>
+      <button id="radioPanelStop" type="button">■ STOP</button>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ -->
+<div class="modal-overlay hidden" id="avatarModal">
+  <div class="modal-card">
+    <h3 style="color:var(--tg-text); margin:0; font-size:14px;" data-i18n="avatarCollection">КОЛЛЕКЦИЯ АВАТАРОВ</h3>
+    <p style="font-size:9px; color:var(--tg-text-secondary); margin:0;" data-i18n="avatarHint">Выбирай собранную аватарку или заходи ежедневно за новой!</p>
+    <div class="avatar-grid" id="avatarGrid"></div>
+    <button class="action-btn" style="width:100%; justify-content:center; padding:8px; margin-top:2px;" id="closeModalBtn" data-i18n="close">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+
+<div class="player-profile-overlay hidden" id="playerProfileOverlay">
+  <div class="player-profile-card" role="dialog" aria-modal="true" aria-label="Player profile">
+    <div class="player-profile-head">
+      <button class="player-profile-avatar" id="playerProfileAvatar" type="button" title="Avatar Loadout">👾</button>
+      <div>
+        <div class="player-profile-name" id="playerProfileName">Игрок</div>
+        <div class="player-profile-username" id="playerProfileUsername">@player</div>
+      </div>
+    </div>
+    <div class="player-profile-grid">
+      <div class="player-stat"><div class="player-stat-value" id="profilePortalTime">0м</div><div class="player-stat-label" id="profilePortalLabel">ПОРТАЛ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileGameTime">0м</div><div class="player-stat-label" id="profileGameLabel">ИГРЫ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileGameLaunches">0</div><div class="player-stat-label" id="profileLaunchesLabel">ЗАПУСКОВ ИГР</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileMessages">0</div><div class="player-stat-label" id="profileMessagesLabel">СООБЩЕНИЙ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileChatTime">0м</div><div class="player-stat-label" id="profileChatTimeLabel">В ЧАТЕ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileActiveDays">0</div><div class="player-stat-label" id="profileDaysLabel">ДНЕЙ АКТИВНОСТИ</div></div>
+    </div>
+    <div class="player-achievements">
+      <div class="player-achievements-title" id="profileAchievementsTitle">🏆 АЧИВКИ</div>
+      <div id="profileAchievementsList"></div>
+    </div>
+    <button class="player-profile-close hidden" id="playerProfileMessageBtn">✉️ НАПИСАТЬ</button>
+    <button class="player-profile-close" id="playerProfileClose">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const tg = {
+    initData: "browser-test",
+    ready(){},
+    expand(){},
+    openLink(url){ window.open(url, "_blank", "noopener,noreferrer"); },
+    async authenticate(){ return {user:{id:"local_guest",username:"browser_test",first_name:"Browser",last_name:"Player"}}; }
+  };
+
+  // Critical header controls are initialized first so a later optional module
+  // cannot leave the core navigation/sound/theme buttons dead.
+  (function initCriticalControls(){
+    const home=document.getElementById('homeMenuBtn');
+    const sound=document.getElementById('soundToggle');
+    const theme=document.getElementById('themeToggleBtn');
+
+    if(home && !home.dataset.bound){
+      home.dataset.bound='1';
+      home.addEventListener('click',()=>{
+        const cv=document.getElementById('categoryView');
+        const cl=document.getElementById('categoryList');
+        if(cv) cv.classList.add('hidden');
+        if(cl) cl.classList.remove('hidden');
+        try{ document.querySelectorAll('.category-item').forEach(b=>b.blur()); }catch(e){}
+      });
+    }
+
+    if(sound && !sound.dataset.bound){
+      sound.dataset.bound='1';
+      sound.addEventListener('click',()=>{
+        const enabled=localStorage.getItem('freezzzSound') !== 'false';
+        const next=!enabled;
+        localStorage.setItem('freezzzSound',String(next));
+        sound.textContent=next?'🔊':'🔇';
+      });
+      sound.textContent=localStorage.getItem('freezzzSound') === 'false' ? '🔇' : '🔊';
+    }
+
+    if(theme && !theme.dataset.bound){
+      theme.dataset.bound='1';
+      theme.addEventListener('click',()=>{
+        const next=Number(localStorage.getItem('freezzzTheme')||0)===0?1:0;
+        localStorage.setItem('freezzzTheme',String(next));
+        document.getElementById('bodyRoot').className=next?'theme-dark':'';
+        theme.textContent=next?'🌙':'☀️';
+      });
+      const current=Number(localStorage.getItem('freezzzTheme')||0);
+      theme.textContent=current===1?'🌙':'☀️';
+      document.getElementById('bodyRoot').className=current===1?'theme-dark':'';
+    }
+  })();
+
+  let userName = "Игрок";
+  const nameTxt = document.getElementById('userNameTxt');
+  if (nameTxt) nameTxt.textContent = userName;
+
+  const LANGS = ["ru","de","en"];
+  const LANG = {
+    ru:{
+      code:"RU",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 ИГРЫ",top:"🏆 ТОП",achievements:"🎖️ АЧИВКИ",chat:"💬 ЧАТ",random:"🎲 СЛУЧАЙНАЯ ИГРА",share:"📤 ПОДЕЛИТЬСЯ",
+      swipeHint:"СВАЙП ВЛЕВО / ВПРАВО • НАЖМИ, ЧТОБЫ ОТКРЫТЬ ИГРУ",swipeShort:"← СВАЙП →",send:"ОТПРАВИТЬ",close:"ЗАКРЫТЬ",arcadeHub:"АРКАДНЫЙ ПОРТАЛ",
+      avatarCollection:"КОЛЛЕКЦИЯ АВАТАРОВ",avatarHint:"Выбирай собранную аватарку или возвращайся каждый день за новой!",
+      chatPlaceholder:"Напиши сообщение...",back:"НАЗАД",play:"ИГРАТЬ →",oneGame:"ИГРА",gamesCount:"ИГРЫ",
+      score:"СЧЁТ",locked:"🔒",unlocked:"✅",topTitle:"ТОП ИГР",theme:"ТЕМА",sound:"ЗВУК",
+      roomMain:"ОСНОВНАЯ",roomGames:"ИГРЫ",roomRelax:"ОТДЫХ",roomDm:"ЛИЧНЫЕ СООБЩЕНИЯ",dmTitle:"ЛИЧНЫЕ СООБЩЕНИЯ",
+      noMessages:"Пока сообщений нет. Будь первым.",noDialogs:"Личных диалогов пока нет.",authOpen:"Открой чат внутри Telegram для авторизации.",
+      authOk:"Telegram: авторизация подтверждена",authError:"Ошибка авторизации: ",chatApiError:"Ошибка чата: ",dmApiError:"Ошибка личных сообщений: ",
+      profilePortal:"ПОРТАЛ",profileGames:"ИГРЫ",profileLaunches:"ЗАПУСКОВ ИГР",profileMessages:"СООБЩЕНИЙ",profileChat:"В ЧАТЕ",profileDays:"ДНЕЙ АКТИВНОСТИ",
+      profileAchievements:"🏆 АЧИВКИ",write:"НАПИСАТЬ",player:"Игрок"
+    },
+    de:{
+      code:"DE",subtitle:"ARCADE-PORTAL 🕹️",games:"🎮 SPIELE",top:"🏆 TOP",achievements:"🎖️ ERFOLGE",chat:"💬 CHAT",random:"🎲 ZUFALLSSPIEL",share:"📤 TEILEN",
+      swipeHint:"NACH LINKS / RECHTS WISCHEN • ANTIPPEN, UM DAS SPIEL ZU ÖFFNEN",swipeShort:"← WISCHEN →",send:"SENDEN",close:"SCHLIESSEN",arcadeHub:"ARCADE-PORTAL",
+      avatarCollection:"AVATAR-SAMMLUNG",avatarHint:"Wähle einen gesammelten Avatar oder komm jeden Tag für einen neuen zurück!",
+      chatPlaceholder:"Nachricht schreiben...",back:"ZURÜCK",play:"SPIELEN →",oneGame:"SPIEL",gamesCount:"SPIELE",
+      score:"PUNKTZAHL",locked:"🔒",unlocked:"✅",topTitle:"SPIELE-TOP",theme:"THEMA",sound:"TON",
+      roomMain:"HAUPTRAUM",roomGames:"SPIELE",roomRelax:"PAUSE",roomDm:"PRIVATNACHRICHTEN",dmTitle:"PRIVATNACHRICHTEN",
+      noMessages:"Noch keine Nachrichten. Sei die erste Person.",noDialogs:"Noch keine privaten Gespräche.",authOpen:"Öffne den Chat in Telegram zur Anmeldung.",
+      authOk:"Telegram: Anmeldung bestätigt",authError:"Anmeldung fehlgeschlagen: ",chatApiError:"Chat-Fehler: ",dmApiError:"Fehler bei den Privatnachrichten: ",
+      profilePortal:"PORTAL",profileGames:"SPIELE",profileLaunches:"SPIELSTARTS",profileMessages:"NACHRICHTEN",profileChat:"CHATZEIT",profileDays:"AKTIVE TAGE",
+      profileAchievements:"🏆 ERFOLGE",write:"SCHREIBEN",player:"Spieler"
+    },
+    en:{
+      code:"EN",subtitle:"ARCADE PORTAL 🕹️",games:"🎮 GAMES",top:"🏆 TOP",achievements:"🎖️ ACHIEVEMENTS",chat:"💬 CHAT",random:"🎲 RANDOM GAME",share:"📤 SHARE",
+      swipeHint:"SWIPE LEFT / RIGHT • TAP TO OPEN THE GAME",swipeShort:"← SWIPE →",send:"SEND",close:"CLOSE",arcadeHub:"ARCADE PORTAL",
+      avatarCollection:"AVATAR COLLECTION",avatarHint:"Choose a collected avatar or come back every day for a new one!",
+      chatPlaceholder:"Write a message...",back:"BACK",play:"PLAY →",oneGame:"GAME",gamesCount:"GAMES",
+      score:"SCORE",locked:"🔒",unlocked:"✅",topTitle:"TOP GAMES",theme:"THEME",sound:"SOUND",
+      roomMain:"MAIN",roomGames:"GAMES",roomRelax:"RELAX",roomDm:"PRIVATE MESSAGES",dmTitle:"PRIVATE MESSAGES",
+      noMessages:"No messages yet. Be the first.",noDialogs:"No private conversations yet.",authOpen:"Open the chat inside Telegram to sign in.",
+      authOk:"Telegram: authorization confirmed",authError:"Authorization failed: ",chatApiError:"Chat error: ",dmApiError:"Private message error: ",
+      profilePortal:"PORTAL",profileGames:"GAMES",profileLaunches:"GAME LAUNCHES",profileMessages:"MESSAGES",profileChat:"CHAT TIME",profileDays:"ACTIVE DAYS",
+      profileAchievements:"🏆 ACHIEVEMENTS",write:"WRITE",player:"Player"
+    }
+  };
+  const GAME_TEXT = {
+    snake:{ru:['ОДИН ПАЛЕЦ','Собирай, расти и бей собственный рекорд.'],de:['EIN FINGER','Sammle, wachse und knacke deinen Rekord.'],en:['ONE TOUCH','Collect, grow and beat your high score.']},
+    '2048':{ru:['ОДИН ПАЛЕЦ','Соединяй одинаковые плитки и доберись до 2048.'],de:['EIN FINGER','Verbinde gleiche Kacheln und erreiche 2048.'],en:['ONE TOUCH','Merge matching tiles and reach 2048.']},
+    wordle:{ru:['СЛОВА','Угадай слово за ограниченное число попыток.'],de:['WÖRTER','Errate das Wort mit begrenzten Versuchen.'],en:['WORD','Guess the word in a limited number of tries.']},
+    princejs:{ru:['МАШИНА ВРЕМЕНИ','Классическое приключение прямо в браузере с touch-управлением.'],de:['ZEITREISE','Klassisches Abenteuer direkt im Browser mit Touch-Steuerung.'],en:['TIME TRIP','A classic browser adventure with touch controls.']},
+    paperio:{ru:['ТЕРРИТОРИЯ','Рисуй свой след и захватывай территорию.'],de:['GEBIET','Ziehe deine Spur und erobere Gebiet.'],en:['TERRITORY','Draw your trail and claim territory.']},
+    txtaria:{ru:['СТРАННЫЕ МИРЫ','Минималистичное ASCII-приключение с сенсорным управлением.'],de:['SELTSAME WELTEN','Minimalistisches ASCII-Abenteuer mit Touch-Steuerung.'],en:['ODD WORLDS','A minimalist ASCII adventure with touch controls.']},
+    labyrinth:{ru:['ПОТЕРЯЙСЯ И НАЙДИСЬ','Найди выход из нового лабиринта.'],de:['VERIRREN & FINDEN','Finde den Ausgang aus einem neuen Labyrinth.'],en:['LOST & FOUND','Find your way out of a fresh maze.']},
+    memory:{ru:['ТРЕНАЖЁР МОЗГА','Открывай пары карточек и тренируй память.'],de:['KOPFTRAINING','Finde Kartenpaare und trainiere dein Gedächtnis.'],en:['BRAIN GYM','Match pairs and train your memory.']},
+    whacmole:{ru:['РЕАКТОР','Лови появляющиеся цели одним быстрым касанием.'],de:['REAKTOR','Triff die auftauchenden Ziele mit schnellen Taps.'],en:['REACTION','Tap the appearing targets as fast as you can.']},
+    pong:{ru:['ДВА БОКА ЭКРАНА','Минималистичная дуэль с мгновенным управлением.'],de:['ZWEI SEITEN','Ein minimalistisches Duell mit direkter Steuerung.'],en:['TWO SIDES','A minimalist duel with instant controls.']},
+    tetris:{ru:['ПАДАЮЩАЯ ЛОГИКА','Собирай линии из падающих фигур.'],de:['FALLENDE LOGIK','Baue Linien aus fallenden Formen.'],en:['FALLING LOGIC','Build lines from falling shapes.']},
+    quickdraw:{ru:['ЧИТАЕТ МЫСЛИ','Рисуй, а нейросеть попробует угадать рисунок.'],de:['GEDANKENLESER','Zeichne und lass die KI dein Bild erraten.'],en:['MIND READER','Draw and let the AI try to guess it.']},
+    slowroads:{ru:['ZEN DRIVE','Бесконечная поездка по процедурным дорогам.'],de:['ZEN DRIVE','Eine endlose Fahrt über prozedurale Straßen.'],en:['ZEN DRIVE','An endless drive on procedural roads.']},
+    ligmar:{ru:['ЖИВОЙ МИР','Большой браузерный мир с развитием и заданиями.'],de:['LEBENDIGE WELT','Eine große Browserwelt mit Entwicklung und Aufgaben.'],en:['LIVING WORLD','A large browser world with progression and quests.']}
+  };
+  const CATEGORY_TEXT = {
+    onefinger:{ru:'ОДИН ПАЛЕЦ',de:'EIN FINGER',en:'ONE TOUCH'},
+    think:{ru:'НЕ СПЕШИ',de:'NIMM DIR ZEIT',en:'TAKE YOUR TIME'},
+    reaction:{ru:'РЕАКТОР',de:'REAKTOR',en:'REACTION'},
+    strange:{ru:'СТРАННОЕ',de:'DAS SELTSAME',en:'THE STRANGE'},
+    lost:{ru:'ПОТЕРЯЙСЯ И НАЙДИСЬ',de:'VERIRREN & FINDEN',en:'LOST & FOUND'},
+    timetrip:{ru:'МАШИНА ВРЕМЕНИ',de:'ZEITMASCHINE',en:'TIME MACHINE'},
+    zen:{ru:'НЕ СПЕШИ ЕХАТЬ',de:'ZEN-FAHRT',en:'ZEN DRIVE'},
+    worlds:{ru:'ЖИВЫЕ МИРЫ',de:'LEBENDIGE WELTEN',en:'LIVING WORLDS'},
+    duel:{ru:'ДВА БОКА ЭКРАНА',de:'ZWEI SEITEN',en:'TWO SIDES'},
+    lab:{ru:'FREEzzz LAB',de:'FREEzzz LAB',en:'FREEzzz LAB'}
+  };
+  let currentLang = localStorage.getItem("freezzzLang") || "ru";
+  if(!LANGS.includes(currentLang)) currentLang="ru";
+  const tr=(key)=>LANG[currentLang][key]||LANG.ru[key]||key;
+  const gameText=(id,field)=>{
+    const x=GAME_TEXT[id]&&GAME_TEXT[id][currentLang];
+    if(x) return field==="genre"?x[0]:x[1];
+    const g=GAME_BY_ID[id]; return field==="genre"?g.genre:g.desc;
+  };
+  const categoryText=(id)=>CATEGORY_TEXT[id]?.[currentLang]||id;
+
+  function applyLanguage(){
+    const L=LANG[currentLang];
+    const staticText={
+      achSnake:{ru:"🐍 Мастер Змейки|Счёт от 100 в Snake",de:"🐍 Snake-Meister|Mindestens 100 Punkte in Snake",en:"🐍 Snake Master|Score 100+ in Snake"},
+      achTetris:{ru:"🧱 Архитектор Тетриса|Счёт от 500 в Tetris",de:"🧱 Tetris-Architekt|Mindestens 500 Punkte in Tetris",en:"🧱 Tetris Architect|Score 500+ in Tetris"},
+      achMario:{ru:"🍄 Герой Платформера|Пройди Platformer",de:"🍄 Plattform-Held|Schließe das Plattformspiel ab",en:"🍄 Platformer Hero|Complete the platformer"},
+      achRacer:{ru:"🏎️ Путешественник|Открой Slow Roads",de:"🏎️ Reisender|Öffne Slow Roads",en:"🏎️ Traveler|Open Slow Roads"}
+    };
+    Object.entries(staticText).forEach(([id,val])=>{
+      const el=document.getElementById(id); if(!el)return;
+      const parts=val[currentLang].split("|");
+      const name=el.querySelector(".row-name"); const desc=el.querySelector(".ach-desc");
+      if(name){name.textContent=parts[0]} else {el.querySelector(".row-name")?.replaceChildren(document.createTextNode(parts[0]));}
+      if(desc&&parts[1])desc.textContent=parts[1];
+    });
+
+    document.documentElement.lang=currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=tr(el.dataset.i18n)});
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=tr(el.dataset.i18nPlaceholder)});
+    document.getElementById("langToggleBtn").textContent=L.code;
+    document.getElementById("langToggleBtn").title=currentLang==="ru"?"Язык":currentLang==="de"?"Sprache":"Language";
+    const themeBtn=document.getElementById("themeToggleBtn"); if(themeBtn) themeBtn.title=tr("theme");
+    document.getElementById("soundToggle").title=tr("sound");
+    document.getElementById("userNameTxt").textContent=userName || tr("player");
+    document.querySelectorAll("[data-chat-room-label]").forEach(el=>{
+      const room=el.parentElement?.dataset?.room || el.dataset.chatRoomLabel;
+      const key=room==="main"?"roomMain":room==="games"?"roomGames":room==="relax"?"roomRelax":"roomDm";
+      el.textContent=tr(key);
+    });
+    const roomTitle=document.getElementById("chatRoomTitle");
+    if(roomTitle && !activeDmUserId) roomTitle.textContent=roomLabel(chatRoom);
+    const dmTitle=document.getElementById("dmThreadTitle");
+    if(dmTitle && !activeDmUserId) dmTitle.textContent=tr("dmTitle");
+    ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileMessageBtn","playerProfileClose"].forEach((id)=>{
+      const map={profilePortalLabel:"profilePortal",profileGameLabel:"profileGames",profileLaunchesLabel:"profileLaunches",profileMessagesLabel:"profileMessages",profileChatTimeLabel:"profileChat",profileDaysLabel:"profileDays",profileAchievementsTitle:"profileAchievements",playerProfileMessageBtn:"write",playerProfileClose:"close"};
+      const el=document.getElementById(id); if(el && map[id]) el.textContent=tr(map[id]);
+    });
+    document.getElementById("userProfileBox")?.setAttribute("aria-label",tr("player"));
+    if(currentCategory) document.getElementById("categoryHeadTitle").textContent=categoryText(currentCategory.id);
+    renderCategories();
+    if(currentCategory) renderCategoryCarousel();
+    updateGuestEmptyState();
+  }
+
+  function updateGuestEmptyState(){
+    const list=document.getElementById("guestList");
+    if(!list)return;
+    const messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");
+    if(!messages.length) list.innerHTML='<div class="guest-msg">'+(currentLang==="ru"?"Пока сообщений нет. Напиши первым.":currentLang==="de"?"Noch keine Nachrichten. Schreib die erste Nachricht.":"No messages yet. Write the first one.")+'</div>';
+  }
+
+  document.getElementById("langToggleBtn").addEventListener("click",()=>{
+    currentLang=LANGS[(LANGS.indexOf(currentLang)+1)%LANGS.length];
+    localStorage.setItem("freezzzLang",currentLang);
+    applyLanguage(); haptic();
+  });
+
+
+  // PLAYER IDENTITY / STATISTICS
+  let tgUser = {id:"local_guest",username:"browser_test",first_name:"Browser",last_name:"Player"};
+  let playerId = "local_guest";
+  const playerKey = "freezzzPlayerStats:" + playerId;
+
+  const defaultPlayerStats = {
+    portalSeconds:0, gameSeconds:0, chatSeconds:0,
+    gameLaunches:0, messagesSent:0, categoryOpens:0, gameViews:0,
+    activeDays:[], games:{}, lastSeen:0, pendingGame:null
+  };
+
+  function readPlayerStats(){
+    try{
+      const raw=localStorage.getItem(playerKey);
+      const parsed=raw?JSON.parse(raw):{};
+      return Object.assign({},defaultPlayerStats,parsed,{
+        activeDays:Array.isArray(parsed.activeDays)?parsed.activeDays:[],
+        games:parsed.games&&typeof parsed.games==="object"?parsed.games:{}
+      });
+    }catch(e){return Object.assign({},defaultPlayerStats);}
+  }
+  let playerStats=readPlayerStats();
+
+  function savePlayerStats(){
+    try{localStorage.setItem(playerKey,JSON.stringify(playerStats));}catch(e){}
+  }
+
+  function formatDuration(sec){
+    sec=Math.max(0,Math.floor(Number(sec)||0));
+    const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60);
+    if(h>0)return h+"ч "+m+"м";
+    return m+"м";
+  }
+
+  function markActiveDay(){
+    const d=new Date().toISOString().slice(0,10);
+    if(!playerStats.activeDays.includes(d)){
+      playerStats.activeDays.push(d);
+      if(playerStats.activeDays.length>366)playerStats.activeDays=playerStats.activeDays.slice(-366);
+      savePlayerStats();
+    }
+  }
+
+  function syncTelegramIdentity(){
+    if(!tgUser)return;
+    const latestUsername=tgUser.username ? "@"+tgUser.username : "";
+    const latestName=[tgUser.first_name||"",tgUser.last_name||""].join(" ").trim();
+    const display=latestUsername || latestName || "Игрок";
+    userName=display;
+    const el=document.getElementById("userNameTxt");
+    if(el)el.textContent=display;
+    document.title="FREEzzzGames — "+display;
+    playerStats.lastSeen=Date.now();
+    markActiveDay();
+    savePlayerStats();
+  }
+  async function syncStatsToServer(){
+    if(!chatAuthorized)return;
+    try{await api("/stats",{method:"POST",body:{portalSeconds:playerStats.portalSeconds,gameSeconds:playerStats.gameSeconds,chatSeconds:playerStats.chatSeconds,gameLaunches:playerStats.gameLaunches,messagesSent:playerStats.messagesSent,categoryOpens:playerStats.categoryOpens,gameViews:playerStats.gameViews,activeDays:playerStats.activeDays}});}catch(e){}
+  }
+  syncTelegramIdentity();
+
+  function playerIdentity(){
+    return {
+      id:playerId,
+      username:tgUser&&tgUser.username ? "@"+tgUser.username : "",
+      name:tgUser ? [tgUser.first_name||"",tgUser.last_name||""].join(" ").trim() : "Игрок",
+      avatar:currentAvatar || "👾"
+    };
+  }
+
+  function tickPortalTime(){
+    const now=Date.now();
+    if(!document.hidden && window.__freezzzLastVisibleTick){
+      const delta=Math.min(60,Math.max(0,(now-window.__freezzzLastVisibleTick)/1000));
+      playerStats.portalSeconds+=delta;
+      if(document.getElementById("guestView") && !document.getElementById("guestView").classList.contains("hidden")){
+        playerStats.chatSeconds+=delta;
+      }
+      savePlayerStats();
+      if(chatAuthorized)syncStatsToServer();
+    }
+    window.__freezzzLastVisibleTick=now;
+  }
+  window.__freezzzLastVisibleTick=Date.now();
+  markActiveDay();
+  setInterval(tickPortalTime,15000);
+  document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){
+      tickPortalTime();
+      window.__freezzzLastVisibleTick=null;
+    }else{
+      window.__freezzzLastVisibleTick=Date.now();
+      markActiveDay();
+    }
+  });
+  window.addEventListener("beforeunload",tickPortalTime);
+
+  function recoverPendingGame(){
+    const p=playerStats.pendingGame;
+    if(!p||!p.startedAt)return;
+    const elapsed=Math.min(2*3600,Math.max(0,(Date.now()-p.startedAt)/1000));
+    if(elapsed>5){
+      playerStats.gameSeconds+=elapsed;
+      if(!playerStats.games[p.gameId])playerStats.games[p.gameId]={launches:0,seconds:0};
+      playerStats.games[p.gameId].seconds+=elapsed;
+      savePlayerStats();
+    }
+    playerStats.pendingGame=null;
+    savePlayerStats();
+  }
+  recoverPendingGame();
+
+  function trackGameLaunch(gameId){
+    if(!gameId)return;
+    playerStats.gameLaunches++;
+    playerStats.gameViews++;
+    if(!playerStats.games[gameId])playerStats.games[gameId]={launches:0,seconds:0};
+    playerStats.games[gameId].launches++;
+    playerStats.pendingGame={gameId:gameId,startedAt:Date.now()};
+    savePlayerStats();
+  }
+
+  const ACHIEVEMENT_DEFS=[
+    {id:"first_visit",icon:"👋",name:{ru:"Первый визит",de:"Erster Besuch",en:"First Visit"},desc:{ru:"Открыть FREEzzzGames",de:"FREEzzzGames öffnen",en:"Open FREEzzzGames"},ok:s=>s.portalSeconds>0},
+    {id:"first_game",icon:"🎮",name:{ru:"Первый запуск",de:"Erstes Spiel",en:"First Game"},desc:{ru:"Запустить игру",de:"Ein Spiel starten",en:"Launch a game"},ok:s=>s.gameLaunches>=1},
+    {id:"arcade_10",icon:"🕹️",name:{ru:"Аркадник",de:"Arcade-Fan",en:"Arcade Fan"},desc:{ru:"10 запусков игр",de:"10 Spielstarts",en:"10 game launches"},ok:s=>s.gameLaunches>=10},
+    {id:"hour_portal",icon:"⏱️",name:{ru:"Первый час",de:"Erste Stunde",en:"First Hour"},desc:{ru:"1 час на портале",de:"1 Stunde im Portal",en:"1 hour on the portal"},ok:s=>s.portalSeconds>=3600},
+    {id:"five_hours",icon:"⏳",name:{ru:"Долгий визит",de:"Langer Besuch",en:"Long Visit"},desc:{ru:"5 часов на портале",de:"5 Stunden im Portal",en:"5 hours on the portal"},ok:s=>s.portalSeconds>=18000},
+    {id:"chat_10",icon:"💬",name:{ru:"Первый разговор",de:"Erstes Gespräch",en:"First Conversation"},desc:{ru:"10 сообщений",de:"10 Nachrichten",en:"10 messages"},ok:s=>s.messagesSent>=10},
+    {id:"chat_100",icon:"🗣️",name:{ru:"Болтун",de:"Plaudertasche",en:"Chatterbox"},desc:{ru:"100 сообщений",de:"100 Nachrichten",en:"100 messages"},ok:s=>s.messagesSent>=100},
+    {id:"days_7",icon:"🔥",name:{ru:"Постоянный",de:"Stammgast",en:"Regular"},desc:{ru:"7 активных дней",de:"7 aktive Tage",en:"7 active days"},ok:s=>s.activeDays.length>=7},
+    {id:"games_10",icon:"🌐",name:{ru:"Исследователь",de:"Entdecker",en:"Explorer"},desc:{ru:"Запустить 10 игр",de:"10 Spiele starten",en:"Launch 10 games"},ok:s=>s.gameLaunches>=10}
+  ];
+
+  let profileTargetId=null;
+  async function renderPlayerProfile(target){
+    const id=document.getElementById("playerProfileOverlay");
+    if(!id)return;
+    const isSelf=!target || String(target)===playerId;
+    let data=null;
+    if(!isSelf && chatAuthorized){
+      try{data=await api("/profile/"+encodeURIComponent(String(target)));}catch(e){}
+    }
+    if(!data && isSelf){
+      const identity=playerIdentity();
+      data={id:playerId,avatar:identity.avatar,name:identity.name,username:identity.username,stats:playerStats,achievements:null};
+    }
+    if(!data)data={id:String(target||""),avatar:"👾",name:"Игрок",username:"",stats:{portalSeconds:0,gameSeconds:0,gameLaunches:0,messagesSent:0,chatSeconds:0,activeDays:[]}};
+    profileTargetId=String(data.id||target||playerId);
+    document.getElementById("playerProfileAvatar").textContent=(isSelf?currentAvatar:(data.avatar||"👾"));
+    document.getElementById("playerProfileName").textContent=data.name||data.username||"Игрок";
+    document.getElementById("playerProfileUsername").textContent=data.username||"";
+    const s=data.stats||{};
+    document.getElementById("profilePortalTime").textContent=formatDuration(s.portalSeconds);
+    document.getElementById("profileGameTime").textContent=formatDuration(s.gameSeconds);
+    document.getElementById("profileGameLaunches").textContent=String(s.gameLaunches||0);
+    document.getElementById("profileMessages").textContent=String(s.messagesSent||0);
+    document.getElementById("profileChatTime").textContent=formatDuration(s.chatSeconds);
+    document.getElementById("profileActiveDays").textContent=String(Array.isArray(s.activeDays)?s.activeDays.length:(s.activeDays||0));
+    const list=document.getElementById("profileAchievementsList");
+    if(list){
+      const ach=data.achievements||ACHIEVEMENT_DEFS.map(a=>({icon:a.icon,name:a.name[currentLang]||a.name.en,desc:a.desc[currentLang]||a.desc.en,unlocked:!!a.ok(playerStats)}));
+      list.innerHTML=ach.map(a=>'<div class="player-achievement '+(a.unlocked?"":"locked")+'"><div class="player-achievement-icon">'+(a.unlocked?a.icon:"🔒")+'</div><div><div class="player-achievement-name">'+a.name+'</div><div class="player-achievement-desc">'+a.desc+'</div></div></div>').join("");
+    }
+    const labels={ru:["ПОРТАЛ","ИГРЫ","ЗАПУСКОВ ИГР","СООБЩЕНИЙ","В ЧАТЕ","ДНЕЙ АКТИВНОСТИ","🏆 АЧИВКИ","ЗАКРЫТЬ"],de:["PORTAL","SPIELE","SPIELSTARTS","NACHRICHTEN","CHATZEIT","AKTIVE TAGE","🏆 ERFOLGE","SCHLIESSEN"],en:["PORTAL","GAMES","GAME LAUNCHES","MESSAGES","CHAT TIME","ACTIVE DAYS","🏆 ACHIEVEMENTS","CLOSE"]}[currentLang]||[];
+    ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileClose"].forEach((x,i)=>{const e=document.getElementById(x);if(e&&labels[i])e.textContent=labels[i]});
+    const dmBtn=document.getElementById("playerProfileMessageBtn");
+    if(dmBtn){const other=profileTargetId && profileTargetId!==playerId && chatAuthorized;dmBtn.classList.toggle("hidden",!other);}
+    id.classList.remove("hidden");
+  }
+  function closePlayerProfile(){const el=document.getElementById("playerProfileOverlay");if(el)el.classList.add("hidden");}
+  function openPlayerProfile(target){syncTelegramIdentity();renderPlayerProfile(target||playerId);haptic();}
+  document.getElementById("playerProfileMessageBtn").addEventListener("click",()=>{if(profileTargetId&&profileTargetId!==playerId){closePlayerProfile();switchTab("guest");setTimeout(()=>openDm(profileTargetId),0);}});
+
+  document.getElementById("userNameTxt").addEventListener("click",()=>openPlayerProfile(playerId));
+  document.getElementById("playerProfileClose").addEventListener("click",closePlayerProfile);
+  document.getElementById("playerProfileOverlay").addEventListener("click",e=>{
+    if(e.target.id==="playerProfileOverlay")closePlayerProfile();
+  });
+
+  // LOCAL BROWSER CHAT
+  const CHAT_API_BASE = String(window.FREEZZ_CHAT_API || "https://freezzgames-chat-v2.onrender.com/api").replace(/\/$/,"");
+  let chatAuthorized=false;
+  let chatRoom="main";
+  let activeDmUserId=null;
+  let chatBusy=false;
+
+  async function api(path, options={}){
+    const key="freezzzBrowserChatV1";
+    const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+    const write=v=>localStorage.setItem(key,JSON.stringify(v));
+    const body=options&&options.body&&typeof options.body==="object"?options.body:{};
+    if(path.startsWith("/chat/messages") && (!options.method || options.method==="GET")){
+      const list=read().filter(x=>x.room===(new URLSearchParams(path.split("?")[1]||"")).get("room")||"main");
+      return {messages:list.slice(-100)};
+    }
+    if(path==="/chat/messages" && options.method==="POST"){
+      const list=read();
+      list.push({playerId:playerId,username:"browser_test",name:"Browser Player",avatar:"🧑‍💻",text:String(body.text||""),room:body.room||"main",createdAt:new Date().toISOString()});
+      write(list);
+      return {ok:true};
+    }
+    if(path==="/dm") return {conversations:[]};
+    if(path.startsWith("/dm/") && path.endsWith("/messages")) return {messages:[]};
+    if(path.startsWith("/dm/") && options.method==="POST") return {ok:true};
+    if(path.startsWith("/profile/")) return {id:playerId,avatar:"🧑‍💻",name:"Browser Player",username:"@browser_test",stats:playerStats,achievements:null};
+    if(path==="/stats") return {ok:true};
+    return {};
+  }
+
+  function chatSetStatus(text,ok=false){
+    const el=document.getElementById("chatAuthState");
+    if(el){el.textContent=text;el.style.color=ok?"var(--tg-text)":"var(--tg-text-secondary)";}
+  }
+
+  async function authorizeChat(){
+    chatAuthorized=true;
+    chatSetStatus(tr("authOk"),true);
+    syncTelegramIdentity();
+    return true;
+  }
+
+  function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function formatMsgTime(v){try{return new Date(v).toLocaleTimeString(currentLang==="ru"?"ru-RU":currentLang==="de"?"de-DE":"en-US",{hour:"2-digit",minute:"2-digit"});}catch(e){return "";}}
+  function roomLabel(room){return room==="games"?"🎮 "+tr("roomGames"):room==="relax"?"🌙 "+tr("roomRelax"):"🏠 "+tr("roomMain");}
+
+  async function loadMessages(){
+    if(!chatAuthorized)return;
+    const list=document.getElementById("guestList"); if(!list)return;
+    try{
+      const data=await api("/chat/messages?room="+encodeURIComponent(chatRoom)+"&limit=100");
+      const messages=data.messages||[];
+      list.innerHTML=messages.length?messages.map(m=>{
+        const own=String(m.playerId)===playerId;
+        return '<div class="guest-msg '+(own?"chat-message-own":"")+'"><div class="guest-author" data-player-id="'+escapeHtml(m.playerId)+'">'+escapeHtml(m.avatar||"👾")+" "+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div class="chat-message-block">'+escapeHtml(m.text)+'</div></div>';
+      }).join(""):'<div class="guest-msg">'+tr("noMessages")+'</div>';
+      list.querySelectorAll(".guest-author").forEach(el=>el.addEventListener("click",()=>openPlayerProfile(el.dataset.playerId)));
+    }catch(e){chatSetStatus(tr("chatApiError")+e.message);}
+  }
+
+  async function sendChatMessage(){
+    if(chatBusy)return;
+    const input=document.getElementById("guestInput");
+    const textValue=(input.value||"").trim();
+    if(!textValue || !chatAuthorized)return;
+    chatBusy=true;
+    try{
+      await api("/chat/messages",{method:"POST",body:{room:chatRoom,text:textValue}});
+      input.value="";
+      playerStats.messagesSent++; savePlayerStats();
+      await loadMessages(); haptic();
+    }catch(e){chatSetStatus(tr("chatApiError")+e.message);}
+    finally{chatBusy=false;}
+  }
+
+  async function loadDmList(){
+    if(!chatAuthorized)return;
+    const box=document.getElementById("dmList");
+    try{
+      const data=await api("/dm");
+      box.innerHTML=(data.conversations||[]).map(x=>'<button class="dm-item" data-dm-id="'+escapeHtml(x.playerId)+'"><span class="dm-item-avatar">'+escapeHtml(x.avatar||"👾")+'</span><span><div class="dm-item-name">'+escapeHtml(x.username||x.name||tr("player"))+'</div><div class="dm-item-preview">'+escapeHtml(x.lastMessage||"")+'</div></span></button>').join("")||'<div class="guest-msg">'+tr("noDialogs")+'</div>';
+      box.querySelectorAll(".dm-item").forEach(el=>el.addEventListener("click",()=>openDm(el.dataset.dmId)));
+    }catch(e){chatSetStatus(tr("dmApiError")+e.message);}
+  }
+
+  async function openDm(targetId){
+    if(!chatAuthorized || !targetId || String(targetId)===playerId)return;
+    activeDmUserId=String(targetId);
+    document.getElementById("guestList").classList.add("hidden");
+    document.getElementById("dmList").classList.add("hidden");
+    document.getElementById("dmThread").classList.remove("hidden");
+    document.getElementById("chatCompose").classList.remove("hidden");
+    try{
+      const p=await api("/profile/"+encodeURIComponent(activeDmUserId));
+      document.getElementById("dmThreadTitle").textContent=p.username||p.name||tr("dmTitle");
+      const data=await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages?limit=100");
+      const list=document.getElementById("dmMessageList");
+      list.innerHTML=(data.messages||[]).map(m=>'<div class="guest-msg '+(String(m.senderId)===playerId?"chat-message-own":"")+'"><div class="guest-author">'+escapeHtml(m.username||m.name||"Игрок")+'<span class="chat-msg-time">'+formatMsgTime(m.createdAt)+'</span></div><div>'+escapeHtml(m.text)+'</div></div>').join("")||'<div class="guest-msg">'+tr("noMessages")+'</div>';
+      list.scrollTop=list.scrollHeight;
+    }catch(e){chatSetStatus(tr("dmApiError")+e.message);}
+  }
+
+  async function sendDmMessage(){
+    if(!activeDmUserId||chatBusy)return;
+    const input=document.getElementById("guestInput"), textValue=(input.value||"").trim();
+    if(!textValue)return;
+    chatBusy=true;
+    try{await api("/dm/"+encodeURIComponent(activeDmUserId)+"/messages",{method:"POST",body:{text:textValue}});input.value="";playerStats.messagesSent++;savePlayerStats();await openDm(activeDmUserId);haptic();}
+    catch(e){chatSetStatus("DM: "+e.message);}
+    finally{chatBusy=false;}
+  }
+
+  function selectChatRoom(room){
+    chatRoom=room; activeDmUserId=null;
+    document.querySelectorAll(".chat-room-tab").forEach(b=>b.classList.toggle("active",b.dataset.room===room));
+    document.getElementById("chatRoomTitle").textContent=roomLabel(room);
+    document.getElementById("guestList").classList.remove("hidden");
+    document.getElementById("dmList").classList.add("hidden");
+    document.getElementById("dmThread").classList.add("hidden");
+    document.getElementById("chatCompose").classList.remove("hidden");
+    loadMessages();
+  }
+
+  function selectDmMode(){
+    activeDmUserId=null;
+    document.querySelectorAll(".chat-room-tab").forEach(b=>b.classList.toggle("active",b.dataset.room==="dm"));
+    document.getElementById("chatRoomTitle").textContent="✉️ "+tr("dmTitle");
+    document.getElementById("guestList").classList.add("hidden");
+    document.getElementById("dmList").classList.remove("hidden");
+    document.getElementById("dmThread").classList.add("hidden");
+    document.getElementById("chatCompose").classList.add("hidden");
+    loadDmList();
+  }
+
+  document.querySelectorAll(".chat-room-tab").forEach(b=>b.addEventListener("click",()=>b.dataset.room==="dm"?selectDmMode():selectChatRoom(b.dataset.room)));
+  document.getElementById("chatRefreshBtn").addEventListener("click",()=>activeDmUserId?openDm(activeDmUserId):chatRoom?loadMessages():loadDmList());
+  document.getElementById("dmBackBtn").addEventListener("click",selectDmMode);
+  document.getElementById("sendMsgBtn").addEventListener("click",()=>activeDmUserId?sendDmMessage():sendChatMessage());
+  document.getElementById("guestInput").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("sendMsgBtn").click();});
+
+  async function openChatPanel(){
+    const ok=await authorizeChat();
+    if(ok){selectChatRoom(chatRoom);}
+  }
+  // Chat is authenticated only when the user opens it.
+  // This keeps the portal/game catalog independent from the API wake-up path.
+  setInterval(()=>{if(chatAuthorized && !document.hidden && !document.getElementById("guestView").classList.contains("hidden")){activeDmUserId?openDm(activeDmUserId):chatRoom&&loadMessages();}},10000);
+  // After Chat has been opened once, check for newer messages while the popup is closed.
+  setInterval(async()=>{
+    if(!chatAuthorized || document.hidden || !chatLastSeenAt || !document.getElementById("guestView").classList.contains("hidden"))return;
+    try{
+      const data=await api("/chat/messages?room="+encodeURIComponent(chatRoom)+"&limit=20");
+      const newest=(data.messages||[]).reduce((max,m)=>Math.max(max,Date.parse(m.createdAt||"")||0),0);
+      if(newest>chatLastSeenAt)setChatUnread(true);
+    }catch(e){}
+  },20000);
+
+  // АВАТАРЫ
+  const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
+  let userAvatars = JSON.parse(localStorage.getItem("freezzzAvatars") || '["👾"]');
+  let currentAvatar = localStorage.getItem("freezzzCurrentAvatar") || userAvatars[0];
+
+  const todayStr = new Date().toDateString();
+  if (localStorage.getItem("freezzzLastAvatarDate") !== todayStr) {
+    const randomNew = possibleAvatars[Math.floor(Math.random() * possibleAvatars.length)];
+    if (!userAvatars.includes(randomNew)) {
+      userAvatars.push(randomNew);
+      localStorage.setItem("freezzzAvatars", JSON.stringify(userAvatars));
+    }
+    localStorage.setItem("freezzzLastAvatarDate", todayStr);
+  }
+  const avatarEmojiEl = document.getElementById('currentAvatarEmoji');
+  if (avatarEmojiEl) avatarEmojiEl.textContent = currentAvatar;
+
+  function openAvatarModal() {
+    haptic();
+    const grid = document.getElementById('avatarGrid');
+    if (grid) {
+      grid.innerHTML = userAvatars.map(av => `
+        <div class="avatar-item ${av === currentAvatar ? 'active' : ''}" data-avatar="${av}">${av}</div>
+      `).join('');
+      // Навешиваем клики на аватары в модалке
+      grid.querySelectorAll('.avatar-item').forEach(item => {
+        item.addEventListener('click', () => {
+          selectAvatar(item.getAttribute('data-avatar'));
+        });
+      });
+    }
+    document.getElementById('avatarModal').classList.remove('hidden');
+  }
+
+  function closeAvatarModal() {
+    haptic();
+    document.getElementById('avatarModal').classList.add('hidden');
+  }
+
+  function selectAvatar(av) {
+    haptic();
+    currentAvatar = av;
+    localStorage.setItem("freezzzCurrentAvatar", av);
+    if (avatarEmojiEl) avatarEmojiEl.textContent = av;
+    const profileAvatar=document.getElementById("playerProfileAvatar");
+    if(profileAvatar) profileAvatar.textContent=av;
+    closeAvatarModal();
+  }
+
+  document.getElementById('userProfileBox').addEventListener('click', ()=>openPlayerProfile(playerId));
+  document.getElementById('playerProfileAvatar').addEventListener('click', openAvatarModal);
+  document.getElementById('closeModalBtn').addEventListener('click', closeAvatarModal);
+
+  // Темы
+  const themes = ["", "theme-dark"];
+  let currentThemeIdx = Number(localStorage.getItem("freezzzTheme") || 0);
+  if (currentThemeIdx > 1) currentThemeIdx = 0;
+  applyTheme();
+
+  function toggleTheme() {
+    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+    localStorage.setItem("freezzzTheme", currentThemeIdx);
+    applyTheme();
+  }
+  const themeToggleBtn=document.getElementById('themeToggleBtn'); if(themeToggleBtn && !themeToggleBtn.dataset.bound){ themeToggleBtn.dataset.bound='1'; themeToggleBtn.addEventListener('click', toggleTheme); }
+
+  function applyTheme() {
+    document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
+    const btn=document.getElementById('themeToggleBtn');
+    if(btn) btn.textContent = currentThemeIdx===0 ? "☀️" : "🌙";
+  }
+
+  // Звук / Вибрация
+  let soundEnabled = localStorage.getItem("freezzzSound") !== "false";
+  updateSoundBtn();
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("freezzzSound", soundEnabled);
+    updateSoundBtn();
+  }
+  const soundBtn=document.getElementById('soundToggle'); if(soundBtn && !soundBtn.dataset.bound){ soundBtn.dataset.bound='1'; soundBtn.addEventListener('click', toggleSound); }
+
+  function updateSoundBtn() {
+    const btn = document.getElementById('soundToggle');
+    if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
+  }
+
+  // TECHNO.FM RADIO — separate module; starts only after a user action.
+  const TECHNO_FM_STREAM = "https://stream.techno.fm/radio1-320k.mp3";
+  const radioAudio = document.getElementById("technoFmAudio");
+  const radioOverlay = document.getElementById("radioOverlay");
+  const radioStatus = document.getElementById("radioStatus");
+  function setRadioStatus(text){ if(radioStatus) radioStatus.textContent=text; }
+  async function playTechnoFm(){
+    if(!radioAudio)return;
+    try{
+      radioAudio.src=TECHNO_FM_STREAM;
+      await radioAudio.play();
+      setRadioStatus("PLAYING • TECHNO.FM 320K");
+    }catch(e){
+      setRadioStatus("PLAY ERROR • TAP PLAY AGAIN");
+    }
+  }
+  function stopTechnoFm(){
+    if(!radioAudio)return;
+    try{radioAudio.pause();radioAudio.currentTime=0;radioAudio.removeAttribute("src");radioAudio.load();}catch(e){}
+    setRadioStatus("STOPPED");
+  }
+  function openRadioPanel(){radioOverlay?.classList.remove("hidden");setRadioStatus(radioAudio?.paused!==false?"STOPPED":"PLAYING • TECHNO.FM 320K");}
+  function closeRadioPanel(){radioOverlay?.classList.add("hidden");}
+  document.getElementById("radioPlayBtn")?.addEventListener("click",()=>{openRadioPanel();playTechnoFm();});
+  document.getElementById("radioStopBtn")?.addEventListener("click",stopTechnoFm);
+  document.getElementById("radioPanelPlay")?.addEventListener("click",playTechnoFm);
+  document.getElementById("radioPanelStop")?.addEventListener("click",stopTechnoFm);
+  document.getElementById("radioCloseBtn")?.addEventListener("click",closeRadioPanel);
+  radioOverlay?.addEventListener("click",e=>{if(e.target===radioOverlay)closeRadioPanel();});
+
+  function haptic() {
+    if (soundEnabled && tg && tg.HapticFeedback) {
+      try { tg.HapticFeedback.impactOccurred('light'); } catch(e){}
+    }
+  }
+
+  // Нижняя навигация: только ЧАТ. Игры — основной экран, достижения находятся в визитке игрока.
+  function switchTab(tab) {
+    haptic();
+    document.getElementById('gamesBrowser').classList.toggle('hidden', tab !== 'games');
+    document.getElementById('achievementsView').classList.add('hidden');
+    document.getElementById('guestView').classList.toggle('hidden', tab !== 'guest');
+    const chatTab=document.getElementById('tabGuest');
+    if(chatTab) chatTab.classList.toggle('active', tab==='guest');
+    if(tab==='games'){showCategoryList(false);}
+    else if(tab==='guest'){markChatSeen();openChatPanel();}
+  }
+
+  const chatUnreadDot=document.getElementById('chatUnreadDot');
+  let chatLastSeenAt=Number(localStorage.getItem("freezzzChatLastSeenAt")||0);
+  function setChatUnread(value){chatUnreadDot?.classList.toggle("hidden",!value);}
+  function markChatSeen(){
+    chatLastSeenAt=Date.now();
+    localStorage.setItem("freezzzChatLastSeenAt",String(chatLastSeenAt));
+    setChatUnread(false);
+  }
+  const chatTabButton=document.getElementById('tabGuest');
+  if(chatTabButton && !chatTabButton.dataset.bound){
+    chatTabButton.dataset.bound='1';
+    chatTabButton.addEventListener('click',()=>switchTab('guest'));
+  }
+
+  const GAME_CARDS = [
+    {id:"deepsea",title:"The Deep Sea",emoji:"🌊",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Исследуй глубины океана."},
+    {id:"starschrono",title:"Stars Chrono Experiment",emoji:"⭐",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Экспериментальный интерактивный проект."},
+    {id:"windowswap",title:"Window Swap",emoji:"🪟",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Смотри на окна и виды из разных мест."},
+    {id:"spaceelevator",title:"Space Elevator",emoji:"🚀",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Поднимайся от поверхности Земли к космосу."},
+    {id:"ancientearth",title:"Ancient Earth Globe",emoji:"🌍",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Исследуй Землю в разные геологические эпохи."},
+    {id:"radiogarden",title:"Radio Garden",emoji:"📻",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Исследуй радиостанции по всему миру."},
+    {id:"geoguessr",title:"GeoGuessr",emoji:"🗺️",genre:"ИНТЕРАКТИВНЫЙ МИР",desc:"Определяй места по панорамам и географии."},
+    {id:"patatap",title:"Patatap",emoji:"🎹",genre:"ТВОРЧЕСТВО",desc:"Создавай звуки и анимации нажатием клавиш."},
+    {id:"lusion",title:"LUSION",emoji:"✨",genre:"ТВОРЧЕСТВО",desc:"Интерактивный цифровой визуальный опыт."},
+    {id:"brunosimon",title:"Bruno Simon Portfolio",emoji:"🚗",genre:"ТВОРЧЕСТВО",desc:"Интерактивное 3D-портфолио."},
+    {id:"pollock",title:"Jackson Pollock Art",emoji:"🎨",genre:"ТВОРЧЕСТВО",desc:"Интерактивный проект о живописи Jackson Pollock."},
+    {id:"typatone",title:"Typatone",emoji:"🎵",genre:"ТВОРЧЕСТВО",desc:"Превращай текст в музыку."},
+    {id:"plink",title:"Plink",emoji:"🎶",genre:"ТВОРЧЕСТВО",desc:"Интерактивный музыкальный эксперимент."},
+    {id:"linerider",title:"Line Rider",emoji:"✏️",genre:"ТВОРЧЕСТВО",desc:"Рисуй трассы и наблюдай за движением персонажа."},
+    {id:"2048",title:"2048",emoji:"🔢",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Соединяй одинаковые плитки."},
+    {id:"password",title:"The Password Game",emoji:"🔐",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Создай пароль, выполняющий всё больше правил."},
+    {id:"remojibus",title:"Remojibus",emoji:"🧩",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Разгадывай ребусы из эмодзи."},
+    {id:"fillsquare",title:"Fill the Square",emoji:"◼️",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Заполняй поле и решай пространственные задачи."},
+    {id:"ricochetdaily",title:"Ricochet Daily",emoji:"🔵",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Рассчитывай отскоки и проходи ежедневную задачу."},
+    {id:"evolutiontrust",title:"The Evolution of Trust",emoji:"🤝",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Интерактивное исследование доверия и стратегии."},
+    {id:"littlealchemy2",title:"Little Alchemy 2",emoji:"🧪",genre:"ПАЗЛЫ И ЛОГИКА",desc:"Соединяй элементы и открывай новые."},
+    {id:"snake",title:"Snake",emoji:"🐍",genre:"АРКАДЫ И КЛАССИКА",desc:"Классическая змейка."},
+    {id:"doodlejump",title:"Doodle Jump",emoji:"🦘",genre:"АРКАДЫ И КЛАССИКА",desc:"Прыгай всё выше по платформам."},
+    {id:"puffpilot",title:"Puff Pilot",emoji:"💨",genre:"АРКАДЫ И КЛАССИКА",desc:"Проводи воздушный поток через кольца."},
+    {id:"pokeclicker",title:"PokéClicker",emoji:"⚡",genre:"АРКАДЫ И КЛАССИКА",desc:"Кликер с коллекционированием существ."},
+    {id:"candybox2",title:"Candy Box 2",emoji:"🍬",genre:"АРКАДЫ И КЛАССИКА",desc:"Накопление конфет превращается в приключение."},
+    {id:"dino",title:"Dino T-Rex Game",emoji:"🦖",genre:"АРКАДЫ И КЛАССИКА",desc:"Мини-игра с бегущим динозавром."},
+    {id:"pip",title:"PIP: Skull Demo",emoji:"💀",genre:"АРКАДЫ И КЛАССИКА",desc:"Небольшой браузерный игровой прототип."},
+    {id:"townscaper",title:"Townscaper",emoji:"🏘️",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Строй маленькие города без заданного сценария."},
+    {id:"infinitecraft",title:"Infinite Craft",emoji:"🧪",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Комбинируй элементы и открывай новые."},
+    {id:"addtown",title:"Add Town ≈ 2048!",emoji:"🏙️",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Объединяй плитки и развивай город."},
+    {id:"gridland",title:"Gridland",emoji:"🏰",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Соединяй ресурсы и развивай поселение."},
+    {id:"bouncyballs",title:"Bouncy Balls",emoji:"⚪",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Интерактивные прыгающие шарики."},
+    {id:"alchemy2",title:"Alchemy 2",emoji:"⚗️",genre:"СИМУЛЯТОРЫ И ПЕСКОЧНИЦЫ",desc:"Комбинируй элементы и создавай новые."},
+    {id:"protocol",title:"Protocol ERRORMIND",emoji:"🧠",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Браузерная серия логических уровней."},
+    {id:"lumenoffice",title:"Lumen Office RPG",emoji:"🏢",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Исследуй офис и решай загадки."},
+    {id:"typehelp",title:"Type Help",emoji:"⌨️",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Небольшая браузерная игра на набор текста."},
+    {id:"alchemize",title:"Alchemize",emoji:"🧫",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Эксперимент с комбинациями и алхимией."},
+    {id:"polkadot",title:"Polka Dot Swim Chain",emoji:"🔵",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Название сохранено по записи на фотографии."},
+    {id:"krunker",title:"Krunker",emoji:"🎯",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный соревновательный шутер."},
+    {id:"tanki",title:"Tanki Online",emoji:"🛡️",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный танковый экшен."},
+    {id:"diepio",title:"Diep.io",emoji:"🔵",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерная аркада с танками и развитием."},
+  ];
+  const CATEGORIES = [
+    {id:"worlds",name:"ИНТЕРАКТИВНЫЕ МИРЫ",icon:"🌌",ids:["deepsea","starschrono","windowswap","spaceelevator","ancientearth","radiogarden","geoguessr"]},
+    {id:"creative",name:"ТВОРЧЕСТВО • МУЗЫКА • АРТ",icon:"🎨",ids:["patatap","lusion","brunosimon","pollock","typatone","plink","linerider"]},
+    {id:"puzzles",name:"ПАЗЛЫ • ЛОГИКА",icon:"🧩",ids:["2048","password","remojibus","fillsquare","ricochetdaily","evolutiontrust","littlealchemy2"]},
+    {id:"arcade",name:"АРКАДЫ • КЛАССИКА",icon:"🕹️",ids:["snake","doodlejump","puffpilot","pokeclicker","candybox2","dino","pip","krunker","tanki","diepio"]},
+    {id:"sandbox",name:"СИМУЛЯТОРЫ • ПЕСКОЧНИЦЫ",icon:"🌍",ids:["townscaper","infinitecraft","addtown","gridland","bouncyballs","alchemy2"]},
+    {id:"experimental",name:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",icon:"⚡",ids:["protocol","lumenoffice","typehelp","alchemize","polkadot"]},
+  ];
+  const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
+  let currentCategory = null;
+  let categoryGameIndex = 0;
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeStartTime = 0;
+
+  function showCategoryList(animate=true){
+    currentCategory=null;
+    document.getElementById('categoryList').classList.remove('hidden');
+    document.getElementById('categoryView').classList.add('hidden');
+    if(animate){
+      const list=document.getElementById('categoryList');
+      list.animate([{opacity:.35,transform:'translateX(-14px)'},{opacity:1,transform:'translateX(0)'}],{duration:220,easing:'cubic-bezier(.22,.8,.22,1)'});
+    }
+  }
+
+  function openCategory(categoryId){
+    const category=CATEGORIES.find(c=>c.id===categoryId);
+    if(!category)return;
+    currentCategory=category;
+    categoryGameIndex=0;
+    document.getElementById('categoryList').classList.add('hidden');
+    document.getElementById('categoryView').classList.remove('hidden');
+    document.getElementById('categoryHeadTitle').textContent=categoryText(category.id);
+    renderCategoryCarousel();
+    haptic();
+  }
+
+  function renderCategories(){
+    const list=document.getElementById('categoryList');
+    list.innerHTML=CATEGORIES.map(c=>{
+      const count=c.ids.length;
+      return '<button class="category-item" data-category="'+c.id+'">'+
+        '<span class="category-icon">'+c.icon+'</span>'+
+        '<span class="category-copy"><span class="category-name">'+categoryText(c.id)+'</span><span class="category-count">'+count+' '+(count===1?tr('oneGame'):tr('gamesCount'))+'</span></span>'+
+        '<span class="category-arrow">›</span>'+
+      '</button>';
+    }).join('');
+    list.querySelectorAll('.category-item').forEach(btn=>{
+      btn.addEventListener('click',()=>openCategory(btn.dataset.category));
+    });
+  }
+
+  /* Official/creator-sourced artwork where a direct public image URL is available.
+     Other cards use the official game's domain icon as a safe visual fallback. */
+  // Polished vector poster for every game: no generic favicon/red placeholder.
+  const GAME_LOGOS = {};
+
+  function escapeSvgText(value){
+    return String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function hashCode(value){
+    let h=0; const s=String(value);
+    for(let i=0;i<s.length;i++) h=((h<<5)-h)+s.charCodeAt(i)|0;
+    return h;
+  }
+
+  function posterDataUrl(id){
+    const g=GAME_BY_ID[id] || {title:id,emoji:'🎮',genre:'ARCADE'};
+    const palettes=[
+      ['#07152f','#0b6e99','#19e6d0'],['#210b38','#7c1fff','#ff4fd8'],
+      ['#351008','#d64b1f','#ffd166'],['#061d19','#078f75','#72f1b8'],
+      ['#17122e','#4d55d9','#8ee3ff'],['#271006','#b83255','#ff9f68']
+    ];
+    const p=palettes[Math.abs(hashCode(id))%palettes.length];
+    const title=escapeSvgText(g.title), genre=escapeSvgText(g.genre||'ARCADE'), emoji=escapeSvgText(g.emoji||'🎮');
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">'+
+      '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".55" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[2]+'"/></linearGradient>'+
+      '<radialGradient id="glow"><stop stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'+
+      '<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#fff" stroke-opacity=".10"/></pattern>'+
+      '<filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity=".38"/></filter></defs>'+
+      '<rect width="900" height="620" fill="url(#bg)"/><circle cx="690" cy="120" r="230" fill="url(#glow)"/><rect width="900" height="620" fill="url(#grid)"/>'+
+      '<path d="M-60 500 C170 360 280 610 500 445 S760 310 960 430" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="70"/>'+
+      '<path d="M-40 505 C170 375 285 590 500 455 S760 330 940 445" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="3"/>'+
+      '<g filter="url(#shadow)"><circle cx="450" cy="255" r="126" fill="#07101f" fill-opacity=".52" stroke="#fff" stroke-opacity=".22" stroke-width="3"/><text x="450" y="302" text-anchor="middle" font-size="145" font-family="system-ui,Segoe UI Emoji,Apple Color Emoji,sans-serif">'+emoji+'</text></g>'+
+      '<text x="48" y="72" fill="#fff" fill-opacity=".78" font-size="20" font-family="monospace" font-weight="700" letter-spacing="4">FREEzzzGAMES • '+genre.toUpperCase()+'</text>'+
+      '<text x="48" y="548" fill="#fff" font-size="42" font-family="system-ui,sans-serif" font-weight="900" letter-spacing="2">'+title+'</text>'+
+      '<rect x="48" y="570" width="160" height="5" rx="3" fill="#fff" fill-opacity=".65"/></svg>';
+    return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+  }
+
+  function gameLogoUrl(id){ return posterDataUrl(id); }
+
+  function renderCategoryCarousel(){
+    if(!currentCategory)return;
+    const ids=currentCategory.ids;
+    const track=document.getElementById('gamesTrack');
+    const dots=document.getElementById('carouselDots');
+    if(!track||!dots)return;
+    track.innerHTML=ids.map((id,i)=>{
+      const g=GAME_BY_ID[id];
+      const offset=i-categoryGameIndex;
+      let cls='game-card is-hidden';
+      if(offset===0)cls='game-card is-active';
+      else if(offset===-1)cls='game-card is-prev';
+      else if(offset===1)cls='game-card is-next';
+      return '<div class="'+cls+'" data-carousel-game="'+g.id+'">'+
+        '<div class="game-card-art">'+
+          '<img class="game-card-logo" src="'+gameLogoUrl(g.id)+'" alt="'+g.title.replace(/"/g,'&quot;')+'" loading="eager" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">'+
+          '<span class="game-card-logo-fallback" style="display:none">'+g.emoji+'</span>'+        '</div>'+
+        '<div class="game-card-body">'+
+          '<div class="game-card-title">'+g.title+'</div>'+
+          '<div class="game-card-desc">'+gameText(g.id,'desc')+'</div>'+
+          '<div class="game-card-meta"><span>'+gameText(g.id,'genre')+'</span><span class="game-card-play">'+tr('play')+'</span></div>'+
+        '</div></div>';
+    }).join('');
+    dots.innerHTML=ids.map((id,i)=>'<span class="carousel-dot '+(i===categoryGameIndex?'active':'')+'"></span>').join('');
+    const active=track.querySelector('.game-card.is-active');
+    if(active) active.addEventListener('click',()=>openExternal(GAME_LINKS[active.dataset.carouselGame]));
+  }
+
+  function moveCategoryGame(delta){
+    if(!currentCategory)return;
+    const len=currentCategory.ids.length;
+    if(len<2)return;
+    const next=Math.max(0,Math.min(len-1,categoryGameIndex+delta));
+    if(next===categoryGameIndex)return;
+    categoryGameIndex=next;
+    haptic();
+    renderCategoryCarousel();
+  }
+
+  const carousel=document.getElementById('gamesCarousel');
+  carousel.addEventListener('touchstart',e=>{
+    const t=e.touches[0]; if(!t)return;
+    swipeStartX=t.clientX; swipeStartY=t.clientY; swipeStartTime=Date.now();
+  },{passive:true});
+  carousel.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0]; if(!t)return;
+    const dx=t.clientX-swipeStartX;
+    const dy=t.clientY-swipeStartY;
+    const dt=Math.max(1,Date.now()-swipeStartTime);
+    const velocity=Math.abs(dx)/dt;
+    if(Math.abs(dx)>38 && Math.abs(dx)>Math.abs(dy)*1.15 && (Math.abs(dx)>55 || velocity>.35)){
+      moveCategoryGame(dx<0?1:-1);
+    }
+  },{passive:true});
+
+  // Language initialization is performed after GAME_CARDS/CATEGORIES/GAME_LINKS are initialized.
+
+  function returnToMainMenu(){
+    const cv=document.getElementById('categoryView');
+    const cl=document.getElementById('categoryList');
+    if(cv)cv.classList.add('hidden');
+    if(cl)cl.classList.remove('hidden');
+    currentCategory=null;
+    categoryGameIndex=0;
+    renderCategories();
+    haptic();
+  }
+
+  const homeBtn=document.getElementById('homeMenuBtn'); if(homeBtn && !homeBtn.dataset.bound){ homeBtn.dataset.bound='1'; homeBtn.addEventListener('click',returnToMainMenu); }
+  document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
+
+  const GAME_LINKS = {
+    "deepsea":"https://neal.fun/deep-sea/",
+    "windowswap":"https://window-swap.com/",
+    "spaceelevator":"https://neal.fun/space-elevator/",
+    "ancientearth":"https://dinosaurpictures.org/ancient-earth/",
+    "radiogarden":"https://radio.garden/",
+    "geoguessr":"https://www.geoguessr.com/",
+    "patatap":"https://patatap.com/",
+    "brunosimon":"https://bruno-simon.com/",
+    "pollock":"https://www.moma.org/interactives/exhibitions/1998/pollock/website100/txt_intro.html",
+    "typatone":"https://typatone.com/",
+    "plink":"https://www.experiments.withgoogle.com/plink-multiplayer-music-experience",
+    "linerider":"https://www.linerider.com/",
+    "2048":"https://play2048.co/",
+    "password":"https://neal.fun/password-game/",
+    "remojibus":"https://starzonmyarmz.github.io/remojibus/",
+    "fillsquare":"https://ryanbalieiro.github.io/fill-the-square/",
+    "ricochetdaily":"https://teknamin.github.io/ricochet-daily/",
+    "evolutiontrust":"https://ncase.me/trust/",
+    "littlealchemy2":"https://littlealchemy2.com/",
+    "snake":"https://www.snake.at/game/1.3/index.html",
+    "doodlejump":"https://cozyrain.github.io/DoodleJumpGame/",
+    "puffpilot":"https://bte808.github.io/fun-20260601-a-puff-pilot/",
+    "pokeclicker":"https://www.pokeclicker.com/",
+    "candybox2":"https://candybox2.github.io/",
+    "dino":"https://chromedino.com/",
+    "pip":"https://bandinopla.github.io/pip-skull-demo/",
+    "townscaper":"https://www.townscapergame.com/",
+    "infinitecraft":"https://neal.fun/infinite-craft/",
+    "addtown":"https://www.lexaloffle.com/bbs/?pid=add_town",
+    "gridland":"https://gridland.doublespeakgames.com/",
+    "bouncyballs":"https://bouncyballs.org/",
+    "alchemy2":"https://littlealchemy2.com/",
+    "protocol":"https://protocol-errormind.github.io/",
+    "lumenoffice":"https://samirsaad786.github.io/LumenOfficeRPG/",
+    "typehelp":"https://william-rous.itch.io/type-help",
+    "krunker":"https://krunker.io/",
+    "tanki":"https://tankionline.com/",
+    "diepio":"https://diep.io/",
+  };
+  function openExternal(url) {
+    if (!url) return;
+    haptic();
+    const gameId=Object.keys(GAME_LINKS).find(k=>GAME_LINKS[k]===url);
+    if(gameId)trackGameLaunch(gameId);
+    try {
+      if (tg && typeof tg.openLink === 'function') tg.openLink(url);
+      else window.open(url, '_blank', 'noopener,noreferrer');
+    } catch(e) {
+      window.location.href = url;
+    }
+  }
+
+  // Final portal boot. Keep rendering isolated so one optional module cannot blank the whole portal.
+  function bootPortal(){
+    try{
+      applyLanguage();
+      showCategoryList(false);
+      // Load visual card animation after the first useful paint.
+      requestAnimationFrame(()=>setTimeout(()=>{
+        if(document.querySelector('script[data-freezzz-visuals]'))return;
+        const script=document.createElement("script");
+        script.src="./js/game-card-animations.js";
+        script.dataset.freezzzVisuals="1";
+        script.defer=true;
+        document.body.appendChild(script);
+      },0));
+    }catch(err){
+      console.error("FREEzzzGames boot error:",err);
+      const list=document.getElementById("categoryList");
+      if(list){
+        list.classList.remove("hidden");
+        list.innerHTML='<div style="padding:16px;border:1px solid #e52225;border-radius:10px;background:#fff;color:#17212b;font:12px monospace;text-align:left"><b>FREEzzzGames</b><br>Portal boot error.<br><small>'+String(err&&err.message||err).replace(/</g,"&lt;")+'</small></div>';
+      }
+    }
+  }
+  bootPortal();
+
+
+
+
+});
+</script>
+</body>
+</html>
