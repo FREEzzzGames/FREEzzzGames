@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-const BOT_TOKEN = process.env.ID_BOT_TOKEN || "";
+const BOT_TOKEN = process.env.ID_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || "";
 const POLL_MS = 1500;
 
 function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
