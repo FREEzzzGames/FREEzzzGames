@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>FREEzzzGAMES</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#050814;--text:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:radial-gradient(circle at 50% 0,#18265b 0,#070b19 48%,#03050b 100%);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;overflow-x:hidden}.app{width:min(760px,100%);margin:auto;padding:10px 10px calc(22px + env(safe-area-inset-bottom))}
+.header{border:2px solid #5a62ff;border-radius:22px;padding:14px 12px 12px;text-align:center;background:linear-gradient(145deg,#111936,#070b18);box-shadow:0 0 28px #2146ff55,inset 0 0 25px #000}
+.logo{font-weight:1000;font-size:clamp(29px,8vw,54px);letter-spacing:-2px;background:linear-gradient(90deg,#67e8ff,#fff,#ff8a00);color:transparent;background-clip:text;-webkit-background-clip:text}.sub{font-weight:900;color:#6ee7ff;font-size:clamp(11px,3vw,17px);margin-top:2px}.tag{margin-top:8px;color:#ffd35a;font-weight:800;font-size:11px;letter-spacing:1px}
+.hero{margin-top:10px;display:flex;align-items:center;gap:10px;min-height:112px;border:2px solid #ff4d64;border-radius:18px;padding:14px;background:linear-gradient(100deg,#3a1022,#11172e 58%,#20184a);box-shadow:0 0 22px #ff355755}.heroIcon{font-size:52px}.hero h1{margin:0;font-size:clamp(31px,9vw,58px);line-height:.9}.hero p{margin:8px 0 0;color:#ffb5bd;font-weight:800;font-size:12px}.play{border:0;border-radius:14px;background:linear-gradient(180deg,#ff6b78,#ff183e);color:white;font-weight:1000;font-size:22px;padding:15px 20px;box-shadow:0 0 20px #ff315c99;min-width:100px}
+.section{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.quick{border:2px solid;border-radius:15px;padding:12px;background:#10182a;min-height:72px;text-align:left;color:white;font-weight:900}.quick small{display:block;margin-top:4px;opacity:.7;font-weight:700}.new{border-color:#20e77b}.top{border-color:#ffbd24}
+.genres{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.genre{border:2px solid;border-radius:13px;min-height:116px;padding:9px 5px;background:#0d1325;color:#fff;text-align:center;font-weight:1000;font-size:11px;display:flex;flex-direction:column;justify-content:space-between}.genre b{font-size:29px}.genre span{line-height:1.1}.g1{border-color:#b74cff}.g2{border-color:#ffad27}.g3{border-color:#ff3f4d}.g4{border-color:#25cfff}.g5{border-color:#d94dff}
+.lower{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.low{border:2px solid #258eff;border-radius:13px;background:#0b1325;padding:10px 4px;color:#fff;text-align:center;font-size:11px;font-weight:1000;min-height:68px}.low span{display:block;font-size:24px;margin-bottom:3px}
+.footer{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;border:2px solid #14519c;border-radius:14px;padding:7px;background:#071020}.footer button{border:0;background:transparent;color:#b9dcff;font-size:9px;font-weight:900;padding:5px 2px}.footer span{display:block;font-size:19px;margin-bottom:2px}button{font:inherit;cursor:pointer}
+@media(max-width:520px){.genre{min-height:100px;font-size:9px}.genre b{font-size:24px}.lower{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body><main class="app">
+<header class="header"><div class="logo">FREEzzzGAMES</div><div class="sub">БРАУЗЕРНЫЕ ИГРЫ ПРЯМО В TELEGRAM</div><div class="tag">ИГРАЙ • ОТКРЫВАЙ • ОБЩАЙСЯ • РАЗВИВАЙСЯ</div></header>
+<section class="hero"><div class="heroIcon">🎮</div><div style="flex:1"><h1>ИГРАТЬ</h1><p>ВСЕ ИГРЫ ПОРТАЛА</p></div><button class="play" onclick="openGames()">▶</button></section>
+<section class="section"><button class="quick new" onclick="showMsg('🆕 Новые игры')">🆕 НОВИНКИ<small>новые игры каждую неделю</small></button><button class="quick top" onclick="showMsg('🏆 Топ игр')">🏆 ТОП ИГР<small>самые популярные</small></button></section>
+<section class="genres"><button class="genre g1" onclick="genre('puzzle')"><b>🧩</b><span>PUZZLE<br>ГОЛОВОЛОМКИ</span></button><button class="genre g2" onclick="genre('strategy')"><b>🏰</b><span>STRATEGY<br>СТРАТЕГИИ</span></button><button class="genre g3" onclick="genre('arcade')"><b>🚀</b><span>ARCADE<br>АРКАДЫ</span></button><button class="genre g4" onclick="genre('adventure')"><b>🧭</b><span>ADVENTURE<br>ПРИКЛЮЧЕНИЯ</span></button><button class="genre g5" onclick="genre('racing')"><b>🏎️</b><span>RACING<br>ГОНКИ И СПОРТ</span></button></section>
+<section class="lower"><button class="low" onclick="showMsg('🎁 Игра дня')"><span>🎁</span>ИГРА ДНЯ</button><button class="low" onclick="showMsg('📰 Новости')"><span>📰</span>НОВОСТИ</button><button class="low" onclick="showMsg('📊 Рейтинг')"><span>📊</span>РЕЙТИНГ</button><button class="low" onclick="showMsg('👤 Профиль')"><span>👤</span>МОЙ ПРОФИЛЬ</button></section>
+<nav class="footer"><button onclick="showMsg('💬 Чат')"><span>💬</span>ЧАТ</button><button onclick="showMsg('👥 Сообщество')"><span>👥</span>СООБЩЕСТВО</button><button onclick="showMsg('⭐ События')"><span>⭐</span>СОБЫТИЯ</button><button onclick="showMsg('⚙️ Настройки')"><span>⚙️</span>НАСТРОЙКИ</button><button onclick="showMsg('❓ Помощь')"><span>❓</span>ПОМОЩЬ</button></nav>
+</main>
+<script>
+const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor('#070b18');tg.setBackgroundColor('#050814')}
+function openGames(){showMsg('🎮 Каталог игр — реальные ссылки подключим после отбора игр')}
+function genre(x){showMsg('🎮 Жанр: '+x)}
+function showMsg(t){if(tg?.showAlert)tg.showAlert(t);else alert(t)}
+</script></body></html>
