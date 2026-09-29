@@ -43,14 +43,14 @@
 </script>
 <style>
 :root {
-  --tg-bg:#ffffff;
-  --tg-surface:#ffffff;
-  --tg-surface-soft:#f0f2f5;
-  --tg-text:#17212b;
-  --tg-text-secondary:#70808f;
-  --tg-blue:#3390ec;
-  --tg-blue-dark:#2481cc;
-  --tg-border:#dfe4e8;
+  --tg-bg:#e7e0d5;
+  --tg-surface:#eee8de;
+  --tg-surface-soft:#ddd6ca;
+  --tg-text:#292722;
+  --tg-text-secondary:#716b62;
+  --tg-blue:#3f78a8;
+  --tg-blue-dark:#315f86;
+  --tg-border:#c9c0b4;
   --tg-shadow:0 2px 8px rgba(0,0,0,.08);
   --tg-overlay:rgba(255,255,255,.92);
   --tg-accent:#3390ec;
@@ -198,8 +198,12 @@ h1{color:var(--tg-text);font-size:30px; margin: 2px 0 0; text-shadow: 2px 2px #e
 .chat-message-own{border-color:var(--tg-blue)}
 .chat-message-block{min-width:0}
 
-.guest-msg { background:var(--tg-btn); border:1px solid var(--tg-border); border-radius: 6px; padding: 6px 10px; font-size: 10px; text-align: left; }
+.guest-msg { background:var(--tg-surface-soft); border:1px solid var(--tg-border); border-radius: 12px; padding: 7px 10px; font-size: 10px; text-align: left; max-width:88%; box-shadow:0 1px 2px rgba(0,0,0,.08); }
 .guest-author { color:var(--tg-blue); font-weight: bold; margin-bottom: 2px; }
+.chat-message-own { align-self:flex-end; background:color-mix(in srgb,var(--tg-blue) 15%,var(--tg-surface)); border-color:color-mix(in srgb,var(--tg-blue) 55%,var(--tg-border)); }
+.chat-layout { width:min(100%,520px); height:min(82vh,620px); margin:auto; display:flex; flex-direction:column; background:var(--tg-surface); border:1px solid var(--tg-border); border-radius:14px; padding:8px; box-shadow:0 10px 32px rgba(0,0,0,.24); }
+#guestView { position:absolute; inset:0; z-index:110; padding:12px; background:var(--tg-overlay); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px); }
+#guestView .chat-auth-state { flex-shrink:0; }
 
 /* МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ */
 .modal-overlay { position: absolute; inset: 0; background: rgba(2,3,11,0.88); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 15px; }
@@ -236,6 +240,17 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .always-btn:active{opacity:1;transform:scale(.92);background:color-mix(in srgb,var(--tg-blue) 28%,transparent)}
 .always-btn.home{color:var(--tg-blue);font-size:16px}
 .always-btn.lang{font:bold 9px monospace;letter-spacing:.2px}
+.always-btn.radio{font:bold 11px monospace;color:var(--tg-blue)}
+.chat-unread-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#20b45a;box-shadow:0 0 5px rgba(32,180,90,.7);margin-left:2px;flex:0 0 7px}
+.portal.game-active .header-chat-btn{position:absolute;top:43px;right:7px;z-index:1002}
+.radio-overlay{position:absolute;inset:0;z-index:130;display:flex;align-items:flex-start;justify-content:flex-end;padding:52px 8px 8px;background:rgba(0,0,0,.18);pointer-events:none}
+.radio-overlay:not(.hidden){pointer-events:auto}
+.radio-card{width:min(92%,300px);background:var(--tg-surface);border:1px solid var(--tg-blue);border-radius:14px;padding:10px;box-shadow:0 12px 35px rgba(0,0,0,.28)}
+.radio-head{display:flex;align-items:center;justify-content:space-between;color:var(--tg-text);font-size:12px}
+.radio-close{width:28px;height:28px;border:1px solid var(--tg-border);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font-size:18px}
+.radio-status{margin:8px 0;padding:7px 8px;border-radius:8px;background:var(--tg-surface-soft);color:var(--tg-text-secondary);font:9px monospace}
+.radio-actions{display:flex;gap:6px}
+.radio-actions button{flex:1;padding:8px;border:1px solid var(--tg-blue);border-radius:8px;background:var(--tg-btn);color:var(--tg-text);font:bold 9px monospace}
 .portal.game-active .always-controls{top:7px;right:7px}
 .portal.game-active .always-btn{width:30px;height:30px}
 @media(max-width:420px){.always-controls{top:6px;right:6px;gap:4px}.always-btn{width:29px;height:29px;border-radius:8px;font-size:13px}.always-btn.home{font-size:15px}}
@@ -271,11 +286,13 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
       <div class="user-avatar" id="currentAvatarEmoji">👾</div>
       <div id="userNameTxt">Игрок</div>
     </div>
-    <button class="header-chat-btn" id="tabGuest" type="button" data-tab="guest" title="Чат" aria-label="Чат">💬 <span data-i18n="chat">ЧАТ</span></button>
+    <button class="header-chat-btn" id="tabGuest" type="button" data-tab="guest" title="Чат" aria-label="Чат">💬 <span data-i18n="chat">ЧАТ</span><span class="chat-unread-dot hidden" id="chatUnreadDot" aria-hidden="true"></span></button>
     <div class="always-controls" id="alwaysControls">
       <button class="always-btn home" id="homeMenuBtn" title="Главное меню" aria-label="Главное меню">⌂</button>
       <button class="always-btn" id="soundToggle" title="Звук" aria-label="Звук">🔊</button>
       <button class="always-btn" id="themeToggleBtn" title="Тема" aria-label="Тема">☀️</button>
+      <button class="always-btn radio" id="radioPlayBtn" title="Techno.FM — play" aria-label="Techno.FM — play">▶</button>
+      <button class="always-btn radio" id="radioStopBtn" title="Techno.FM — stop" aria-label="Techno.FM — stop">■</button>
       <button class="always-btn lang" id="langToggleBtn" title="Язык" aria-label="Язык">RU</button>
     </div>
   </div>
@@ -353,6 +370,22 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
 </div>
 
+<!-- ОТДЕЛЬНЫЙ РАДИО-БЛОК TECHNО.FM -->
+<div class="radio-overlay hidden" id="radioOverlay">
+  <div class="radio-card" role="dialog" aria-modal="true" aria-label="Techno.FM Radio">
+    <div class="radio-head">
+      <strong>📻 Techno.FM</strong>
+      <button class="radio-close" id="radioCloseBtn" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <div class="radio-status" id="radioStatus">STOPPED</div>
+    <audio id="technoFmAudio" preload="none" playsinline></audio>
+    <div class="radio-actions">
+      <button id="radioPanelPlay" type="button">▶ PLAY</button>
+      <button id="radioPanelStop" type="button">■ STOP</button>
+    </div>
+  </div>
+</div>
+
 <!-- МОДАЛЬНОЕ ОКНО КОЛЛЕКЦИИ АВАТАРОВ -->
 <div class="modal-overlay hidden" id="avatarModal">
   <div class="modal-card">
@@ -367,7 +400,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 <div class="player-profile-overlay hidden" id="playerProfileOverlay">
   <div class="player-profile-card" role="dialog" aria-modal="true" aria-label="Player profile">
     <div class="player-profile-head">
-      <div class="player-profile-avatar" id="playerProfileAvatar">👾</div>
+      <button class="player-profile-avatar" id="playerProfileAvatar" type="button" title="Avatar Loadout">👾</button>
       <div>
         <div class="player-profile-name" id="playerProfileName">Игрок</div>
         <div class="player-profile-username" id="playerProfileUsername">@player</div>
@@ -727,7 +760,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     if(!data)data={id:String(target||""),avatar:"👾",name:"Игрок",username:"",stats:{portalSeconds:0,gameSeconds:0,gameLaunches:0,messagesSent:0,chatSeconds:0,activeDays:[]}};
     profileTargetId=String(data.id||target||playerId);
-    document.getElementById("playerProfileAvatar").textContent=data.avatar||"👾";
+    document.getElementById("playerProfileAvatar").textContent=(isSelf?currentAvatar:(data.avatar||"👾"));
     document.getElementById("playerProfileName").textContent=data.name||data.username||"Игрок";
     document.getElementById("playerProfileUsername").textContent=data.username||"";
     const s=data.stats||{};
@@ -903,6 +936,15 @@ window.addEventListener('DOMContentLoaded', () => {
   // Chat is authenticated only when the user opens it.
   // This keeps the portal/game catalog independent from the API wake-up path.
   setInterval(()=>{if(chatAuthorized && !document.hidden && !document.getElementById("guestView").classList.contains("hidden")){activeDmUserId?openDm(activeDmUserId):chatRoom&&loadMessages();}},10000);
+  // After Chat has been opened once, check for newer messages while the popup is closed.
+  setInterval(async()=>{
+    if(!chatAuthorized || document.hidden || !chatLastSeenAt || !document.getElementById("guestView").classList.contains("hidden"))return;
+    try{
+      const data=await api("/chat/messages?room="+encodeURIComponent(chatRoom)+"&limit=20");
+      const newest=(data.messages||[]).reduce((max,m)=>Math.max(max,Date.parse(m.createdAt||"")||0),0);
+      if(newest>chatLastSeenAt)setChatUnread(true);
+    }catch(e){}
+  },20000);
 
   // АВАТАРЫ
   const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
@@ -948,10 +990,13 @@ window.addEventListener('DOMContentLoaded', () => {
     currentAvatar = av;
     localStorage.setItem("freezzzCurrentAvatar", av);
     if (avatarEmojiEl) avatarEmojiEl.textContent = av;
+    const profileAvatar=document.getElementById("playerProfileAvatar");
+    if(profileAvatar) profileAvatar.textContent=av;
     closeAvatarModal();
   }
 
-  document.getElementById('userProfileBox').addEventListener('click', openAvatarModal);
+  document.getElementById('userProfileBox').addEventListener('click', ()=>openPlayerProfile(playerId));
+  document.getElementById('playerProfileAvatar').addEventListener('click', openAvatarModal);
   document.getElementById('closeModalBtn').addEventListener('click', closeAvatarModal);
 
   // Темы
@@ -989,6 +1034,36 @@ window.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
   }
 
+  // TECHNО.FM RADIO — separate module; starts only after a user action.
+  const TECHNО_FM_STREAM = "https://stream.techno.fm/radio1-320k.mp3";
+  const radioAudio = document.getElementById("technoFmAudio");
+  const radioOverlay = document.getElementById("radioOverlay");
+  const radioStatus = document.getElementById("radioStatus");
+  function setRadioStatus(text){ if(radioStatus) radioStatus.textContent=text; }
+  async function playTechnoFm(){
+    if(!radioAudio)return;
+    try{
+      radioAudio.src=TECHNО_FM_STREAM;
+      await radioAudio.play();
+      setRadioStatus("PLAYING • TECHNО.FM 320K");
+    }catch(e){
+      setRadioStatus("PLAY ERROR • TAP PLAY AGAIN");
+    }
+  }
+  function stopTechnoFm(){
+    if(!radioAudio)return;
+    try{radioAudio.pause();radioAudio.currentTime=0;radioAudio.removeAttribute("src");radioAudio.load();}catch(e){}
+    setRadioStatus("STOPPED");
+  }
+  function openRadioPanel(){radioOverlay?.classList.remove("hidden");setRadioStatus(radioAudio?.paused!==false?"STOPPED":"PLAYING • TECHNО.FM 320K");}
+  function closeRadioPanel(){radioOverlay?.classList.add("hidden");}
+  document.getElementById("radioPlayBtn")?.addEventListener("click",()=>{openRadioPanel();playTechnoFm();});
+  document.getElementById("radioStopBtn")?.addEventListener("click",stopTechnoFm);
+  document.getElementById("radioPanelPlay")?.addEventListener("click",playTechnoFm);
+  document.getElementById("radioPanelStop")?.addEventListener("click",stopTechnoFm);
+  document.getElementById("radioCloseBtn")?.addEventListener("click",closeRadioPanel);
+  radioOverlay?.addEventListener("click",e=>{if(e.target===radioOverlay)closeRadioPanel();});
+
   function haptic() {
     if (soundEnabled && tg && tg.HapticFeedback) {
       try { tg.HapticFeedback.impactOccurred('light'); } catch(e){}
@@ -1004,9 +1079,17 @@ window.addEventListener('DOMContentLoaded', () => {
     const chatTab=document.getElementById('tabGuest');
     if(chatTab) chatTab.classList.toggle('active', tab==='guest');
     if(tab==='games'){showCategoryList(false);}
-    else if(tab==='guest'){openChatPanel();}
+    else if(tab==='guest'){markChatSeen();openChatPanel();}
   }
 
+  const chatUnreadDot=document.getElementById('chatUnreadDot');
+  let chatLastSeenAt=Number(localStorage.getItem("freezzzChatLastSeenAt")||0);
+  function setChatUnread(value){chatUnreadDot?.classList.toggle("hidden",!value);}
+  function markChatSeen(){
+    chatLastSeenAt=Date.now();
+    localStorage.setItem("freezzzChatLastSeenAt",String(chatLastSeenAt));
+    setChatUnread(false);
+  }
   const chatTabButton=document.getElementById('tabGuest');
   if(chatTabButton && !chatTabButton.dataset.bound){
     chatTabButton.dataset.bound='1';
