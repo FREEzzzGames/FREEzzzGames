@@ -14,14 +14,6 @@ services:
           property: connectionString
       - key: TELEGRAM_BOT_TOKEN
         sync: false
-      - key: TELEGRAM_ARCHIVE_CHAT_ID
-        sync: false
-      - key: TG_ROOM_MAIN_THREAD_ID
-        sync: false
-      - key: TG_ROOM_GAMES_THREAD_ID
-        sync: false
-      - key: TG_ROOM_RELAX_THREAD_ID
-        sync: false
       - key: ALLOWED_ORIGIN
         value: https://freezzgames.github.io
       - key: SESSION_DAYS
