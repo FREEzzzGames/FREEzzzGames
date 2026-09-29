@@ -178,6 +178,10 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .ctrl-pad-btn { background:var(--tg-btn); border: 2px solid var(--tg-blue); color: var(--tg-text); font-size: 20px; width: 60px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; box-shadow: 0 3px 8px rgba(0,0,0,0.5); }
 .ctrl-pad-btn:active { background: var(--tg-blue-dark); transform: scale(0.92); }
 
+.portal-nav{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px 4px 4px;border-top:1px solid var(--tg-border);background:var(--tg-surface)}
+.portal-nav-btn{min-width:0;padding:7px 3px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);color:var(--tg-text-secondary);font:bold 9px monospace;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portal-nav-btn.active{background:var(--tg-blue-dark);border-color:var(--tg-blue);color:var(--tg-text);box-shadow:0 0 8px rgba(80,180,255,.16)}
+.portal-nav-btn:active{transform:scale(.98)}
 .footer-info { color: #83a4c9; font-size: 8px; letter-spacing: 1px; margin-top: auto; padding: 2px; flex-shrink: 0; }
 
 /* ORIGINAL GAME ART / LOGO CARDS */
@@ -314,6 +318,13 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
       </div>
     </div>
   </div>
+
+  <nav class="portal-nav" id="portalNav" aria-label="Portal navigation">
+    <button class="portal-nav-btn active" id="tabGames" type="button" data-tab="games">🎮 <span data-i18n="games">ИГРЫ</span></button>
+    <button class="portal-nav-btn" id="tabTop" type="button" data-tab="top">🏆 <span data-i18n="top">ТОП</span></button>
+    <button class="portal-nav-btn" id="tabAch" type="button" data-tab="ach">🎖️ <span data-i18n="achievements">АЧИВКИ</span></button>
+    <button class="portal-nav-btn" id="tabGuest" type="button" data-tab="guest">💬 <span data-i18n="chat">ЧАТ</span></button>
+  </nav>
 
   <div class="footer-info">FREEzzzGames • <span data-i18n="arcadeHub">ARCADE HUB</span></div>
 </div>
@@ -525,6 +536,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");
     if(!messages.length) list.innerHTML='<div class="guest-msg">'+(currentLang==="ru"?"Пока сообщений нет. Напиши первым.":currentLang==="de"?"Noch keine Nachrichten. Schreib die erste Nachricht.":"No messages yet. Write the first one.")+'</div>';
   }
+
+  document.querySelectorAll(".portal-nav-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>switchTab(btn.dataset.tab));
+  });
 
   document.getElementById("langToggleBtn").addEventListener("click",()=>{
     currentLang=LANGS[(LANGS.indexOf(currentLang)+1)%LANGS.length];
