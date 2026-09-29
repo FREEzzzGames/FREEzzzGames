@@ -2,6 +2,7 @@ import http from "node:http";
 import crypto from "node:crypto";
 import {URL} from "node:url";
 import pg from "pg";
+import {startIdBot} from "./id-bot.js";
 const {Pool}=pg;
 const PORT=Number(process.env.PORT||8787);
 const DATABASE_URL=process.env.DATABASE_URL;
@@ -107,4 +108,4 @@ async function router(req,res){
   return out(res,404,{error:"Not found"});
  }catch(e){console.error(e);return out(res,500,{error:"Server error"});}
 }
-http.createServer(router).listen(PORT,()=>console.log("FREEzzzGames API listening on "+PORT));
+http.createServer(router).listen(PORT,()=>{console.log("FREEzzzGames API listening on "+PORT);startIdBot(pool);});
