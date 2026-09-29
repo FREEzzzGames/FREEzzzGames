@@ -56,7 +56,7 @@ async function archive(room,text){
 const rate=new Map();
 function allowed(id,key){const k=id+":"+key,now=Date.now(),a=(rate.get(k)||[]).filter(x=>now-x<60000);if(a.length>=12){rate.set(k,a);return false;}a.push(now);rate.set(k,a);return true;}
 async function router(req,res){
- if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Headers":"Content-Type","Access-Control-Allow-Methods":"GET,POST,OPTIONS"});return res.end();}
+ if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Headers":"Content-Type, Authorization","Access-Control-Allow-Methods":"GET,POST,OPTIONS"});return res.end();}
  const u=new URL(req.url,"http://localhost");
  if(u.pathname==="/api/health")return out(res,200,{ok:true});
  try{
