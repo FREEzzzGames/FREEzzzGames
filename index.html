@@ -231,6 +231,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
     <div class="always-controls" id="alwaysControls">
       <button class="always-btn home" id="homeMenuBtn" title="Главное меню" aria-label="Главное меню">⌂</button>
       <button class="always-btn" id="soundToggle" title="Звук" aria-label="Звук">🔊</button>
+      <button class="always-btn" id="themeToggleBtn" title="Тема" aria-label="Тема">☀️</button>
       <button class="always-btn lang" id="langToggleBtn" title="Язык" aria-label="Язык">RU</button>
     </div>
   </div>
@@ -358,6 +359,49 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 window.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram?.WebApp || null;
   if (tg && tg.ready) { tg.ready(); tg.expand(); }
+
+  // Critical header controls are initialized first so a later optional module
+  // cannot leave the core navigation/sound/theme buttons dead.
+  (function initCriticalControls(){
+    const home=document.getElementById('homeMenuBtn');
+    const sound=document.getElementById('soundToggle');
+    const theme=document.getElementById('themeToggleBtn');
+
+    if(home && !home.dataset.bound){
+      home.dataset.bound='1';
+      home.addEventListener('click',()=>{
+        const cv=document.getElementById('categoryView');
+        const cl=document.getElementById('categoryList');
+        if(cv) cv.classList.add('hidden');
+        if(cl) cl.classList.remove('hidden');
+        try{ document.querySelectorAll('.category-item').forEach(b=>b.blur()); }catch(e){}
+      });
+    }
+
+    if(sound && !sound.dataset.bound){
+      sound.dataset.bound='1';
+      sound.addEventListener('click',()=>{
+        const enabled=localStorage.getItem('freezzzSound') !== 'false';
+        const next=!enabled;
+        localStorage.setItem('freezzzSound',String(next));
+        sound.textContent=next?'🔊':'🔇';
+      });
+      sound.textContent=localStorage.getItem('freezzzSound') === 'false' ? '🔇' : '🔊';
+    }
+
+    if(theme && !theme.dataset.bound){
+      theme.dataset.bound='1';
+      theme.addEventListener('click',()=>{
+        const next=Number(localStorage.getItem('freezzzTheme')||0)===0?1:0;
+        localStorage.setItem('freezzzTheme',String(next));
+        document.getElementById('bodyRoot').className=next?'theme-dark':'';
+        theme.textContent=next?'🌙':'☀️';
+      });
+      const current=Number(localStorage.getItem('freezzzTheme')||0);
+      theme.textContent=current===1?'🌙':'☀️';
+      document.getElementById('bodyRoot').className=current===1?'theme-dark':'';
+    }
+  })();
 
   let userName = "Игрок";
   if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -871,7 +915,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("freezzzTheme", currentThemeIdx);
     applyTheme();
   }
-  const themeToggleBtn=document.getElementById('themeToggleBtn'); if(themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+  const themeToggleBtn=document.getElementById('themeToggleBtn'); if(themeToggleBtn && !themeToggleBtn.dataset.bound){ themeToggleBtn.dataset.bound='1'; themeToggleBtn.addEventListener('click', toggleTheme); }
 
   function applyTheme() {
     document.getElementById('bodyRoot').className = themes[currentThemeIdx] || "";
@@ -888,7 +932,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("freezzzSound", soundEnabled);
     updateSoundBtn();
   }
-  document.getElementById('soundToggle').addEventListener('click', toggleSound);
+  const soundBtn=document.getElementById('soundToggle'); if(soundBtn && !soundBtn.dataset.bound){ soundBtn.dataset.bound='1'; soundBtn.addEventListener('click', toggleSound); }
 
   function updateSoundBtn() {
     const btn = document.getElementById('soundToggle');
@@ -1092,7 +1136,7 @@ window.addEventListener('DOMContentLoaded', () => {
     haptic();
   }
 
-  document.getElementById('homeMenuBtn').addEventListener('click',returnToMainMenu);
+  const homeBtn=document.getElementById('homeMenuBtn'); if(homeBtn && !homeBtn.dataset.bound){ homeBtn.dataset.bound='1'; homeBtn.addEventListener('click',returnToMainMenu); }
   document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
 
   const GAME_LINKS = {
