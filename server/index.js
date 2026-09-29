@@ -28,11 +28,13 @@ function allowed(id,key){const k=id+":"+key,now=Date.now(),a=(rate.get(k)||[]).f
 async function router(req,res){
  if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Headers":"Content-Type","Access-Control-Allow-Methods":"GET,POST,OPTIONS"});return res.end();}
  const u=new URL(req.url,"http://localhost");
+ if(ALLOWED_ORIGIN&&req.method==="POST"){
+   const requestOrigin=String(req.headers.origin||"");
+   if(requestOrigin&&requestOrigin!==ALLOWED_ORIGIN)return out(res,403,{error:"Origin not allowed"});
+ }
  if(u.pathname==="/api/health")return out(res,200,{ok:true});
  try{
   if(req.method==="POST"&&u.pathname==="/api/auth/telegram/session"){
-   const requestOrigin=String(req.headers.origin||"");
-   if(ALLOWED_ORIGIN&&requestOrigin&&requestOrigin!==ALLOWED_ORIGIN)return out(res,403,{error:"Origin not allowed"});
    const b=await body(req);
    const telegramUser=validateTelegramInitData(b.initData,BOT_TOKEN);
    await upsert(telegramUser);
