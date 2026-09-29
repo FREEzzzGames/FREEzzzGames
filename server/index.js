@@ -13,6 +13,7 @@ const ALLOWED_ORIGIN=process.env.ALLOWED_ORIGIN||"";
 const SESSION_DAYS=Number(process.env.SESSION_DAYS||30);
 if(!DATABASE_URL||!BOT_TOKEN)throw new Error("DATABASE_URL and TELEGRAM_BOT_TOKEN are required");
 const pool=new Pool({connectionString:DATABASE_URL,ssl:process.env.PGSSL==="disable"?false:{rejectUnauthorized:false}});
+async function ensureDatabase(){const sql=await fs.readFile(new URL("./schema.sql",import.meta.url),"utf8");await pool.query(sql);console.log("FREEzzzGames database schema is ready");}
 const rooms=new Set(["main","games","relax"]);
 const json={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
 const origin=ALLOWED_ORIGIN||"*";
@@ -115,4 +116,5 @@ async function router(req,res){
   return out(res,404,{error:"Not found"});
  }catch(e){console.error(e);return out(res,500,{error:"Server error"});}
 }
+await ensureDatabase();
 http.createServer(router).listen(PORT,()=>{console.log("FREEzzzGames API listening on "+PORT);});
