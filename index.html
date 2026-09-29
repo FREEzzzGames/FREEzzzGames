@@ -176,6 +176,29 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 .portal.game-active .always-controls{top:7px;right:7px}
 .portal.game-active .always-btn{width:30px;height:30px}
 @media(max-width:420px){.always-controls{top:6px;right:6px;gap:4px}.always-btn{width:29px;height:29px;border-radius:8px;font-size:13px}.always-btn.home{font-size:15px}}
+
+/* PLAYER PROFILE / BUSINESS CARD */
+.player-profile-overlay{position:absolute;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.player-profile-card{width:min(92%,360px);max-height:82%;overflow:auto;background:var(--tg-surface);border:1px solid var(--tg-blue);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.28);padding:18px;color:var(--tg-text)}
+.player-profile-head{display:flex;align-items:center;gap:12px;text-align:left}
+.player-profile-avatar{width:58px;height:58px;border-radius:16px;background:var(--tg-btn);border:1px solid var(--tg-blue);display:flex;align-items:center;justify-content:center;font-size:30px;flex:0 0 58px}
+.player-profile-name{font-size:18px;font-weight:900;color:var(--tg-text);word-break:break-word}
+.player-profile-username{font-size:11px;color:var(--tg-blue);margin-top:3px}
+.player-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+.player-stat{padding:9px 8px;border:1px solid var(--tg-border);border-radius:11px;background:var(--tg-btn);text-align:left}
+.player-stat-value{font-size:15px;font-weight:900;color:var(--tg-text)}
+.player-stat-label{font-size:8px;color:var(--tg-text-secondary);margin-top:3px}
+.player-achievements{margin-top:14px;text-align:left}
+.player-achievements-title{font-size:11px;font-weight:900;color:var(--tg-text);margin-bottom:7px}
+.player-achievement{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid var(--tg-border);border-radius:9px;background:var(--tg-btn);margin-bottom:5px}
+.player-achievement.locked{opacity:.42}
+.player-achievement-icon{font-size:17px;width:22px;text-align:center}
+.player-achievement-name{font-size:9px;font-weight:900;color:var(--tg-text)}
+.player-achievement-desc{font-size:7px;color:var(--tg-text-secondary);margin-top:2px}
+.player-profile-close{width:100%;margin-top:12px;padding:9px;border:1px solid var(--tg-border);border-radius:10px;background:var(--tg-btn);color:var(--tg-text);font-weight:900}
+.guest-author{cursor:pointer}
+.guest-author:active{opacity:.65}
+
 </style>
 </head>
 <body id="bodyRoot">
@@ -252,14 +275,41 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
   </div>
 </div>
 
+
+<div class="player-profile-overlay hidden" id="playerProfileOverlay">
+  <div class="player-profile-card" role="dialog" aria-modal="true" aria-label="Player profile">
+    <div class="player-profile-head">
+      <div class="player-profile-avatar" id="playerProfileAvatar">👾</div>
+      <div>
+        <div class="player-profile-name" id="playerProfileName">Игрок</div>
+        <div class="player-profile-username" id="playerProfileUsername">@player</div>
+      </div>
+    </div>
+    <div class="player-profile-grid">
+      <div class="player-stat"><div class="player-stat-value" id="profilePortalTime">0м</div><div class="player-stat-label" id="profilePortalLabel">ПОРТАЛ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileGameTime">0м</div><div class="player-stat-label" id="profileGameLabel">ИГРЫ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileGameLaunches">0</div><div class="player-stat-label" id="profileLaunchesLabel">ЗАПУСКОВ ИГР</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileMessages">0</div><div class="player-stat-label" id="profileMessagesLabel">СООБЩЕНИЙ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileChatTime">0м</div><div class="player-stat-label" id="profileChatTimeLabel">В ЧАТЕ</div></div>
+      <div class="player-stat"><div class="player-stat-value" id="profileActiveDays">0</div><div class="player-stat-label" id="profileDaysLabel">ДНЕЙ АКТИВНОСТИ</div></div>
+    </div>
+    <div class="player-achievements">
+      <div class="player-achievements-title" id="profileAchievementsTitle">🏆 АЧИВКИ</div>
+      <div id="profileAchievementsList"></div>
+    </div>
+    <button class="player-profile-close" id="playerProfileClose">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
 <script>
 window.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram?.WebApp || null;
   if (tg && tg.ready) { tg.ready(); tg.expand(); }
 
   let userName = "Игрок";
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
-    userName = tg.initDataUnsafe.user.first_name;
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    const u=tg.initDataUnsafe.user;
+    userName = u.username ? "@"+u.username : ([u.first_name||"",u.last_name||""].join(" ").trim() || "Игрок");
   }
   const nameTxt = document.getElementById('userNameTxt');
   if (nameTxt) nameTxt.textContent = userName;
@@ -384,6 +434,223 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("freezzzLang",currentLang);
     applyLanguage(); haptic();
   });
+
+
+  // PLAYER / TELEGRAM IDENTITY / STATISTICS
+  const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+  const playerId = tgUser && tgUser.id ? String(tgUser.id) : "local_guest";
+  const playerKey = "freezzzPlayerStats:" + playerId;
+
+  const defaultPlayerStats = {
+    portalSeconds:0, gameSeconds:0, chatSeconds:0,
+    gameLaunches:0, messagesSent:0, categoryOpens:0, gameViews:0,
+    activeDays:[], games:{}, lastSeen:0, pendingGame:null
+  };
+
+  function readPlayerStats(){
+    try{
+      const raw=localStorage.getItem(playerKey);
+      const parsed=raw?JSON.parse(raw):{};
+      return Object.assign({},defaultPlayerStats,parsed,{
+        activeDays:Array.isArray(parsed.activeDays)?parsed.activeDays:[],
+        games:parsed.games&&typeof parsed.games==="object"?parsed.games:{}
+      });
+    }catch(e){return Object.assign({},defaultPlayerStats);}
+  }
+  let playerStats=readPlayerStats();
+
+  function savePlayerStats(){
+    try{localStorage.setItem(playerKey,JSON.stringify(playerStats));}catch(e){}
+  }
+
+  function formatDuration(sec){
+    sec=Math.max(0,Math.floor(Number(sec)||0));
+    const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60);
+    if(h>0)return h+"ч "+m+"м";
+    return m+"м";
+  }
+
+  function markActiveDay(){
+    const d=new Date().toISOString().slice(0,10);
+    if(!playerStats.activeDays.includes(d)){
+      playerStats.activeDays.push(d);
+      if(playerStats.activeDays.length>366)playerStats.activeDays=playerStats.activeDays.slice(-366);
+      savePlayerStats();
+    }
+  }
+
+  function syncTelegramIdentity(){
+    if(!tgUser)return;
+    const latestUsername=tgUser.username ? "@"+tgUser.username : "";
+    const latestName=[tgUser.first_name||"",tgUser.last_name||""].join(" ").trim();
+    const display=latestUsername || latestName || "Игрок";
+    userName=display;
+    const el=document.getElementById("userNameTxt");
+    if(el)el.textContent=display;
+    document.title="FREEzzzGames — "+display;
+    playerStats.lastSeen=Date.now();
+    markActiveDay();
+    savePlayerStats();
+  }
+  syncTelegramIdentity();
+
+  function playerIdentity(){
+    return {
+      id:playerId,
+      username:tgUser&&tgUser.username ? "@"+tgUser.username : "",
+      name:tgUser ? [tgUser.first_name||"",tgUser.last_name||""].join(" ").trim() : "Игрок",
+      avatar:currentAvatar || "👾"
+    };
+  }
+
+  function tickPortalTime(){
+    const now=Date.now();
+    if(!document.hidden && window.__freezzzLastVisibleTick){
+      const delta=Math.min(60,Math.max(0,(now-window.__freezzzLastVisibleTick)/1000));
+      playerStats.portalSeconds+=delta;
+      if(document.getElementById("guestView") && !document.getElementById("guestView").classList.contains("hidden")){
+        playerStats.chatSeconds+=delta;
+      }
+      savePlayerStats();
+    }
+    window.__freezzzLastVisibleTick=now;
+  }
+  window.__freezzzLastVisibleTick=Date.now();
+  markActiveDay();
+  setInterval(tickPortalTime,15000);
+  document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){
+      tickPortalTime();
+      window.__freezzzLastVisibleTick=null;
+    }else{
+      window.__freezzzLastVisibleTick=Date.now();
+      markActiveDay();
+    }
+  });
+  window.addEventListener("beforeunload",tickPortalTime);
+
+  function recoverPendingGame(){
+    const p=playerStats.pendingGame;
+    if(!p||!p.startedAt)return;
+    const elapsed=Math.min(2*3600,Math.max(0,(Date.now()-p.startedAt)/1000));
+    if(elapsed>5){
+      playerStats.gameSeconds+=elapsed;
+      if(!playerStats.games[p.gameId])playerStats.games[p.gameId]={launches:0,seconds:0};
+      playerStats.games[p.gameId].seconds+=elapsed;
+      savePlayerStats();
+    }
+    playerStats.pendingGame=null;
+    savePlayerStats();
+  }
+  recoverPendingGame();
+
+  function trackGameLaunch(gameId){
+    if(!gameId)return;
+    playerStats.gameLaunches++;
+    playerStats.gameViews++;
+    if(!playerStats.games[gameId])playerStats.games[gameId]={launches:0,seconds:0};
+    playerStats.games[gameId].launches++;
+    playerStats.pendingGame={gameId:gameId,startedAt:Date.now()};
+    savePlayerStats();
+  }
+
+  const ACHIEVEMENT_DEFS=[
+    {id:"first_visit",icon:"👋",name:{ru:"Первый визит",de:"Erster Besuch",en:"First Visit"},desc:{ru:"Открыть FREEzzzGames",de:"FREEzzzGames öffnen",en:"Open FREEzzzGames"},ok:s=>s.portalSeconds>0},
+    {id:"first_game",icon:"🎮",name:{ru:"Первый запуск",de:"Erstes Spiel",en:"First Game"},desc:{ru:"Запустить игру",de:"Ein Spiel starten",en:"Launch a game"},ok:s=>s.gameLaunches>=1},
+    {id:"arcade_10",icon:"🕹️",name:{ru:"Аркадник",de:"Arcade-Fan",en:"Arcade Fan"},desc:{ru:"10 запусков игр",de:"10 Spielstarts",en:"10 game launches"},ok:s=>s.gameLaunches>=10},
+    {id:"hour_portal",icon:"⏱️",name:{ru:"Первый час",de:"Erste Stunde",en:"First Hour"},desc:{ru:"1 час на портале",de:"1 Stunde im Portal",en:"1 hour on the portal"},ok:s=>s.portalSeconds>=3600},
+    {id:"five_hours",icon:"⏳",name:{ru:"Долгий визит",de:"Langer Besuch",en:"Long Visit"},desc:{ru:"5 часов на портале",de:"5 Stunden im Portal",en:"5 hours on the portal"},ok:s=>s.portalSeconds>=18000},
+    {id:"chat_10",icon:"💬",name:{ru:"Первый разговор",de:"Erstes Gespräch",en:"First Conversation"},desc:{ru:"10 сообщений",de:"10 Nachrichten",en:"10 messages"},ok:s=>s.messagesSent>=10},
+    {id:"chat_100",icon:"🗣️",name:{ru:"Болтун",de:"Plaudertasche",en:"Chatterbox"},desc:{ru:"100 сообщений",de:"100 Nachrichten",en:"100 messages"},ok:s=>s.messagesSent>=100},
+    {id:"days_7",icon:"🔥",name:{ru:"Постоянный",de:"Stammgast",en:"Regular"},desc:{ru:"7 активных дней",de:"7 aktive Tage",en:"7 active days"},ok:s=>s.activeDays.length>=7},
+    {id:"games_10",icon:"🌐",name:{ru:"Исследователь",de:"Entdecker",en:"Explorer"},desc:{ru:"Запустить 10 игр",de:"10 Spiele starten",en:"Launch 10 games"},ok:s=>s.gameLaunches>=10}
+  ];
+
+  function renderPlayerProfile(){
+    const id=document.getElementById("playerProfileOverlay");
+    if(!id)return;
+    const identity=playerIdentity();
+    document.getElementById("playerProfileAvatar").textContent=identity.avatar;
+    document.getElementById("playerProfileName").textContent=identity.name || identity.username || "Игрок";
+    document.getElementById("playerProfileUsername").textContent=identity.username || "";
+    document.getElementById("profilePortalTime").textContent=formatDuration(playerStats.portalSeconds);
+    document.getElementById("profileGameTime").textContent=formatDuration(playerStats.gameSeconds);
+    document.getElementById("profileGameLaunches").textContent=String(playerStats.gameLaunches);
+    document.getElementById("profileMessages").textContent=String(playerStats.messagesSent);
+    document.getElementById("profileChatTime").textContent=formatDuration(playerStats.chatSeconds);
+    document.getElementById("profileActiveDays").textContent=String(playerStats.activeDays.length);
+
+    const list=document.getElementById("profileAchievementsList");
+    if(list){
+      list.innerHTML=ACHIEVEMENT_DEFS.map(a=>{
+        const unlocked=!!a.ok(playerStats);
+        const n=(a.name[currentLang]||a.name.en);
+        const d=(a.desc[currentLang]||a.desc.en);
+        return '<div class="player-achievement '+(unlocked?"":"locked")+'"><div class="player-achievement-icon">'+(unlocked?a.icon:"🔒")+'</div><div><div class="player-achievement-name">'+n+'</div><div class="player-achievement-desc">'+d+'</div></div></div>';
+      }).join("");
+    }
+    const labels={
+      ru:["ПОРТАЛ","ИГРЫ","ЗАПУСКОВ ИГР","СООБЩЕНИЙ","В ЧАТЕ","ДНЕЙ АКТИВНОСТИ","🏆 АЧИВКИ","ЗАКРЫТЬ"],
+      de:["PORTAL","SPIELE","SPIELSTARTS","NACHRICHTEN","CHATZEIT","AKTIVE TAGE","🏆 ERFOLGE","SCHLIESSEN"],
+      en:["PORTAL","GAMES","GAME LAUNCHES","MESSAGES","CHAT TIME","ACTIVE DAYS","🏆 ACHIEVEMENTS","CLOSE"]
+    }[currentLang]||[];
+    ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileClose"].forEach((x,i)=>{const e=document.getElementById(x);if(e&&labels[i])e.textContent=labels[i]});
+    id.classList.remove("hidden");
+  }
+
+  function closePlayerProfile(){
+    const el=document.getElementById("playerProfileOverlay");
+    if(el)el.classList.add("hidden");
+  }
+
+  function openPlayerProfile(){
+    syncTelegramIdentity();
+    renderPlayerProfile();
+    haptic();
+  }
+
+  document.getElementById("userNameTxt").addEventListener("click",openPlayerProfile);
+  document.getElementById("playerProfileClose").addEventListener("click",closePlayerProfile);
+  document.getElementById("playerProfileOverlay").addEventListener("click",e=>{
+    if(e.target.id==="playerProfileOverlay")closePlayerProfile();
+  });
+
+  function loadMessages(){
+    const list=document.getElementById("guestList");
+    if(!list)return;
+    let messages=[];
+    try{messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");}catch(e){}
+    if(!messages.length){updateGuestEmptyState();return;}
+    list.innerHTML=messages.slice(-100).map((m,i)=>{
+      const author=(m.username||m.name||"Игрок").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const avatar=m.avatar||"👾";
+      const safeText=String(m.text||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return '<div class="guest-msg"><div class="guest-author" data-player-id="'+String(m.playerId||"").replace(/"/g,"&quot;")+'">'+avatar+" "+author+'</div><div>'+safeText+'</div></div>';
+    }).join("");
+    list.querySelectorAll(".guest-author").forEach(el=>el.addEventListener("click",openPlayerProfile));
+  }
+
+  document.getElementById("sendMsgBtn").addEventListener("click",()=>{
+    const input=document.getElementById("guestInput");
+    const textValue=(input.value||"").trim();
+    if(!textValue)return;
+    const identity=playerIdentity();
+    let messages=[];
+    try{messages=JSON.parse(localStorage.getItem("freezzzGuestMessages")||"[]");}catch(e){}
+    messages.push({playerId:identity.id,username:identity.username,name:identity.name,avatar:identity.avatar,text:textValue,createdAt:Date.now()});
+    messages=messages.slice(-200);
+    localStorage.setItem("freezzzGuestMessages",JSON.stringify(messages));
+    playerStats.messagesSent++;
+    savePlayerStats();
+    input.value="";
+    loadMessages();
+    haptic();
+  });
+
+  document.getElementById("guestInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter")document.getElementById("sendMsgBtn").click();
+  });
+
 
   // АВАТАРЫ
   const possibleAvatars = ["👾", "🤖", "👽", "🦊", "🐯", "🐼", "🦄", "🐲", "👻", "💀", "👑", "🚀", "⚡", "💎", "🕹️", "🔥"];
@@ -724,6 +991,8 @@ window.addEventListener('DOMContentLoaded', () => {
   function openExternal(url) {
     if (!url) return;
     haptic();
+    const gameId=Object.keys(GAME_LINKS).find(k=>GAME_LINKS[k]===url);
+    if(gameId)trackGameLaunch(gameId);
     try {
       if (tg && typeof tg.openLink === 'function') tg.openLink(url);
       else window.open(url, '_blank', 'noopener,noreferrer');
