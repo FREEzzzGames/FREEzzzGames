@@ -280,6 +280,29 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
 </style>
 </head>
 <body id="bodyRoot">
+<div id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#e7e0d5;color:#292722;font-family:monospace;padding:20px">
+  <div style="width:min(420px,100%);padding:24px;border:1px solid #c9c0b4;border-radius:16px;background:#eee8de;box-shadow:0 10px 30px rgba(0,0,0,.18);text-align:center">
+    <div style="font-size:28px;font-weight:900;margin-bottom:10px">FREEzzzGames</div>
+    <div id="ageGateTitle" style="font-size:14px;font-weight:700;margin-bottom:8px">Возрастной экран</div>
+    <div style="font-size:11px;line-height:1.5;color:#716b62;margin-bottom:18px">В каталоге могут встречаться игры и материалы с возрастными ограничениями. Подтвердите, что вам 18 лет или больше.</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button id="ageYes" type="button" style="padding:10px 18px;border:1px solid #3f78a8;border-radius:9px;background:#3f78a8;color:#fff;font:bold 11px monospace;cursor:pointer">ДА, МНЕ 18+</button>
+      <button id="ageNo" type="button" style="padding:10px 18px;border:1px solid #c9c0b4;border-radius:9px;background:#f0f2f5;color:#292722;font:bold 11px monospace;cursor:pointer">НЕТ</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const key="freezzz_age_confirmed";
+  const gate=document.getElementById("ageGate");
+  const yes=document.getElementById("ageYes");
+  const no=document.getElementById("ageNo");
+  if(localStorage.getItem(key)==="1") gate.remove();
+  yes.addEventListener("click",()=>{localStorage.setItem(key,"1");gate.remove();});
+  no.addEventListener("click",()=>{localStorage.removeItem(key);window.location.replace("about:blank");});
+})();
+</script>
+
 <div class="portal" id="mainPortal">
   <div class="header-top">
     <div class="profile-box" id="userProfileBox">
@@ -1136,12 +1159,15 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:"typehelp",title:"Type Help",emoji:"⌨️",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Небольшая браузерная игра на набор текста."},
     {id:"alchemize",title:"Alchemize",emoji:"🧫",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Эксперимент с комбинациями и алхимией."},
     {id:"polkadot",title:"Polka Dot Swim Chain",emoji:"🔵",genre:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",desc:"Название сохранено по записи на фотографии."},
+    {id:"krunker",title:"Krunker",emoji:"🎯",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный соревновательный шутер."},
+    {id:"tanki",title:"Tanki Online",emoji:"🛡️",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный танковый экшен."},
+    {id:"diepio",title:"Diep.io",emoji:"🔵",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерная аркада с танками и развитием."},
   ];
   const CATEGORIES = [
     {id:"worlds",name:"ИНТЕРАКТИВНЫЕ МИРЫ",icon:"🌌",ids:["deepsea","starschrono","windowswap","spaceelevator","ancientearth","radiogarden","geoguessr"]},
     {id:"creative",name:"ТВОРЧЕСТВО • МУЗЫКА • АРТ",icon:"🎨",ids:["patatap","lusion","brunosimon","pollock","typatone","plink","linerider"]},
     {id:"puzzles",name:"ПАЗЛЫ • ЛОГИКА",icon:"🧩",ids:["2048","password","remojibus","fillsquare","ricochetdaily","evolutiontrust","littlealchemy2"]},
-    {id:"arcade",name:"АРКАДЫ • КЛАССИКА",icon:"🕹️",ids:["snake","doodlejump","puffpilot","pokeclicker","candybox2","dino","pip"]},
+    {id:"arcade",name:"АРКАДЫ • КЛАССИКА",icon:"🕹️",ids:["snake","doodlejump","puffpilot","pokeclicker","candybox2","dino","pip"],"krunker","tanki","diepio"]},
     {id:"sandbox",name:"СИМУЛЯТОРЫ • ПЕСКОЧНИЦЫ",icon:"🌍",ids:["townscaper","infinitecraft","addtown","gridland","bouncyballs","alchemy2"]},
     {id:"experimental",name:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",icon:"⚡",ids:["protocol","lumenoffice","typehelp","alchemize","polkadot"]},
   ];
@@ -1337,6 +1363,9 @@ window.addEventListener('DOMContentLoaded', () => {
     "protocol":"https://protocol-errormind.github.io/",
     "lumenoffice":"https://samirsaad786.github.io/LumenOfficeRPG/",
     "typehelp":"https://william-rous.itch.io/type-help",
+    "krunker":"https://krunker.io/",
+    "tanki":"https://tankionline.com/",
+    "diepio":"https://diep.io/",
   };
   function openExternal(url) {
     if (!url) return;
