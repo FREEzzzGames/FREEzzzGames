@@ -18,7 +18,7 @@ async function reply(chatId,text,threadId){
 function topicId(message){return Number(message?.message_thread_id||message?.forum_topic_created?.message_thread_id||0)||null;}
 function topicName(message){return String(message?.forum_topic_created?.name||"").trim();}
 
-export function startIdBot(pool){
+export async function startIdBot(pool){
   if(!BOT_TOKEN){console.log("ID bot disabled: ID_BOT_TOKEN is not set");return;}
   let offset=0,busy=false;
   const loop=async()=>{
