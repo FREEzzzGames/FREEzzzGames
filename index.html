@@ -978,26 +978,20 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const GAME_CARDS = [
-    {id:'snake',title:'SNAKE',emoji:'🐍',genre:'ONE TOUCH',desc:'Собирай, расти и бей собственный рекорд.'},
-    {id:'2048',title:'2048',emoji:'🔢',genre:'ONE TOUCH',desc:'Соединяй одинаковые плитки и доберись до 2048.'},
-    {id:'wordle',title:'WORDLE',emoji:'🟩',genre:'WORD',desc:'Угадай слово за ограниченное число попыток.'},
-    {id:'princejs',title:'PRINCE OF PERSIA JS',emoji:'🏺',genre:'TIME TRIP',desc:'Классическое приключение прямо в браузере с touch-управлением.'},
-    {id:'paperio',title:'PAPER.IO',emoji:'🗺️',genre:'TERRITORY',desc:'Рисуй свой след, захватывай территорию и не пересекай опасные линии.'},
-    {id:'txtaria',title:'TXTARIA',emoji:'⌨️',genre:'ODD WORLDS',desc:'Минималистичное ASCII-приключение с сенсорным управлением.'},
-    {id:'tetris',title:'TETRIS',emoji:'🧱',genre:'FALLING LOGIC',desc:'Собирай линии из падающих фигур и очищай поле.'},
-    {id:'quickdraw',title:'QUICK, DRAW!',emoji:'🎨',genre:'MIND READER',desc:'Рисуй, а нейросеть попробует угадать твой рисунок.'},
-    {id:'slowroads',title:'SLOW ROADS',emoji:'🏎️',genre:'ZEN DRIVE',desc:'Бесконечная поездка по процедурным дорогам в спокойном ритме.'},
-    {id:'ligmar',title:'LIGMAR',emoji:'🌍',genre:'LIVING WORLD',desc:'Большой браузерный мир с персонажем, развитием и заданиями.'}
+    {id:'snake',title:'SNAKE',emoji:'🐍',genre:'АРКАДА',desc:'Классическая змейка. Сразу запускается в браузере.'},
+    {id:'2048',title:'2048',emoji:'🔢',genre:'ГОЛОВОЛОМКА',desc:'Соединяй одинаковые плитки и доберись до 2048.'},
+    {id:'tetris',title:'TETRIS',emoji:'🧱',genre:'АРКАДА',desc:'Собирай линии из падающих фигур.'},
+    {id:'breakout',title:'BREAKOUT',emoji:'🧱',genre:'АРКАДА',desc:'Разбивай блоки и удерживай мяч в игре.'},
+    {id:'minesweeper',title:'MINESWEEPER',emoji:'💣',genre:'ГОЛОВОЛОМКА',desc:'Открывай безопасные клетки и отмечай опасные.'},
+    {id:'wordle',title:'WORDLE',emoji:'🟩',genre:'СЛОВА',desc:'Угадай слово за ограниченное число попыток.'},
+    {id:'flappy',title:'FLAPPY BIRD',emoji:'🐦',genre:'АРКАДА',desc:'Нажимай, чтобы удерживать персонажа в воздухе.'},
+    {id:'dino',title:'DINO DASH',emoji:'🦖',genre:'АРКАДА',desc:'Прыгай через препятствия и набирай очки.'},
+    {id:'pong',title:'PONG',emoji:'🏓',genre:'АРКАДА',desc:'Классический матч против компьютера.'}
   ];
   const CATEGORIES = [
-    {id:'onefinger',name:'ОДИН ПАЛЕЦ',icon:'👆',ids:['snake','2048']},
-    {id:'think',name:'НЕ СПЕШИ',icon:'🧠',ids:['wordle','tetris']},
-    {id:'strange',name:'СТРАННОЕ',icon:'🧪',ids:['txtaria','quickdraw']},
-    {id:'lost',name:'ПОТЕРЯЙСЯ И НАЙДИСЬ',icon:'🗺️',ids:['paperio']},
-    {id:'timetrip',name:'МАШИНА ВРЕМЕНИ',icon:'⌛',ids:['princejs']},
-    {id:'zen',name:'НЕ СПЕШИ ЕХАТЬ',icon:'🌅',ids:['slowroads']},
-    {id:'worlds',name:'ЖИВЫЕ МИРЫ',icon:'🌍',ids:['ligmar']},
-    {id:'lab',name:'FREEzzz LAB',icon:'🧪',ids:['quickdraw','txtaria']}
+    {id:'arcade',name:'АРКАДА',icon:'🕹️',ids:['snake','tetris','breakout','flappy','dino','pong']},
+    {id:'puzzle',name:'ГОЛОВОЛОМКИ',icon:'🧠',ids:['2048','minesweeper']},
+    {id:'word',name:'СЛОВА',icon:'🔤',ids:['wordle']}
   ];
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
   let currentCategory = null;
@@ -1156,16 +1150,15 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
 
   const GAME_LINKS = {
-    snake:'https://www.snake.at/game/1.3/index.html',
-    '2048':'https://play2048.co/',
-    wordle:'https://www.powerlanguage.co.uk/wordle/',
-    princejs:'https://princejs.com/',
-    paperio:'https://bodhiprotocol.github.io/paper-io/',
-    txtaria:'https://ar0se.itch.io/txtaria',
+    snake:'https://emjay045.github.io/browser-games/snake/',
+    '2048':'https://emjay045.github.io/browser-games/2048/',
     tetris:'https://emjay045.github.io/browser-games/tetris/',
-    quickdraw:'https://quickdraw.withgoogle.com/',
-    slowroads:'https://slowroads.io/#A2-83b7f485@0',
-    ligmar:'https://ligmar.io/game/'
+    breakout:'https://emjay045.github.io/browser-games/breakout/',
+    minesweeper:'https://emjay045.github.io/browser-games/minesweeper/',
+    wordle:'https://emjay045.github.io/browser-games/wordle/',
+    flappy:'https://emjay045.github.io/browser-games/flappy-bird/',
+    dino:'https://emjay045.github.io/browser-games/dino-dash/',
+    pong:'https://emjay045.github.io/browser-games/pong/'
   };
   function openExternal(url) {
     if (!url) return;
