@@ -338,6 +338,7 @@ canvas { width: 100%; height: 100%; object-fit: contain; background: #010206; }
       <div class="player-achievements-title" id="profileAchievementsTitle">🏆 АЧИВКИ</div>
       <div id="profileAchievementsList"></div>
     </div>
+    <button class="player-profile-close hidden" id="playerProfileMessageBtn">✉️ НАПИСАТЬ</button>
     <button class="player-profile-close" id="playerProfileClose">ЗАКРЫТЬ</button>
   </div>
 </div>
@@ -533,6 +534,10 @@ window.addEventListener('DOMContentLoaded', () => {
     markActiveDay();
     savePlayerStats();
   }
+  async function syncStatsToServer(){
+    if(!chatAuthorized)return;
+    try{await api("/stats",{method:"POST",body:{portalSeconds:playerStats.portalSeconds,gameSeconds:playerStats.gameSeconds,chatSeconds:playerStats.chatSeconds,gameLaunches:playerStats.gameLaunches,messagesSent:playerStats.messagesSent,categoryOpens:playerStats.categoryOpens,gameViews:playerStats.gameViews,activeDays:playerStats.activeDays}});}catch(e){}
+  }
   syncTelegramIdentity();
 
   function playerIdentity(){
@@ -553,6 +558,7 @@ window.addEventListener('DOMContentLoaded', () => {
         playerStats.chatSeconds+=delta;
       }
       savePlayerStats();
+      if(chatAuthorized)syncStatsToServer();
     }
     window.__freezzzLastVisibleTick=now;
   }
@@ -639,10 +645,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     const labels={ru:["ПОРТАЛ","ИГРЫ","ЗАПУСКОВ ИГР","СООБЩЕНИЙ","В ЧАТЕ","ДНЕЙ АКТИВНОСТИ","🏆 АЧИВКИ","ЗАКРЫТЬ"],de:["PORTAL","SPIELE","SPIELSTARTS","NACHRICHTEN","CHATZEIT","AKTIVE TAGE","🏆 ERFOLGE","SCHLIESSEN"],en:["PORTAL","GAMES","GAME LAUNCHES","MESSAGES","CHAT TIME","ACTIVE DAYS","🏆 ACHIEVEMENTS","CLOSE"]}[currentLang]||[];
     ["profilePortalLabel","profileGameLabel","profileLaunchesLabel","profileMessagesLabel","profileChatTimeLabel","profileDaysLabel","profileAchievementsTitle","playerProfileClose"].forEach((x,i)=>{const e=document.getElementById(x);if(e&&labels[i])e.textContent=labels[i]});
+    const dmBtn=document.getElementById("playerProfileMessageBtn");
+    if(dmBtn){const other=profileTargetId && profileTargetId!==playerId && chatAuthorized;dmBtn.classList.toggle("hidden",!other);}
     id.classList.remove("hidden");
   }
   function closePlayerProfile(){const el=document.getElementById("playerProfileOverlay");if(el)el.classList.add("hidden");}
   function openPlayerProfile(target){syncTelegramIdentity();renderPlayerProfile(target||playerId);haptic();}
+  document.getElementById("playerProfileMessageBtn").addEventListener("click",()=>{if(profileTargetId&&profileTargetId!==playerId){closePlayerProfile();switchTab("guest");setTimeout(()=>openDm(profileTargetId),0);}});
 
   document.getElementById("userNameTxt").addEventListener("click",openPlayerProfile);
   document.getElementById("playerProfileClose").addEventListener("click",closePlayerProfile);
