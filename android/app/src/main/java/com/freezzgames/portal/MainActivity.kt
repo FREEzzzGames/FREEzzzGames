@@ -411,7 +411,7 @@ private fun Market(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onL
        Text(l.rarity+" / "+l.seller,color=DIM,fontFamily=FONT)
        Text(l.price.toString()+" COINS",color=MID,fontFamily=FONT)
       }
-      MetalButton(copy(lang).buy,{
+      MetalButton(copy(lang).buy, enabled=(p?.coins?:0)>=l.price, onClick={
        scope.launch{
         val current=db.profile().get()?:ProfileEntity()
         if(current.coins>=l.price){
@@ -422,7 +422,7 @@ private fun Market(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onL
          info="INSUFFICIENT BALANCE"
         }
        }
-      },(p?.coins?:0)>=l.price)
+      })
      }
     }
    }
