@@ -127,7 +127,7 @@ private fun Header(title:String,lang:String,radio:Boolean,onRadio:()->Unit,onLan
 }
 
 @Composable
-private fun MetalButton(text:String,enabled:Boolean=true,onClick:()->Unit){
+private fun MetalButton(text:String,onClick:()->Unit,enabled:Boolean=true){
  Box(Modifier.clip(CutCornerShape(5.dp)).border(1.dp,if(enabled) LINE else DIM).background(if(enabled)PANEL2 else BG).clickable(enabled=enabled){onClick()}.padding(horizontal=8.dp,vertical=6.dp)){
   Text(text,color=if(enabled)WHITE else DIM,fontFamily=FONT,style=MaterialTheme.typography.labelSmall)
  }
@@ -419,7 +419,7 @@ private fun Market(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onL
          info="INSUFFICIENT BALANCE"
         }
        }
-      }
+      },(p?.coins?:0)>=l.price)
      }
     }
    }
