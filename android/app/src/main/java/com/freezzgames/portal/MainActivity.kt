@@ -395,22 +395,37 @@ private fun Market(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onL
  var info by remember{mutableStateOf("")}
  Column(Modifier.fillMaxSize()){
   Header("MARKET / TERMINAL",lang,radio,onRadio,onLang,onBack)
-  Panel(Modifier.fillMaxWidth().padding(9.dp)){Text("BALANCE "+(p?.coins?:0),color=WHITE,fontFamily=FONT);Text("DIRECT PLAYER SALES / ZERO COMMISSION",color=DIM,fontFamily=FONT)}
-  LazyColumn(Modifier.fillMaxSize().padding(9.dp)){items(listings){l->
-   Panel(Modifier.fillMaxWidth().padding(vertical=4.dp)){
-    Row(verticalAlignment=Alignment.CenterVertically){
-     Column(Modifier.weight(1f)){Text(l.title,color=WHITE,fontFamily=FONT);Text(l.rarity+" / "+l.seller,color=DIM,fontFamily=FONT);Text(l.price.toString()+" COINS",color=MID,fontFamily=FONT)}
-     MetalButton(copy(lang).buy,(p?.coins?:0)>=l.price){scope.launch{
-      val current=db.profile().get()?:ProfileEntity()
-      if(current.coins>=l.price){
-       db.market().update(l.copy(sold=true))
-       db.profile().save(current.copy(coins=current.coins-l.price,xp=current.xp+10))
-       info="ACQUIRED "+l.title
-      }else info="INSUFFICIENT BALANCE"
-     }}}
+  Panel(Modifier.fillMaxWidth().padding(9.dp)){
+   Text("BALANCE "+(p?.coins?:0),color=WHITE,fontFamily=FONT)
+   Text("DIRECT PLAYER SALES / ZERO COMMISSION",color=DIM,fontFamily=FONT)
+  }
+  LazyColumn(Modifier.fillMaxSize().padding(9.dp)){
+   items(listings){ l->
+    Panel(Modifier.fillMaxWidth().padding(vertical=4.dp)){
+     Row(verticalAlignment=Alignment.CenterVertically){
+      Column(Modifier.weight(1f)){
+       Text(l.title,color=WHITE,fontFamily=FONT)
+       Text(l.rarity+" / "+l.seller,color=DIM,fontFamily=FONT)
+       Text(l.price.toString()+" COINS",color=MID,fontFamily=FONT)
+      }
+      MetalButton(copy(lang).buy,(p?.coins?:0)>=l.price){
+       scope.launch{
+        val current=db.profile().get()?:ProfileEntity()
+        if(current.coins>=l.price){
+         db.market().update(l.copy(sold=true))
+         db.profile().save(current.copy(coins=current.coins-l.price,xp=current.xp+10))
+         info="ACQUIRED "+l.title
+        }else{
+         info="INSUFFICIENT BALANCE"
+        }
+       }
+      }
+     }
     }
    }
-  }}
-  if(info.isNotEmpty())Text(info,color=WHITE,fontFamily=FONT,modifier=Modifier.padding(10.dp))
+  }
+  if(info.isNotEmpty()){
+   Text(info,color=WHITE,fontFamily=FONT,modifier=Modifier.padding(10.dp))
+  }
  }
 }
