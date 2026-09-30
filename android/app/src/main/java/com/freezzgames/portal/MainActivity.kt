@@ -134,7 +134,7 @@ private fun MetalButton(text:String,onClick:()->Unit,enabled:Boolean=true){
 }
 
 @Composable
-private fun Panel(modifier:Modifier=Modifier,content:@Composable ColumnScope.()->Unit){
+private fun Panel(modifier:Modifier=Modifier,content: @Composable () -> Unit){
  Column(modifier.clip(CutCornerShape(6.dp)).border(1.dp,LINE).background(PANEL).padding(11.dp),content=content)
 }
 
@@ -198,7 +198,7 @@ private fun Chat(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onLan
  LaunchedEffect(Unit){bots.value=db.bots().all()}
  Column(Modifier.fillMaxSize()){
   Header("CHAT / $room",lang,radio,onRadio,onLang,onBack)
-  Row(Modifier.horizontalScroll(rememberScrollState()).padding(7.dp)){listOf("MAIN","GAMES","REST","DM").forEach{r->MetalButton(if(r==room)"["+r+"]" else r){room=r}}}
+  Row(Modifier.horizontalScroll(rememberScrollState()).padding(7.dp)){listOf("MAIN","GAMES","REST","DM").forEach{r->MetalButton(if (r==room) "["+r+"]" else r){room=r}}}
   Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal=7.dp)){bots.value.forEach{b->MetalButton(b.name){selectedBot=if(selectedBot?.id==b.id)null else b}}}
   LazyColumn(Modifier.weight(1f).padding(9.dp)){
    items(messages){m->Row(Modifier.fillMaxWidth().padding(vertical=4.dp)){Text(m.author,color=if(m.bot)WHITE:MID,fontFamily=FONT,modifier=Modifier.width(70.dp));Text(m.text,color=WHITE,fontFamily=FONT,modifier=Modifier.weight(1f))}}
@@ -380,7 +380,7 @@ private fun Collection(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit
      PortalArt(item.itemId,Modifier.size(55.dp))
      Spacer(Modifier.width(9.dp))
      Column(Modifier.weight(1f)){Text(item.title,color=WHITE,fontFamily=FONT);Text(item.rarity+" / "+item.category,color=DIM,fontFamily=FONT);Text("VALUE "+item.value,color=MID,fontFamily=FONT)}
-     if(item.owned)MetalButton(if(item.equipped)copy(lang).equipped:copy(lang).equip){scope.launch{db.collection().update(item.copy(equipped=!item.equipped))}}else Text("LOCKED",color=DIM,fontFamily=FONT)
+     if(item.owned)MetalButton(if (item.equipped) copy(lang).equipped else copy(lang).equip){scope.launch{db.collection().update(item.copy(equipped=!item.equipped))}}else Text("LOCKED",color=DIM,fontFamily=FONT)
     }
    }
   }}
