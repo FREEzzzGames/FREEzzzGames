@@ -127,7 +127,7 @@ private fun Header(title:String,lang:String,radio:Boolean,onRadio:()->Unit,onLan
 }
 
 @Composable
-private fun MetalButton(text:String,onClick:()->Unit,enabled:Boolean=true){
+private fun MetalButton(text:String,enabled:Boolean=true,onClick:()->Unit){
  Box(Modifier.clip(CutCornerShape(5.dp)).border(1.dp,if(enabled) LINE else DIM).background(if(enabled)PANEL2 else BG).clickable(enabled=enabled){onClick()}.padding(horizontal=8.dp,vertical=6.dp)){
   Text(text,color=if(enabled)WHITE else DIM,fontFamily=FONT,style=MaterialTheme.typography.labelSmall)
  }
@@ -263,12 +263,12 @@ private fun Live(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onLan
  Column(Modifier.fillMaxWidth().padding(8.dp).border(1.dp,LINE).background(PANEL)){
   Text(title,color=WHITE,fontFamily=FONT,modifier=Modifier.padding(8.dp))
   if(failed){Box(Modifier.fillMaxWidth().height(180.dp),contentAlignment=Alignment.Center){Text("EXTERNAL SIGNAL UNAVAILABLE",color=DIM,fontFamily=FONT)}}else{
-   AndroidView(Modifier.fillMaxWidth().height(205.dp),factory={c->WebView(c).apply{
+   AndroidView(factory={c->WebView(c).apply{
     settings.javaScriptEnabled=true;settings.domStorageEnabled=true;settings.mediaPlaybackRequiresUserGesture=false
     webChromeClient=WebChromeClient()
     webViewClient=object:WebViewClient(){override fun onReceivedError(v:WebView?,r:WebResourceRequest?,e:WebResourceError?){if(r?.isForMainFrame==true){failed=true;onFail()}}}
     loadUrl(url)
-   }})
+   }}, modifier=Modifier.fillMaxWidth().height(205.dp))
   }
  }
 }
@@ -320,7 +320,7 @@ private fun Player(db:AppDatabase,game:GameEntity?,lang:String,radio:Boolean,onR
      MetalButton("OPEN EXTERNAL"){try{context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(game.url)))}catch(_:Throwable){}}
     }
    }else{
-    AndroidView(Modifier.fillMaxSize(),factory={c->WebView(c).apply{
+    AndroidView(factory={c->WebView(c).apply{
      settings.javaScriptEnabled=true
      settings.domStorageEnabled=true
      settings.databaseEnabled=true
@@ -337,7 +337,7 @@ private fun Player(db:AppDatabase,game:GameEntity?,lang:String,radio:Boolean,onR
      }
      webChromeClient=WebChromeClient()
      loadUrl(game.url)
-    }})
+    }}, modifier=Modifier.fillMaxSize())
    }
   }
  }
@@ -400,14 +400,14 @@ private fun Market(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onL
    Panel(Modifier.fillMaxWidth().padding(vertical=4.dp)){
     Row(verticalAlignment=Alignment.CenterVertically){
      Column(Modifier.weight(1f)){Text(l.title,color=WHITE,fontFamily=FONT);Text(l.rarity+" / "+l.seller,color=DIM,fontFamily=FONT);Text(l.price.toString()+" COINS",color=MID,fontFamily=FONT)}
-     MetalButton(copy(lang).buy,{scope.launch{
+     MetalButton(copy(lang).buy,(p?.coins?:0)>=l.price){scope.launch{
       val current=db.profile().get()?:ProfileEntity()
       if(current.coins>=l.price){
        db.market().update(l.copy(sold=true))
        db.profile().save(current.copy(coins=current.coins-l.price,xp=current.xp+10))
        info="ACQUIRED "+l.title
       }else info="INSUFFICIENT BALANCE"
-     }},(p?.coins?:0)>=l.price)
+     }}}
     }
    }
   }}
