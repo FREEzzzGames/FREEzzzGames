@@ -128,7 +128,7 @@ private fun Header(title:String,lang:String,radio:Boolean,onRadio:()->Unit,onLan
 
 @Composable
 private fun MetalButton(text:String,onClick:()->Unit,enabled:Boolean=true){
- Box(Modifier.clip(CutCornerShape(5.dp)).border(1.dp,if(enabled)LINE:DIM).background(if(enabled)PANEL2 else BG).clickable(enabled=enabled){onClick()}.padding(horizontal=8.dp,vertical=6.dp)){
+ Box(Modifier.clip(CutCornerShape(5.dp)).border(1.dp,if(enabled) LINE else DIM).background(if(enabled)PANEL2 else BG).clickable(enabled=enabled){onClick()}.padding(horizontal=8.dp,vertical=6.dp)){
   Text(text,color=if(enabled)WHITE else DIM,fontFamily=FONT,style=MaterialTheme.typography.labelSmall)
  }
 }
@@ -201,7 +201,7 @@ private fun Chat(db:AppDatabase,lang:String,radio:Boolean,onRadio:()->Unit,onLan
   Row(Modifier.horizontalScroll(rememberScrollState()).padding(7.dp)){listOf("MAIN","GAMES","REST","DM").forEach{r->val label=if(r==room) "["+r+"]" else r;MetalButton(label){room=r}}}
   Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal=7.dp)){bots.value.forEach{b->MetalButton(b.name){selectedBot=if(selectedBot?.id==b.id)null else b}}}
   LazyColumn(Modifier.weight(1f).padding(9.dp)){
-   items(messages){m->Row(Modifier.fillMaxWidth().padding(vertical=4.dp)){Text(m.author,color=if(m.bot)WHITE:MID,fontFamily=FONT,modifier=Modifier.width(70.dp));Text(m.text,color=WHITE,fontFamily=FONT,modifier=Modifier.weight(1f))}}
+   items(messages){m->Row(Modifier.fillMaxWidth().padding(vertical=4.dp)){Text(m.author,color=if(m.bot) WHITE else MID,fontFamily=FONT,modifier=Modifier.width(70.dp));Text(m.text,color=WHITE,fontFamily=FONT,modifier=Modifier.weight(1f))}}
    if(messages.isEmpty())item{Text("LOCAL CHANNEL READY",color=DIM,fontFamily=FONT)}
   }
   Row(Modifier.padding(7.dp),verticalAlignment=Alignment.CenterVertically){
