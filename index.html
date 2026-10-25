@@ -557,6 +557,7 @@ window.addEventListener('DOMContentLoaded', () => {
     quickdraw:{ru:['ЧИТАЕТ МЫСЛИ','Рисуй, а нейросеть попробует угадать рисунок.'],de:['GEDANKENLESER','Zeichne und lass die KI dein Bild erraten.'],en:['MIND READER','Draw and let the AI try to guess it.']},
     slowroads:{ru:['ZEN DRIVE','Бесконечная поездка по процедурным дорогам.'],de:['ZEN DRIVE','Eine endlose Fahrt über prozedurale Straßen.'],en:['ZEN DRIVE','An endless drive on procedural roads.']},
     ligmar:{ru:['ЖИВОЙ МИР','Большой браузерный мир с развитием и заданиями.'],de:['LEBENDIGE WELT','Eine große Browserwelt mit Entwicklung und Aufgaben.'],en:['LIVING WORLD','A large browser world with progression and quests.']}
+    shadowdiplomacy:{ru:['ДИПЛОМАТИЯ','Принимай решения на закрытом саммите и удержи мир от кризиса.'],de:['DIPLOMATIE','Triff Entscheidungen beim Gipfel und verhindere eine Eskalation.'],en:['DIPLOMACY','Make summit decisions and keep the crisis from escalating.']},
   };
   const CATEGORY_TEXT = {
     onefinger:{ru:'ОДИН ПАЛЕЦ',de:'EIN FINGER',en:'ONE TOUCH'},
@@ -569,6 +570,7 @@ window.addEventListener('DOMContentLoaded', () => {
     worlds:{ru:'ЖИВЫЕ МИРЫ',de:'LEBENDIGE WELTEN',en:'LIVING WORLDS'},
     duel:{ru:'ДВА БОКА ЭКРАНА',de:'ZWEI SEITEN',en:'TWO SIDES'},
     lab:{ru:'FREEzzz LAB',de:'FREEzzz LAB',en:'FREEzzz LAB'}
+    strategy:{ru:'СТРАТЕГИЯ И ДИПЛОМАТИЯ',de:'STRATEGIE UND DIPLOMATIE',en:'STRATEGY AND DIPLOMACY'},
   };
   let currentLang = localStorage.getItem("freezzzLang") || "ru";
   if(!LANGS.includes(currentLang)) currentLang="ru";
@@ -1167,6 +1169,7 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:"krunker",title:"Krunker",emoji:"🎯",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный соревновательный шутер."},
     {id:"tanki",title:"Tanki Online",emoji:"🛡️",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерный танковый экшен."},
     {id:"diepio",title:"Diep.io",emoji:"🔵",genre:"АРКАДЫ • ЭКШЕН",desc:"Браузерная аркада с танками и развитием."},
+    {id:"shadowdiplomacy",title:"SHADOW DIPLOMACY",emoji:"🕶️",genre:"СТРАТЕГИЯ • ДИПЛОМАТИЯ",desc:"Закрытый саммит, разведданные и решения на грани глобального кризиса."},
   ];
   const CATEGORIES = [
     {id:"worlds",name:"ИНТЕРАКТИВНЫЕ МИРЫ",icon:"🌌",ids:["deepsea","starschrono","windowswap","spaceelevator","ancientearth","radiogarden","geoguessr"]},
@@ -1175,6 +1178,7 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:"arcade",name:"АРКАДЫ • КЛАССИКА",icon:"🕹️",ids:["snake","doodlejump","puffpilot","pokeclicker","candybox2","dino","pip","krunker","tanki","diepio"]},
     {id:"sandbox",name:"СИМУЛЯТОРЫ • ПЕСКОЧНИЦЫ",icon:"🌍",ids:["townscaper","infinitecraft","addtown","gridland","bouncyballs","alchemy2"]},
     {id:"experimental",name:"ЭКСПЕРИМЕНТАЛЬНЫЕ ПРОЕКТЫ",icon:"⚡",ids:["protocol","lumenoffice","typehelp","alchemize","polkadot"]},
+    {id:"strategy",name:"СТРАТЕГИЯ И ДИПЛОМАТИЯ",icon:"♟️",ids:["shadowdiplomacy"]},
   ];
   const GAME_BY_ID = Object.fromEntries(GAME_CARDS.map(g => [g.id,g]));
   let currentCategory = null;
@@ -1333,6 +1337,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('categoryBack').addEventListener('click',returnToMainMenu);
 
   const GAME_LINKS = {
+    "shadowdiplomacy":"./shadow-diplomacy.html",
     "deepsea":"https://neal.fun/deep-sea/",
     "windowswap":"https://window-swap.com/",
     "spaceelevator":"https://neal.fun/space-elevator/",
