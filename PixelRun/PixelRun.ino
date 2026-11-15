@@ -5,12 +5,12 @@
  * Libraries: M5Cardputer (+ M5Unified, M5GFX) - latest versions (ADV support)
  *
  * CONTROLS
- *   SPACE / ; / W ...... jump (also Enter)
+ *   E / SPACE / ENTER ... jump / up
  *   P / ` / DEL ........ pause menu
  *   M .................. sound on/off
  *   C .................. change color
- *   , / (A)  and  / / (D) ... change character in menu / adjust in pause
- *   ; (W) and . (S) .... move cursor in pause menu, Enter = select
+ *   A / D ............... left / right
+ *   Z ................... crouch (hold)
  *
  * Score = steps. Best score, color, character and sound are saved in NVS.
  * 10 tracks x 30 s play one after another in a loop while you run.
@@ -53,6 +53,7 @@ State state = S_MENU;
 // ============================== INPUT ==============================
 struct Keys {
   bool space = false, up = false, down = false, left = false, right = false;
+  bool crouch = false;
   bool esc = false, mute = false, color = false, enter = false;
 };
 
@@ -63,8 +64,9 @@ static void mapChar(char c, Keys& k) {
   if (c >= 'A' && c <= 'Z') c += 32;
   switch (c) {
     case ' ': k.space = true; break;
-    case ';': case 'w': k.up = true; break;
+    case 'e': case ';': case 'w': k.up = true; break;
     case '.': case 's': k.down = true; break;
+    case 'z': k.crouch = true; break;
     case ',': case 'a': k.left = true; break;
     case '/': case 'd': k.right = true; break;
     case 'p': case '`': k.esc = true; break;
@@ -76,8 +78,9 @@ static void mapChar(char c, Keys& k) {
 Keys readKeys() {
   Keys k;
   M5Cardputer.update();
+  auto st = M5Cardputer.Keyboard.keysState();
+  for (char c : st.word) if (c == 'z' || c == 'Z') k.crouch = true;
   if (M5Cardputer.Keyboard.isChange()) {
-    auto st = M5Cardputer.Keyboard.keysState();
     for (char c : st.word) {
       bool was = false;
       for (char p : prevWord) if (p == c) was = true;
@@ -251,6 +254,7 @@ float px, fy, vy, baseSpeed, speedMul, mulTarget, dist, playTime, nextX;
 float jumpBuf, coyote, overTimer;
 int steps;
 bool onGround, dead, newBest;
+bool crouching = false;
 int pIdx = 0;
 
 Obj* addObj(uint8_t t, float x, float y, int w, int h) {
@@ -337,6 +341,7 @@ void startGame() {
   dist = 0; steps = 0; playTime = 0;
   nextX = px + 260;
   jumpBuf = 0; coyote = 0.1f;
+  crouching = false;
   onGround = true; dead = false; newBest = false;
   startMusic();
   state = S_PLAY;
@@ -399,7 +404,10 @@ void updateGame(float dt) {
   dist += v * dt;
   steps = (int)(dist / STEP_LEN);
 
+  crouching = k.crouch;
   float l = px + 1, r = px + 9, cx = px + 5;
+  const float playerH = crouching ? 7.f : 13.f;
+  const float playerTop = fy - playerH;
   bool grounded = false;
   float zoneMul = 1.f;
 
@@ -414,10 +422,10 @@ void updateGame(float dt) {
       case T_BLOCK: case T_BEAM: case T_CRUSH: {
         float ol = o.x, orr = o.x + o.w, ot = o.y, ob = o.y + o.h;
         if (r <= ol || l >= orr) break;
-        float top = fy - 13;
+        float top = playerTop;
         if (fy <= ot || top >= ob) break;
         if (vy >= 0 && prevFy <= ot + 0.5f) { fy = ot; vy = 0; grounded = true; }
-        else if (vy < 0 && prevFy - 13 >= ob - 0.5f) { fy = ob + 13; vy = 0; sfx(FX_BONK); }
+        else if (vy < 0 && prevFy - playerH >= ob - 0.5f) { fy = ob + playerH; vy = 0; sfx(FX_BONK); }
         else dead = true;
         break;
       }
@@ -443,7 +451,7 @@ void updateGame(float dt) {
       }
       case T_SAW: {
         float sx = o.x, sy = GY - (21.f + 13.f * sinf(o.t * 2.4f));
-        float top = fy - 13;
+        float top = playerTop;
         float nx = fminf(fmaxf(sx, l + 1), r - 1);
         float ny = fminf(fmaxf(sy, top + 1), fy);
         float dx = sx - nx, dy = sy - ny;
@@ -640,7 +648,14 @@ void drawWorld() {
   drawGround(cam);
   for (auto& o : objs) if (o.act) drawObj(o, cam);
   int frame = onGround ? (steps & 1) : 2;
-  drawHero(PX_SCR, (int)fy, frame, charIdx, 1);
+  if (crouching && onGround) {
+    cv.fillRect(PX_SCR + 1, (int)fy - 7, 9, 5, FG);
+    cv.fillRect(PX_SCR + 6, (int)fy - 9, 4, 3, FG);
+    cv.fillRect(PX_SCR + 2, (int)fy - 2, 3, 2, FG);
+    cv.fillRect(PX_SCR + 7, (int)fy - 2, 3, 2, FG);
+  } else {
+    drawHero(PX_SCR, (int)fy, frame, charIdx, 1);
+  }
   drawHUD();
 }
 
@@ -701,7 +716,7 @@ uint32_t lastMs = 0;
 void setup() {
   auto cfg = M5.config();
   M5Cardputer.begin(cfg, true);
-  M5Cardputer.Display.setRotation(1);
+  M5Cardputer.Display.setRotation(3);
   cv.setColorDepth(16);
   cv.createSprite(SW, SH);
   prefs.begin("pxrun", false);
