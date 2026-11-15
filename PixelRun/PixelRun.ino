@@ -404,7 +404,6 @@ void updateGame(float dt) {
   dist += v * dt;
   steps = (int)(dist / STEP_LEN);
 
-  crouching = k.crouch;
   float l = px + 1, r = px + 9, cx = px + 5;
   const float playerH = crouching ? 7.f : 13.f;
   const float playerTop = fy - playerH;
@@ -740,6 +739,7 @@ void loop() {
   if (dt > 0.04f) dt = 0.04f;
 
   Keys k = readKeys();
+  crouching = k.crouch;
 
   switch (state) {
     case S_MENU:
