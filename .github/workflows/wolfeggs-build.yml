@@ -27,6 +27,8 @@ jobs:
           sed -i '/#include <math.h>/a #include "Egg.h"' WolfEggs/WolfEggs.ino
           sed -i '/^struct Egg { bool act; uint8_t chute, step, kind; };.*/d' WolfEggs/WolfEggs.ino
           test -s WolfEggs/Egg.h
+          python3 WolfEggs/scale_wolf.py
+          grep -n "50% scale" WolfEggs/WolfEggs.ino
 
       - name: Install Arduino CLI
         uses: arduino/setup-arduino-cli@v2
