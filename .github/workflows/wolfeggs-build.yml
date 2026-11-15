@@ -24,6 +24,9 @@ jobs:
           base64 -d /tmp/wolfeggs.zlib.b64 | python3 -c "import sys,zlib; sys.stdout.buffer.write(zlib.decompress(sys.stdin.buffer.read()))" > WolfEggs/WolfEggs.ino
           grep -n "setRotation" WolfEggs/WolfEggs.ino
           test -s WolfEggs/WolfEggs.ino
+          sed -i '/#include <math.h>/a #include "Egg.h"' WolfEggs/WolfEggs.ino
+          sed -i '/^struct Egg { bool act; uint8_t chute, step, kind; };.*/d' WolfEggs/WolfEggs.ino
+          test -s WolfEggs/Egg.h
 
       - name: Install Arduino CLI
         uses: arduino/setup-arduino-cli@v2
