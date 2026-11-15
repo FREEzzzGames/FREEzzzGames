@@ -1,0 +1,71 @@
+name: Build WolfEggs firmware
+
+on:
+  push:
+    paths:
+      - "WolfEggs/source.part*"
+      - ".github/workflows/wolfeggs-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore WolfEggs sketch
+        run: |
+          cat WolfEggs/source.part* > /tmp/wolfeggs.zlib.b64
+          base64 -d /tmp/wolfeggs.zlib.b64 | python3 -c "import sys,zlib; sys.stdout.buffer.write(zlib.decompress(sys.stdin.buffer.read()))" > WolfEggs/WolfEggs.ino
+          grep -n "setRotation" WolfEggs/WolfEggs.ino
+          test -s WolfEggs/WolfEggs.ino
+
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install M5Stack ESP32 core
+        run: |
+          arduino-cli core update-index --additional-urls https://static-cdn.m5stack.com/resource/arduino/package_m5stack_index.json
+          arduino-cli core install m5stack:esp32 --additional-urls https://static-cdn.m5stack.com/resource/arduino/package_m5stack_index.json
+
+      - name: Install Cardputer libraries
+        run: arduino-cli lib install M5Cardputer
+
+      - name: Compile for M5Stack Cardputer ADV
+        run: |
+          arduino-cli compile \
+            --fqbn "m5stack:esp32:m5stack_cardputer:FlashSize=8M,PartitionScheme=default_8MB,CDCOnBoot=cdc,USBMode=hwcdc" \
+            --output-dir build \
+            WolfEggs
+
+      - name: Create merged flash image
+        run: |
+          python3 -m pip install --user esptool==4.8.1
+          BOOTLOADER="$(find build -maxdepth 1 -type f -name '*.bootloader.bin' -print -quit)"
+          PARTITIONS="$(find build -maxdepth 1 -type f -name '*.partitions.bin' -print -quit)"
+          APP="$(find build -maxdepth 1 -type f -name 'WolfEggs.ino.bin' -print -quit)"
+          BOOT_APP0="$(find "$HOME/.arduino15" -type f -name 'boot_app0.bin' -print -quit)"
+          test -n "$BOOTLOADER" && test -n "$PARTITIONS" && test -n "$APP" && test -n "$BOOT_APP0"
+          python3 -m esptool --chip esp32s3 merge_bin \
+            -o build/WolfEggs-Cardputer-ADV-merged.bin \
+            --flash_mode dio --flash_size 8MB \
+            0x0 "$BOOTLOADER" \
+            0x8000 "$PARTITIONS" \
+            0xe000 "$BOOT_APP0" \
+            0x10000 "$APP"
+          ls -lh build/*.bin
+
+      - name: Upload firmware binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: WolfEggs-Cardputer-ADV
+          path: |
+            build/WolfEggs-Cardputer-ADV-merged.bin
+            build/WolfEggs.ino.bin
+          if-no-files-found: error
+          retention-days: 30
