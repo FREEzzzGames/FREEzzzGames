@@ -715,7 +715,7 @@ uint32_t lastMs = 0;
 void setup() {
   auto cfg = M5.config();
   M5Cardputer.begin(cfg, true);
-  M5Cardputer.Display.setRotation(3);
+  M5Cardputer.Display.setRotation(4);
   cv.setColorDepth(16);
   cv.createSprite(SW, SH);
   prefs.begin("pxrun", false);
