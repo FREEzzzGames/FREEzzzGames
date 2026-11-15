@@ -16,6 +16,7 @@
  * 10 tracks x 30 s play one after another in a loop while you run.
  */
 #include <M5Cardputer.h>
+#include "PixelRunTypes.h"
 #include <Preferences.h>
 #include <vector>
 #include <math.h>
@@ -244,7 +245,6 @@ void updateMusic(float dt) {
 
 // ============================== WORLD ==============================
 enum { T_BLOCK, T_PIT, T_SPIKE, T_PLAT, T_SPRING, T_BEAM, T_CRUMB, T_CRUSH, T_SAW, T_MUD, T_BOOST };
-struct Obj { uint8_t type; bool act; float x, y, t; int16_t w, h; uint8_t st; };
 Obj objs[48];
 
 float px, fy, vy, baseSpeed, speedMul, mulTarget, dist, playTime, nextX;
